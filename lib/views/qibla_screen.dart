@@ -6,7 +6,7 @@ import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../constants/image_constants.dart';
-import '../controllers/home_controller.dart';
+import '../controllers/qibla_controller.dart';
 // import '../controllers/qiblah_controller.dart';
 
 class QiblahScreen extends StatelessWidget {
@@ -135,49 +135,58 @@ class QiblahScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CustomizedPrayerTextWidget(
-                                    title: 'PRAYER: ', prayerName: 'ASR'),
+                                    iconColor: Colors.white,
+                                    color: Colors.black,
+                                    title: 'PRAYER: ',
+                                    prayerName: 'ASR'),
                                 CustomizedPrayerTextWidget(
+                                    iconColor: Colors.white,
+                                    color: Colors.black,
                                     icon: Icons.timelapse,
                                     title: "NAMAZ",
                                     prayerName: ': 3 hours 45 mins'),
                                 CustomizedPrayerTextWidget(
+                                    iconColor: Colors.white,
+                                    color: Colors.black,
                                     icon: Icons.timelapse,
                                     title: "IQAMA",
                                     prayerName: ': 3 hours 45 mins')
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Card(
-                              elevation: 2,
-                              child: Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Obx(
-                                      () => Text(
-                                        '${controller.locationCountry}, ${controller.locationCity}',
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: screenHeight * 0.015,
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Card(
+                                elevation: 2,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Obx(
+                                        () => Text(
+                                          '${controller.locationCountry}, ${controller.locationCity}',
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: screenHeight * 0.015,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    5.widthBox,
-                                    "|"
-                                        .text
-                                        .color(const Color.fromARGB(
-                                            255, 43, 4, 94))
-                                        .size(20)
-                                        .make(),
-                                    5.widthBox,
-                                    const Icon(
-                                      Icons.location_on,
-                                      color: Color.fromARGB(255, 43, 4, 94),
-                                    ),
-                                  ],
+                                      5.widthBox,
+                                      "|"
+                                          .text
+                                          .color(const Color.fromARGB(
+                                              255, 43, 4, 94))
+                                          .size(20)
+                                          .make(),
+                                      5.widthBox,
+                                      const Icon(
+                                        Icons.location_on,
+                                        color: Color.fromARGB(255, 43, 4, 94),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -240,37 +249,6 @@ class QiblahScreen extends StatelessWidget {
             },
           ),
         ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favorites',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.notifications,
-              color: Colors.amber,
-            ),
-            label: 'Notifications',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        onTap: (index) {
-          // Handle navigation logic here
-          // For example, navigate to different screens based on the index
-        },
       ),
     );
   }

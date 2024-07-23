@@ -22,34 +22,34 @@ class CusTomizedCardWidget extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: screenWidth * 0.02,
+          vertical: screenWidth * 0.01,
         ), // Adjust padding based on screen width
         child: Card(
           elevation: 10,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: Padding(
             padding: EdgeInsets.all(
-                screenWidth * 0.04), // Adjust padding based on screen width
+                screenWidth * 0.05), // Adjust padding based on screen width
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
                     height: screenHeight *
-                        0.01), // Adjust height based on screen height
+                        0.008), // Adjust height based on screen height
                 Image.asset(
                   imageIcon,
                   width:
-                      screenWidth * 0.22, // Adjust width based on screen width
+                      screenWidth * 0.12, // Adjust width based on screen width
                   height: screenHeight *
-                      0.08, // Adjust height based on screen height
+                      0.04, // Adjust height based on screen height
                 ),
                 Text(
                   title,
                   style: TextStyle(
                     fontSize: screenWidth *
-                        0.035, // Adjust font size based on screen width
+                        0.025, // Adjust font size based on screen width
                     fontWeight: FontWeight.w500,
                   ),
                 ),
