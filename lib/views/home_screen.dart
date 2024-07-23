@@ -1,4 +1,7 @@
+import 'package:community_islamic_app/views/qibla_screen.dart';
+import 'package:community_islamic_app/widgets/customized_card_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../constants/image_constants.dart';
@@ -72,18 +75,59 @@ class HomeScreen extends StatelessWidget {
             child: SizedBox(
               height: screenHeight * 0.65,
               width: double.infinity,
-              child: const Card(
-                shape: RoundedRectangleBorder(
+              child: Card(
+                shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
                 ),
-                elevation: 5,
+                elevation: 10,
                 color: Colors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [],
+                margin: EdgeInsets.zero, // Ensure the card has no margin
+                child: Padding(
+                  padding: EdgeInsets.zero, // Ensure the card has no padding
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          CusTomizedCardWidget(
+                              title: 'About Us',
+                              imageIcon: aboutUsIcon,
+                              onTap: () {}),
+                          CusTomizedCardWidget(
+                              title: 'Qibla Direction',
+                              imageIcon: qiblaIconBg,
+                              onTap: () {
+                                Get.to(() => QiblahScreen());
+                              }),
+                          CusTomizedCardWidget(
+                              title: 'Ask Imam',
+                              imageIcon: askImamIcon,
+                              onTap: () {})
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          CusTomizedCardWidget(
+                              title: 'Donate',
+                              imageIcon: donationIcon,
+                              onTap: () {}),
+                          CusTomizedCardWidget(
+                              title: 'Contact Us',
+                              imageIcon: contactUsIcon,
+                              onTap: () {}),
+                          CusTomizedCardWidget(
+                              title: 'Gallery',
+                              imageIcon: galleryIcon,
+                              onTap: () {})
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

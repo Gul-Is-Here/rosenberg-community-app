@@ -2,93 +2,52 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
 
-class HomeController extends GetxController {
-  // --------------------> METHOD FOR GET USER LOCATION  <------------------------------
+import '../constants/image_constants.dart';
 
-  RxString location = 'Waiting for location...'.obs;
-  RxBool isLoading = false.obs;
-  late final loc;
-  late final currentPosition;
-  double? latitude, logitude;
-  
+class QiblahController extends GetxController
+    with GetSingleTickerProviderStateMixin {
+  var locationCountry = "".obs;
+  var locationCity = "".obs;
+  late Animation<double> animation;
+  late AnimationController animationController;
+  double begin = 0.0;
 
-  void getLocation() async {
-    try {
-      isLoading.value = true;
+  // Reactive variable to track the selected image
+  Rx<String> selectedImage = (imageOptions[0]).obs;
 
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        _showSnackBar('Please enable your Location');
-        return;
-      }
-
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied ||
-            permission == LocationPermission.deniedForever) {
-          _showSnackBar('Please enable your Location.');
-          return;
-        }
-      }
-
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
-
-      if (placemarks.isNotEmpty) {
-        String city = placemarks[0].locality ?? '';
-        // String country = placemarks[0].country ?? '';
-
-        location.value = city;
-      } else {
-        location.value = 'Location not found.';
-      }
-    } catch (e) {
-      _showSnackBar('Error: ${e.toString()}');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  void _showSnackBar(String message) {
-    Get.snackbar(
-      'Location',
-      message,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.red,
-      colorText: Colors.white,
+  @override
+  void onInit() {
+    super.onInit();
+    animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
     );
+    animation = Tween(begin: 0.0, end: 0.0).animate(animationController);
+    _getLocation();
   }
-  // Pervent to go Qible Screen untile location is not on
 
-  // ------------------> GET PRAYER TIMES ACCORDING TO USER LOCATION  <------------------------
-  getLoc() async {
-      bool serviceEnable;
-      PermissionStatus permissionGranted;
-      serviceEnable = await loc.serviceEnabled();
-      if (!serviceEnable) {
-        serviceEnable = await loc.requestService();
-        if (!serviceEnable) {
-          return;
-        }
-      }
-      permissionGranted = await loc.hasPermission();
-      if (permissionGranted == PermissionStatus.denied) {
-        permissionGranted = await loc.requestPermission();
-        if (permissionGranted != PermissionStatus.granted) {
-          return;
-        }
-      }
-      currentPosition = await loc.getLocation();
-      latitude = currentPosition!.latitude;
-      logitude = currentPosition!.longitude;
+  Future<void> _getLocation() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      // Show a message to the user if permission is denied
+      Get.snackbar('Location Permission', 'Please grant location permission.');
+      return;
     }
 
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.best,
+    );
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+
+    if (placemarks.isNotEmpty) {
+      locationCountry.value = placemarks[0].country ?? "";
+      locationCity.value = placemarks[0].locality ?? "";
+    }
+  }
 }
