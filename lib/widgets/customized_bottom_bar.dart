@@ -13,7 +13,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(0),
       child: SizedBox(
-        height: 75,
+        height: 80,
         child: AnimatedNotchBottomBar(
           // showBottomRadius: true,
           elevation: 0,
@@ -30,14 +30,14 @@ class CustomBottomNavigationBar extends StatelessWidget {
             BottomBarItem(
               activeItem: Image.asset(
                 homeIcon2,
-                height: 36, // Adjusted icon size
-                width: 36, // Adjusted icon size
+                height: 45, // Adjusted icon size
+                width: 45, // Adjusted icon size
                 color: const Color(0xFF0F6467),
               ),
               inActiveItem: Image.asset(
                 homeIcon2,
-                height: 36, // Adjusted icon size
-                width: 36, // Adjusted icon size
+                height: 45, // Adjusted icon size
+                width: 45, // Adjusted icon size
                 color: Colors.grey,
               ),
             ),
@@ -55,25 +55,25 @@ class CustomBottomNavigationBar extends StatelessWidget {
             ),
             BottomBarItem(
               activeItem: Image.asset(quranIcon,
-                  height: 36, // Adjusted icon size
-                  width: 36, // Adjusted icon size
+                  height: 45, // Adjusted icon size
+                  width: 45, // Adjusted icon size
                   color: const Color(0xFF0F6467)),
               inActiveItem: Image.asset(
                 quranIcon,
-                height: 36, // Adjusted icon size
-                width: 36, // Adjusted icon size
+                height: 45, // Adjusted icon size
+                width: 45, // Adjusted icon size
                 color: Colors.grey,
               ),
             ),
             BottomBarItem(
               activeItem: Image.asset(donationIcon2,
-                  height: 36, // Adjusted icon size
-                  width: 36, // Adjusted icon size
+                  height: 45, // Adjusted icon size
+                  width: 45, // Adjusted icon size
                   color: const Color(0xFF0F6467)),
               inActiveItem: Image.asset(
                 donationIcon2,
-                height: 36, // Adjusted icon size
-                width: 36, // Adjusted icon size
+                height: 45, // Adjusted icon size
+                width: 45, // Adjusted icon size
                 color: Colors.grey,
               ),
             ),
@@ -81,8 +81,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
           onTap: (index) {
             controller.changePage(index);
           },
-          kIconSize: 25,
-          kBottomRadius: 35,
+          kIconSize: 30,
+          kBottomRadius: 0,
           notchBottomBarController: controller.notchBottomBarController,
         ),
       ),

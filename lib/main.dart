@@ -1,12 +1,10 @@
 import 'package:community_islamic_app/views/home_screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'constants/image_constants.dart';
 import 'controllers/home_controller.dart';
 import 'views/donation_screens/donation_screen.dart';
-import 'views/home_screens/home_screen_content.dart';
 import 'views/qibla_screen.dart';
 import 'views/quran_screen.dart/quran_screen.dart';
 import 'widgets/customized_bottom_bar.dart';
@@ -25,7 +23,7 @@ class MyApp extends StatelessWidget {
     final HomeController controller = Get.put(HomeController());
 
     final List<Widget> _pages = [
-      HomeScreen(),
+      const HomeScreen(),
       QiblahScreen(),
       const QuranScreen(),
       const DonationScreen()
@@ -45,8 +43,8 @@ class MyApp extends StatelessWidget {
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 40),
           child: SizedBox(
-            height: 90,
-            width: 90,
+            height: MediaQuery.of(context).size.height * .1,
+            width: MediaQuery.of(context).size.width * .2,
             child: FloatingActionButton(
               isExtended: true,
               backgroundColor: Colors.transparent,

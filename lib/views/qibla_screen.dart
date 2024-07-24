@@ -101,7 +101,7 @@ class QiblahScreen extends StatelessWidget {
                   child: Container(
                     alignment: Alignment.center,
                     child: const CircularProgressIndicator(
-                      color: Color.fromARGB(255, 68, 3, 72),
+                      color: Color(0xFF006367),
                     ),
                   ),
                 );
@@ -123,7 +123,7 @@ class QiblahScreen extends StatelessWidget {
                     children: [
                       SizedBox(
                           height: screenHeight *
-                              0.17), // Space for background card and 20-pixel gap
+                              0.10), // Space for background card and 20-pixel gap
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,8 +176,7 @@ class QiblahScreen extends StatelessWidget {
                                       5.widthBox,
                                       "|"
                                           .text
-                                          .color(const Color.fromARGB(
-                                              255, 43, 4, 94))
+                                          .color(Color(0xFF006367))
                                           .size(20)
                                           .make(),
                                       5.widthBox,
@@ -200,18 +199,18 @@ class QiblahScreen extends StatelessWidget {
                             angle: controller.animation.value,
                             child: Image.asset(
                               controller.selectedImage.value,
-                              height: screenHeight * 0.38,
-                              width: screenWidth * 0.6,
+                              height: screenHeight * 0.3,
+                              width: screenWidth * 0.5,
                             ),
                           ),
                         ),
                       ),
                       Container(
                         width: double.infinity,
-                        height: 40, color: Color(0xFF08172D),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: const Text(
+                        height: 40, color: Color(0xFF006367),
+                        child: const Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Text(
                             'Theme',
                             style: TextStyle(
                                 color: Colors.white,
@@ -232,10 +231,22 @@ class QiblahScreen extends StatelessWidget {
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Image.asset(
-                                  imageOptions[index],
-                                  height: screenHeight * 0.1,
-                                  width: screenWidth * 0.2,
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        10,
+                                      ),
+                                      side: BorderSide(
+                                          width: 5, color: Color(0xFF006367))),
+                                  color: Colors.white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Image.asset(
+                                      imageOptions[index],
+                                      height: screenHeight * 0.08,
+                                      width: screenWidth * 0.16,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -247,12 +258,13 @@ class QiblahScreen extends StatelessWidget {
                 );
               } else {
                 return Positioned(
-                  bottom: screenHeight * 0.1,
+                  bottom: screenHeight * 0.5,
                   left: 0,
                   right: 0,
                   child: Container(
                     alignment: Alignment.center,
-                    child: const Text("Unable to get Qiblah direction"),
+                    child: const Text(
+                        "Unable to get Qiblah direction,\n       Please restart the app"),
                   ),
                 );
               }

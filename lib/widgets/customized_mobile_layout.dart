@@ -226,7 +226,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                                                 width: 2, color: Colors.white)),
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 8, vertical: 4),
+                                              horizontal: 14, vertical: 4),
                                           child: Column(
                                             children: [
                                               const Text(
