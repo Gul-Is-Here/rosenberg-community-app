@@ -122,8 +122,8 @@ class QiblahScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
-                          height: screenHeight * 0.25 +
-                              20), // Space for background card and 20-pixel gap
+                          height: screenHeight *
+                              0.17), // Space for background card and 20-pixel gap
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,8 +207,18 @@ class QiblahScreen extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        height: 20,
-                        color: Colors.red, // Red container
+                        width: double.infinity,
+                        height: 40, color: Color(0xFF08172D),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: const Text(
+                            'Theme',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ), // Re)d container
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,

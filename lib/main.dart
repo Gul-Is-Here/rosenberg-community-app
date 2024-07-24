@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/views/home_screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -12,8 +13,8 @@ import 'widgets/customized_bottom_bar.dart';
 
 void main() {
   runApp(const MyApp());
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-      overlays: [SystemUiOverlay.bottom]);
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+  //     overlays: [SystemUiOverlay.bottom]);
 }
 
 class MyApp extends StatelessWidget {
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
     final HomeController controller = Get.put(HomeController());
 
     final List<Widget> _pages = [
-      HomeScreenContent(),
+      HomeScreen(),
       QiblahScreen(),
       const QuranScreen(),
       const DonationScreen()
@@ -44,8 +45,8 @@ class MyApp extends StatelessWidget {
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 40),
           child: SizedBox(
-            height: 70,
-            width: 70,
+            height: 90,
+            width: 90,
             child: FloatingActionButton(
               isExtended: true,
               backgroundColor: Colors.transparent,
@@ -54,7 +55,7 @@ class MyApp extends StatelessWidget {
               onPressed: () {},
               child: Image.asset(
                 masjidIcon,
-                height: 100,
+                height: 120,
               ),
             ),
           ),
