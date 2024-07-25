@@ -2,7 +2,6 @@ import 'package:community_islamic_app/controllers/donation_controller.dart';
 import 'package:community_islamic_app/widgets/customized_card_widget2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../app_classes/app_class.dart';
