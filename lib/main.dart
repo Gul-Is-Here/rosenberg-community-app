@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       const HomeScreen(),
       QiblahScreen(),
       const QuranScreen(),
-      const DonationScreen()
+      DonationScreen()
     ];
 
     return GetMaterialApp(

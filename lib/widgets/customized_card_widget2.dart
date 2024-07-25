@@ -21,12 +21,13 @@ class CusTomizedCardWidget2 extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: screenWidth * 0.01,
+          vertical: screenWidth * 0.0,
         ), // Adjust padding based on screen width
         child: Card(
           elevation: 10,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+              side: const BorderSide(width: 2, color: Color(0xFF006367))),
           child: Padding(
             padding: EdgeInsets.all(
                 screenWidth * 0.02), // Adjust padding based on screen width
@@ -36,18 +37,21 @@ class CusTomizedCardWidget2 extends StatelessWidget {
               children: [
                 // Adjust height based on screen height
                 Image.asset(
-                  imageIcon,
+                  imageIcon, fit: BoxFit.cover,
                   width:
                       screenWidth * 0.18, // Adjust width based on screen width
                   height: screenHeight *
                       0.1, // Adjust height based on screen height
                 ),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: screenWidth *
-                        0.025, // Adjust font size based on screen width
-                    fontWeight: FontWeight.w500,
+                RichText(
+                  text: TextSpan(
+                    text: title,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: screenWidth *
+                          0.025, // Adjust font size based on screen width
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
