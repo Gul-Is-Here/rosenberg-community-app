@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class CusTomizedCardWidget2 extends StatelessWidget {
   final String title;
@@ -27,7 +28,7 @@ class CusTomizedCardWidget2 extends StatelessWidget {
           elevation: 10,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
-              side: const BorderSide(width: 2, color: Color(0xFF006367))),
+              side: const BorderSide(width: 5, color: Color(0xFF006367))),
           child: Padding(
             padding: EdgeInsets.all(
                 screenWidth * 0.02), // Adjust padding based on screen width
@@ -36,21 +37,25 @@ class CusTomizedCardWidget2 extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Adjust height based on screen height
-                Image.asset(
+                Image.network(
                   imageIcon, fit: BoxFit.cover,
                   width:
-                      screenWidth * 0.18, // Adjust width based on screen width
+                      screenWidth * 0.15, // Adjust width based on screen width
                   height: screenHeight *
-                      0.1, // Adjust height based on screen height
+                      0.08, // Adjust height based on screen height
                 ),
-                RichText(
-                  text: TextSpan(
-                    text: title,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: screenWidth *
-                          0.025, // Adjust font size based on screen width
-                      fontWeight: FontWeight.w500,
+                5.heightBox,
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: RichText(
+                    text: TextSpan(
+                      text: title,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: screenWidth *
+                            0.025, // Adjust font size based on screen width
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),

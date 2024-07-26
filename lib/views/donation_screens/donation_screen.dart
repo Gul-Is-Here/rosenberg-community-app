@@ -111,7 +111,7 @@ class DonationScreen extends StatelessWidget {
                             children: donate.hasdonation.map((hasDonation) {
                               return CusTomizedCardWidget2(
                                 title: hasDonation.donationName,
-                                imageIcon: donationIcon3,
+                                imageIcon: hasDonation.donationImage.toString(),
                                 onTap: () async {
                                   try {
                                     await AppClass()

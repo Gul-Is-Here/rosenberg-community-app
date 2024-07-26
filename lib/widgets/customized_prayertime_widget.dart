@@ -5,15 +5,20 @@ class CustomizedPrayerTimeWidget extends StatelessWidget {
   final String time;
   final String image;
   final String text;
+  final Color color;
   const CustomizedPrayerTimeWidget(
-      {super.key, required this.text, required this.time, required this.image});
+      {super.key,
+      required this.text,
+      required this.time,
+      required this.image,
+      required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: Colors.white, width: 2)),
+          border: Border.all(color: color, width: 2)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         child: Column(

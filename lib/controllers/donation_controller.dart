@@ -26,5 +26,4 @@ class DonationController extends GetxController {
       throw Exception('Failed to load donation data');
     }
   }
-
 }
