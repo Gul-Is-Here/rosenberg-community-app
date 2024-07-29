@@ -1,18 +1,21 @@
 import 'package:community_islamic_app/views/home_screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:timezone/data/latest.dart' as tz;
 import 'constants/image_constants.dart';
 import 'controllers/home_controller.dart';
+import 'controllers/notification_service.dart';
 import 'views/donation_screens/donation_screen.dart';
 import 'views/qibla_screen.dart';
 import 'views/quran_screen.dart/quran_screen.dart';
 import 'widgets/customized_bottom_bar.dart';
 
 void main() {
-  runApp(const MyApp());
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-  //     overlays: [SystemUiOverlay.bottom]);
+  WidgetsFlutterBinding.ensureInitialized();
+  final notificationServices = NotificationServices();
+  notificationServices.initializeNotifications();
+  tz.initializeTimeZones();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

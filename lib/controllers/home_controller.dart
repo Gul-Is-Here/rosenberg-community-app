@@ -1,42 +1,47 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
-import 'package:http/http.dart' as http;
-// import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:community_islamic_app/model/prayer_model.dart';
 import 'package:intl/intl.dart';
-
+import 'package:velocity_x/velocity_x.dart';
+import 'package:http/http.dart' as http;
+import '../model/prayer_model.dart';
 import '../model/jumma_model.dart';
+import '../controllers/notification_service.dart';
 
 class HomeController extends GetxController {
   var selectedIndex = 0.obs;
-  var prayerTimes = Prayer().obs; // Observable for prayer time
+  var prayerTimes = Prayer().obs;
   var timePrayer = ''.obs;
-
   var jummaTimes = Jumma().obs;
   var isLoading = true.obs;
   late NotchBottomBarController notchBottomBarController;
-  // final jummaTime = homeController.jummaTimes.value.data?.jumah;
-  // final jummaTimeAdjustMent = homeController.jummaTimes.value.data?.adjustment;
-  // ignore: prefer_typing_uninitialized_variables
-  var adjutment;
+  var adjustment;
+
+  final NotificationServices _notificationServices = NotificationServices();
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
   @override
   void onInit() {
     super.onInit();
     notchBottomBarController =
         NotchBottomBarController(index: selectedIndex.value);
     fetchJummaTimes();
-    fetchPrayerTimes(); // Replace with actual city and country
-    prayerTimes.value;
+    fetchPrayerTimes();
+    schedulePrayerNotifications();
+    scheduleAzanPlayback();
   }
 
   Future<void> fetchPrayerTimes() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://api.aladhan.com/v1/timingsByCity?city=Sugar+Land&country=USA&adjustment=$adjutment'));
+          'https://api.aladhan.com/v1/timingsByCity?city=Sugar+Land&country=USA&adjustment=$adjustment'));
 
       if (response.statusCode == 200) {
         prayerTimes.value = Prayer.fromJson(json.decode(response.body));
+        schedulePrayerNotifications();
       } else {
         throw Exception('Failed to load prayer times');
       }
@@ -55,7 +60,6 @@ class HomeController extends GetxController {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         jummaTimes.value = Jumma.fromJson(data);
-        // Manually set the Jumma timings
       } else {
         Get.snackbar('Error', 'Failed to load prayer times');
       }
@@ -66,16 +70,63 @@ class HomeController extends GetxController {
     }
   }
 
-  // BOTTOM NAVIGATION BAR INDEX CONTROLLER METHOD
+  void schedulePrayerNotifications() {
+    final timings = prayerTimes.value.data?.timings;
+    if (timings != null) {
+      _notificationServices.scheduleNotification(
+          'Fajr', 'It\'s time for Fajr prayer', parseTime(timings.fajr));
+      _notificationServices.scheduleNotification(
+          'Dhuhr', 'It\'s time for Dhuhr prayer', parseTime(timings.dhuhr));
+      _notificationServices.scheduleNotification(
+          'Asr', 'It\'s time for Asr prayer', parseTime(timings.asr));
+      _notificationServices.scheduleNotification(
+          'Maghrib', 'It\'s time for Maghrib prayer', parseTime(timings.maghrib));
+      _notificationServices.scheduleNotification(
+          'Isha', 'It\'s time for Isha prayer', parseTime(timings.isha));
+    }
+  }
+
+  void scheduleAzanPlayback() {
+    final timings = prayerTimes.value.data?.timings;
+    if (timings != null) {
+      scheduleAzan('Fajr', parseTime(timings.fajr));
+      scheduleAzan('Dhuhr', parseTime(timings.dhuhr));
+      scheduleAzan('Asr', parseTime(timings.asr));
+      scheduleAzan('Maghrib', parseTime(timings.maghrib));
+      scheduleAzan('Isha', parseTime(timings.isha));
+    }
+  }
+
+  void scheduleAzan(String prayer, DateTime prayerTime) {
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      final now = DateTime.now();
+      if (now.hour == prayerTime.hour && now.minute == prayerTime.minute) {
+        playAzan();
+        timer.cancel(); // Stop checking after playing Azan
+      }
+    });
+  }
+
+  void playAzan() async {
+    await _audioPlayer.play(AssetSource('assets/audio/azan.mp3'));
+  }
+
+  void stopAzan() async {
+    await _audioPlayer.stop();
+  }
+
   void changePage(int index) {
     selectedIndex.value = index;
     notchBottomBarController.jumpTo(index);
   }
 
-// Time Formater METHOD
   String formatTime(String time) {
     final dateFormat = DateFormat("HH:mm");
     final timeFormat = DateFormat("h:mm a");
     return timeFormat.format(dateFormat.parse(time));
+  }
+
+  DateTime parseTime(String time) {
+    return DateFormat("HH:mm").parse(time).toLocal();
   }
 }

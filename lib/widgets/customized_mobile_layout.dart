@@ -7,6 +7,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../constants/image_constants.dart';
 import '../controllers/home_controller.dart';
+import '../controllers/notification_service.dart';
 import '../model/prayer_times_static_model.dart';
 import '../views/qibla_screen.dart';
 import 'customized_card_widget.dart';
@@ -19,6 +20,7 @@ class CustomizedMobileLayout extends StatelessWidget {
   CustomizedMobileLayout({super.key, required this.screenHeight});
 
   final HomeController homeController = Get.put(HomeController());
+  final NotificationServices notificationServices = NotificationServices();
 
   String? currentPrayerTime;
 
@@ -38,9 +40,10 @@ class CustomizedMobileLayout extends StatelessWidget {
       final currentDate = homeController.prayerTimes.value.data?.date;
       print('Current Date : $currentDate');
       final jummaTime = homeController.jummaTimes.value.data?.jumah;
-      homeController.adjutment =
+      homeController.adjustment =
           homeController.jummaTimes.value.data?.adjustment;
-      homeController.adjutment = homeController.adjutment!.apiAdjustAdjustment;
+      homeController.adjustment =
+          homeController.adjustment!.apiAdjustAdjustment;
 
       var currentPrayer = getCurrentPrayer();
       var currentIqamaTime = getCurrentIqamaTime();
@@ -48,7 +51,7 @@ class CustomizedMobileLayout extends StatelessWidget {
       currentIqamaTime = getCurrentIqamaTime();
       // Update the widget every minute to ensure time is current
       print('Current Prayer Time : $currentPrayer');
-      print('Adjusment : ${homeController.adjutment}');
+      print('Adjusment : ${homeController.adjustment}');
       print('Current Iqama Time : $currentIqamaTime');
 
       return Stack(

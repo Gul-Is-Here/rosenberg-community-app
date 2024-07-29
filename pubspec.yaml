@@ -19,6 +19,11 @@ dependencies:
   http: ^1.2.2
   animated_notch_bottom_bar: ^1.0.3
   url_launcher: ^6.3.0
+  awesome_notifications: ^0.9.3+1
+  assets_audio_player: ^3.1.1
+  flutter_local_notifications: ^17.2.1+2
+  timezone: ^0.9.4
+  audioplayers: ^6.0.0
 
 dev_dependencies:
   flutter_test:
@@ -27,9 +32,12 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/
+    - assets/audio/
     - assets/home_icon/
     - assets/social_icon/
     - assets/splash_icon/
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

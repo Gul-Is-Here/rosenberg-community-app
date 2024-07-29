@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:community_islamic_app/widgets/customized_mobile_layout.dart';
 
+import '../../controllers/notification_service.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -9,8 +11,13 @@ class HomeScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: CustomizedMobileLayout(
-        screenHeight: screenHeight,),
+      body: Column(
+        children: [
+          CustomizedMobileLayout(
+            screenHeight: screenHeight,
+          ),
+        ],
+      ),
     );
   }
 }
