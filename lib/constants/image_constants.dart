@@ -1,3 +1,5 @@
+import '../model/prayer_times_static_model.dart';
+
 const homeBg = "assets/home_icon/backgroundhomeimg.png";
 const aboutUsIcon = "assets/home_icon/aboutusicon.png";
 const askImamIcon = "assets/home_icon/askimamicon.png";

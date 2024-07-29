@@ -11,6 +11,7 @@ import '../model/jumma_model.dart';
 class HomeController extends GetxController {
   var selectedIndex = 0.obs;
   var prayerTimes = Prayer().obs; // Observable for prayer time
+  var timePrayer = ''.obs;
 
   var jummaTimes = Jumma().obs;
   var isLoading = true.obs;
@@ -26,12 +27,13 @@ class HomeController extends GetxController {
         NotchBottomBarController(index: selectedIndex.value);
     fetchJummaTimes();
     fetchPrayerTimes(); // Replace with actual city and country
+    prayerTimes.value;
   }
 
   Future<void> fetchPrayerTimes() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://api.aladhan.com/v1/timingsByCity?city=Sugar+Land&country=USA&$adjutment='));
+          'https://api.aladhan.com/v1/timingsByCity?city=Sugar+Land&country=USA&adjustment=$adjutment'));
 
       if (response.statusCode == 200) {
         prayerTimes.value = Prayer.fromJson(json.decode(response.body));
