@@ -15,7 +15,7 @@ void main() {
   final notificationServices = NotificationServices();
   notificationServices.initializeNotifications();
   tz.initializeTimeZones();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       const HomeScreen(),
       QiblahScreen(),
       const QuranScreen(),
-      DonationScreen()
+      const DonationScreen()
     ];
 
     return GetMaterialApp(

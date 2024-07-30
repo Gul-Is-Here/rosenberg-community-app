@@ -27,7 +27,7 @@ class CustomizedPrayerTextWidget extends StatelessWidget {
           title,
           style: TextStyle(
             color: color,
-            fontSize: screenHeight * 0.015, // Adjust font size
+            fontSize: screenHeight * 0.014, // Adjust font size
             fontWeight: FontWeight.bold,
           ),
         ),

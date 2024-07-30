@@ -1,10 +1,12 @@
-import 'package:community_islamic_app/views/home_screens/azanoverlay_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:audioplayers/audioplayers.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import '../views/home_screens/azanoverlay_screen.dart';
 
 class NotificationServices {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
@@ -12,7 +14,7 @@ class NotificationServices {
   final AndroidInitializationSettings _androidInitializationSettings =
       const AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  final _audioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer();
 
   void initializeNotifications() async {
     await _flutterLocalNotificationsPlugin
@@ -30,13 +32,22 @@ class NotificationServices {
         }
       },
     );
+
+    // Request notification permissions from the user
+    await requestNotificationPermissions();
   }
 
-  @pragma('vm:entry-point')
-  void notifiacationTapBackground(NotificationResponse notificationResponse) {
-    debugPrint('Notification action tapped:');
-    if (notificationResponse.payload == 'azan') {
-      showAzanOverlay();
+  Future<void> requestNotificationPermissions() async {
+    PermissionStatus status = await Permission.notification.status;
+    if (status.isDenied || status.isPermanentlyDenied) {
+      PermissionStatus result = await Permission.notification.request();
+      if (result.isGranted) {
+        print("Notification permission granted");
+      } else {
+        print("Notification permission denied");
+      }
+    } else {
+      print("Notification permission already granted");
     }
   }
 
@@ -56,7 +67,6 @@ class NotificationServices {
   void scheduleNotification(
       String title, String body, DateTime scheduledTime) async {
     if (scheduledTime.isBefore(DateTime.now())) {
-      // If the scheduled time is in the past, you can log an error or adjust the time
       print("Scheduled time must be in the future.");
       return;
     }
@@ -81,20 +91,28 @@ class NotificationServices {
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
-        payload: 'azan'); // Add payload to identify the notification
+        payload: 'azan');
   }
 
   void playAzan() async {
-    // await _audioPlayer.lo
-    await _audioPlayer.setSource(AssetSource('assets/audio/azan1.mp3'));
-    await _audioPlayer.resume();
+    await audioPlayer.setSource(AssetSource('azan1.wav'));
+    audioPlayer.resume();
   }
 
-  void stopAzan() async {
-    await _audioPlayer.stop();
+  Future<void> stopAzan() async {
+    try {
+      print('Stopping Azan...');
+      await audioPlayer.stop();
+      await audioPlayer.release();
+      await audioPlayer.dispose();
+      audioPlayer = AudioPlayer(); // Reinitialize the player after stopping
+      print('Azan stopped successfully.');
+    } catch (e) {
+      print('Failed to stop Azan: $e');
+    }
   }
 
   void showAzanOverlay() {
-    Get.to(() => AzanOverlay());
+    Get.to(() => AzanoverlayScreen());
   }
 }

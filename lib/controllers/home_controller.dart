@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
 import '../model/prayer_model.dart';
 import '../model/jumma_model.dart';
@@ -18,10 +15,11 @@ class HomeController extends GetxController {
   var jummaTimes = Jumma().obs;
   var isLoading = true.obs;
   late NotchBottomBarController notchBottomBarController;
+
   var adjustment;
 
   final NotificationServices _notificationServices = NotificationServices();
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  Timer? _timer;
 
   @override
   void onInit() {
@@ -30,8 +28,14 @@ class HomeController extends GetxController {
         NotchBottomBarController(index: selectedIndex.value);
     fetchJummaTimes();
     fetchPrayerTimes();
-    schedulePrayerNotifications();
     scheduleAzanPlayback();
+    // _notificationServices.initializeNotifications();
+  }
+
+  @override
+  void onClose() {
+    _timer?.cancel();
+    super.onClose();
   }
 
   Future<void> fetchPrayerTimes() async {
@@ -42,6 +46,7 @@ class HomeController extends GetxController {
       if (response.statusCode == 200) {
         prayerTimes.value = Prayer.fromJson(json.decode(response.body));
         schedulePrayerNotifications();
+        scheduleAzanPlayback();
       } else {
         throw Exception('Failed to load prayer times');
       }
@@ -79,40 +84,38 @@ class HomeController extends GetxController {
           'Dhuhr', 'It\'s time for Dhuhr prayer', parseTime(timings.dhuhr));
       _notificationServices.scheduleNotification(
           'Asr', 'It\'s time for Asr prayer', parseTime(timings.asr));
-      _notificationServices.scheduleNotification(
-          'Maghrib', 'It\'s time for Maghrib prayer', parseTime(timings.maghrib));
+      _notificationServices.scheduleNotification('Maghrib',
+          'It\'s time for Maghrib prayer', parseTime(timings.maghrib));
       _notificationServices.scheduleNotification(
           'Isha', 'It\'s time for Isha prayer', parseTime(timings.isha));
     }
   }
 
   void scheduleAzanPlayback() {
-    final timings = prayerTimes.value.data?.timings;
-    if (timings != null) {
-      scheduleAzan('Fajr', parseTime(timings.fajr));
-      scheduleAzan('Dhuhr', parseTime(timings.dhuhr));
-      scheduleAzan('Asr', parseTime(timings.asr));
-      scheduleAzan('Maghrib', parseTime(timings.maghrib));
-      scheduleAzan('Isha', parseTime(timings.isha));
-    }
-  }
-
-  void scheduleAzan(String prayer, DateTime prayerTime) {
-    Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final now = DateTime.now();
-      if (now.hour == prayerTime.hour && now.minute == prayerTime.minute) {
-        playAzan();
-        timer.cancel(); // Stop checking after playing Azan
+      final timings = prayerTimes.value.data?.timings;
+      if (timings != null) {
+        if (isTimeForPrayer(now, parseTime(timings.fajr))) {
+          _notificationServices.playAzan();
+        } else if (isTimeForPrayer(now, parseTime(timings.dhuhr))) {
+          _notificationServices.playAzan();
+        } else if (isTimeForPrayer(now, parseTime(timings.asr))) {
+          _notificationServices.playAzan();
+        } else if (isTimeForPrayer(now, parseTime(timings.maghrib))) {
+          _notificationServices.playAzan();
+        } else if (isTimeForPrayer(now, parseTime(timings.isha))) {
+          _notificationServices.playAzan();
+        }
       }
     });
   }
 
-  void playAzan() async {
-    await _audioPlayer.play(AssetSource('assets/audio/azan.mp3'));
-  }
-
-  void stopAzan() async {
-    await _audioPlayer.stop();
+  bool isTimeForPrayer(DateTime now, DateTime prayerTime) {
+    return now.hour == prayerTime.hour &&
+        now.minute == prayerTime.minute &&
+        now.second == 0;
   }
 
   void changePage(int index) {
