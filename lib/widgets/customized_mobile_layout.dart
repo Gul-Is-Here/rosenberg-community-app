@@ -6,7 +6,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../constants/image_constants.dart';
 import '../controllers/home_controller.dart';
-import '../controllers/notification_service.dart';
+import '../services/notification_service.dart';
 import '../model/prayer_times_static_model.dart';
 import '../views/qibla_screen.dart';
 import 'customized_card_widget.dart';
@@ -45,7 +45,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(25),
                           topRight: Radius.circular(25))),
-                  elevation: 20,
+                  elevation: 10,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -376,20 +376,23 @@ class CustomizedMobileLayout extends StatelessWidget {
 
   // Function to find the current Iqama timings based on the current prayer time
   String getCurrentIqamaTime() {
-    // Get the current date as a DateTime object
     DateTime now = DateTime.now();
     String currentDateStr = DateFormat('d/M').format(now);
 
-    // Iterate through the iqamahTiming list to find the matching date range
+    DateTime currentDate = parseDate(currentDateStr);
+
+    print('Current date: ${currentDate.toLocal()}'); // Debugging line
+
     for (var timing in iqamahTiming) {
       DateTime startDate = parseDate(timing.startDate);
       DateTime endDate = parseDate(timing.endDate);
-      DateTime currentDate = parseDate(currentDateStr);
 
-      // Check if current date falls within the date range
-      if (currentDate.isAfter(startDate) &&
-          currentDate.isBefore(endDate.add(const Duration(days: 1)))) {
-        // Return the Iqama timing based on the prayer
+      print(
+          'Checking date range: ${startDate.toLocal()} to ${endDate.toLocal()}'); // Debugging line
+
+      // Ensure the date range includes the current date
+      if (currentDate.isAfter(startDate.subtract(Duration(days: 1))) &&
+          currentDate.isBefore(endDate.add(Duration(days: 1)))) {
         switch (currentPrayerTime) {
           case 'Fajr':
             return timing.fjar;
@@ -398,7 +401,6 @@ class CustomizedMobileLayout extends StatelessWidget {
           case 'Asr':
             return timing.asr;
           case 'Maghrib':
-            // Return current time plus 5 minutes for Maghrib
             final maghribTime = now.add(const Duration(minutes: 5));
             return DateFormat("h:mm a").format(maghribTime);
           case 'Isha':
@@ -409,7 +411,6 @@ class CustomizedMobileLayout extends StatelessWidget {
       }
     }
 
-    // Return a default value if no matching date range is found
     return "Iqama time not found";
   }
 

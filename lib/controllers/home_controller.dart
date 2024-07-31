@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:community_islamic_app/views/home_screens/azanoverlay_screen.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:workmanager/workmanager.dart';
 import '../model/prayer_model.dart';
 import '../model/jumma_model.dart';
-import '../controllers/notification_service.dart';
+import '../services/background_task.dart';
+import '../services/notification_service.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 class HomeController extends GetxController {
   var selectedIndex = 0.obs;
@@ -29,7 +33,12 @@ class HomeController extends GetxController {
     fetchJummaTimes();
     fetchPrayerTimes();
     scheduleAzanPlayback();
-    // _notificationServices.initializeNotifications();
+    tz.initializeTimeZones();
+    Workmanager().initialize(
+      callbackDispatcher,
+      isInDebugMode: true,
+      // Set to false for release mode
+    );
   }
 
   @override
@@ -47,6 +56,7 @@ class HomeController extends GetxController {
         prayerTimes.value = Prayer.fromJson(json.decode(response.body));
         schedulePrayerNotifications();
         scheduleAzanPlayback();
+        // _notificationServices.sendNotification(title, body)
       } else {
         throw Exception('Failed to load prayer times');
       }
@@ -79,34 +89,72 @@ class HomeController extends GetxController {
     final timings = prayerTimes.value.data?.timings;
     if (timings != null) {
       _notificationServices.scheduleNotification(
-          'Fajr', 'It\'s time for Fajr prayer', parseTime(timings.fajr));
+          'Fajr',
+          'It\'s time for Fajr prayer ${parseTime(timings.fajr)}',
+          parseTime(timings.fajr));
       _notificationServices.scheduleNotification(
-          'Dhuhr', 'It\'s time for Dhuhr prayer', parseTime(timings.dhuhr));
+          'Dhuhr',
+          'It\'s time for Dhuhr prayer ${parseTime(timings.dhuhr)}',
+          parseTime(timings.dhuhr));
       _notificationServices.scheduleNotification(
-          'Asr', 'It\'s time for Asr prayer', parseTime(timings.asr));
-      _notificationServices.scheduleNotification('Maghrib',
-          'It\'s time for Maghrib prayer', parseTime(timings.maghrib));
+          'Asr',
+          'It\'s time for Asr prayer ${parseTime(timings.asr)}',
+          parseTime(timings.asr));
       _notificationServices.scheduleNotification(
-          'Isha', 'It\'s time for Isha prayer', parseTime(timings.isha));
+          'Maghrib',
+          'It\'s time for Maghrib prayer ${parseTime(timings.maghrib)}',
+          parseTime(timings.maghrib));
+      _notificationServices.scheduleNotification(
+          'Isha',
+          'It\'s time for Isha prayer ${parseTime(timings.isha)}',
+          parseTime(timings.isha));
     }
   }
+  //  void sendPrayerNotifications() {
+  //   final timings = prayerTimes.value.data?.timings;
+  //   if (timings != null) {
+  //     _notificationServices.sendNotification(
+  //         'Fajr', 'It\'s time for Fajr prayer',);
+  //     _notificationServices.scheduleNotification(
+  //         'Dhuhr', 'It\'s time for Dhuhr prayer', parseTime(timings.dhuhr));
+  //     _notificationServices.scheduleNotification(
+  //         'Asr', 'It\'s time for Asr prayer', parseTime(timings.asr));
+  //     _notificationServices.scheduleNotification('Maghrib',
+  //         'It\'s time for Maghrib prayer', parseTime(timings.maghrib));
+  //     _notificationServices.scheduleNotification(
+  //         'Isha', 'It\'s time for Isha prayer', parseTime(timings.isha));
+  //   }
+  // }
 
   void scheduleAzanPlayback() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      final now = DateTime.now();
+      var now = DateTime.now();
       final timings = prayerTimes.value.data?.timings;
+// Check for testing condition: play Azan every minute
+      if (now.second == 0) {
+        _notificationServices.playAzan();
+        _notificationServices
+            .scheduleBackgroundTask(DateTime.now().add(Duration(seconds: 10)));
+      }
       if (timings != null) {
         if (isTimeForPrayer(now, parseTime(timings.fajr))) {
           _notificationServices.playAzan();
+          _notificationServices.scheduleBackgroundTask(parseTime(timings.fajr));
         } else if (isTimeForPrayer(now, parseTime(timings.dhuhr))) {
           _notificationServices.playAzan();
+          _notificationServices
+              .scheduleBackgroundTask(parseTime(timings.dhuhr));
         } else if (isTimeForPrayer(now, parseTime(timings.asr))) {
           _notificationServices.playAzan();
+          _notificationServices.scheduleBackgroundTask(parseTime(timings.asr));
         } else if (isTimeForPrayer(now, parseTime(timings.maghrib))) {
           _notificationServices.playAzan();
+          _notificationServices
+              .scheduleBackgroundTask(parseTime(timings.maghrib));
         } else if (isTimeForPrayer(now, parseTime(timings.isha))) {
           _notificationServices.playAzan();
+          _notificationServices.scheduleBackgroundTask(parseTime(timings.isha));
         }
       }
     });
@@ -131,5 +179,9 @@ class HomeController extends GetxController {
 
   DateTime parseTime(String time) {
     return DateFormat("HH:mm").parse(time).toLocal();
+  }
+
+  void stopAzan() {
+    _notificationServices.stopAzan();
   }
 }

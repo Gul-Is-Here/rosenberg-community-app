@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:community_islamic_app/widgets/customized_mobile_layout.dart';
 
-import '../../controllers/notification_service.dart';
+import '../../services/notification_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

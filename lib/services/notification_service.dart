@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:audioplayers/audioplayers.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:workmanager/workmanager.dart';
 
 import '../views/home_screens/azanoverlay_screen.dart';
 
@@ -14,13 +15,28 @@ class NotificationServices {
   final AndroidInitializationSettings _androidInitializationSettings =
       const AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  AudioPlayer audioPlayer = AudioPlayer();
+  late AudioPlayer audioPlayer;
+  PlayerState? _playerState;
+  StreamSubscription<PlayerState>? _playerStateChangeSubscription;
+
+  NotificationServices() {
+    // Initialize the audio player
+    audioPlayer = AudioPlayer();
+    audioPlayer.setReleaseMode(ReleaseMode.stop);
+
+    // Listen to player state changes
+    _playerStateChangeSubscription =
+        audioPlayer.onPlayerStateChanged.listen((state) {
+      _playerState = state;
+      print('PlayerState: $state');
+    });
+  }
 
   void initializeNotifications() async {
     await _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()!
-        .requestNotificationsPermission();
+        .requestFullScreenIntentPermission();
     InitializationSettings initializationSettings =
         InitializationSettings(android: _androidInitializationSettings);
     await _flutterLocalNotificationsPlugin.initialize(
@@ -53,7 +69,7 @@ class NotificationServices {
 
   void sendNotification(String title, String body) async {
     AndroidNotificationDetails androidNotificationDetails =
-        const AndroidNotificationDetails('adhan_channel', '0',
+        const AndroidNotificationDetails('adhan_channel', 'Adhan Channel',
             importance: Importance.max,
             priority: Priority.high,
             playSound: true,
@@ -72,7 +88,7 @@ class NotificationServices {
     }
 
     AndroidNotificationDetails androidNotificationDetails =
-        const AndroidNotificationDetails('adhan_channel', '0',
+        const AndroidNotificationDetails('adhan_channel', 'Adhan Channel',
             importance: Importance.max,
             priority: Priority.high,
             playSound: true,
@@ -88,6 +104,7 @@ class NotificationServices {
 
     await _flutterLocalNotificationsPlugin.zonedSchedule(
         0, title, body, scheduledDate, notificationDetails,
+        androidScheduleMode: AndroidScheduleMode.alarmClock,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
@@ -95,17 +112,17 @@ class NotificationServices {
   }
 
   void playAzan() async {
-    await audioPlayer.setSource(AssetSource('azan1.wav'));
-    audioPlayer.resume();
+    print('Playing Azan...');
+    sendNotification('Azan', 'It\'s time for prayer');
+    await audioPlayer.play(AssetSource('azan1.wav'));
+    showAzanOverlay();
   }
 
   Future<void> stopAzan() async {
     try {
       print('Stopping Azan...');
       await audioPlayer.stop();
-      await audioPlayer.release();
-      await audioPlayer.dispose();
-      audioPlayer = AudioPlayer(); // Reinitialize the player after stopping
+      print('PlayerState: ${audioPlayer.state}');
       print('Azan stopped successfully.');
     } catch (e) {
       print('Failed to stop Azan: $e');
@@ -113,6 +130,33 @@ class NotificationServices {
   }
 
   void showAzanOverlay() {
-    Get.to(() => AzanoverlayScreen());
+    Get.to(() => AzanoverlayScreen(
+          audioPlayer: audioPlayer,
+        ));
+  }
+
+  void scheduleBackgroundTask(DateTime scheduledTime) {
+    print('Scheduling background task...');
+    final durationUntilTask = scheduledTime.difference(DateTime.now());
+    if (durationUntilTask.isNegative) return;
+
+    Workmanager().registerOneOffTask(
+      'id_unique_${scheduledTime.millisecondsSinceEpoch}',
+      'backgroundTask',
+      initialDelay: durationUntilTask,
+      inputData: <String, dynamic>{'task': 'playAzan'},
+      constraints: Constraints(
+        networkType: NetworkType.connected,
+        requiresBatteryNotLow: true,
+        requiresCharging: false,
+        requiresStorageNotLow: true,
+      ),
+    );
+    print('Background task scheduled for: $scheduledTime');
+  }
+
+  void dispose() {
+    _playerStateChangeSubscription?.cancel();
+    audioPlayer.dispose();
   }
 }

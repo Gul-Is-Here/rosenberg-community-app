@@ -2,9 +2,11 @@ import 'package:community_islamic_app/views/home_screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:workmanager/workmanager.dart';
 import 'constants/image_constants.dart';
 import 'controllers/home_controller.dart';
-import 'controllers/notification_service.dart';
+import 'services/background_task.dart';
+import 'services/notification_service.dart';
 import 'views/donation_screens/donation_screen.dart';
 import 'views/qibla_screen.dart';
 import 'views/quran_screen.dart/quran_screen.dart';
@@ -15,6 +17,7 @@ void main() {
   final notificationServices = NotificationServices();
   notificationServices.initializeNotifications();
   tz.initializeTimeZones();
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
   runApp(const MyApp());
 }
 
