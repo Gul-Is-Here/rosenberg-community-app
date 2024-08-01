@@ -21,22 +21,34 @@ class _QuranScreenState extends State<QuranScreen> {
   bool _isPlaying = false;
 
   @override
+  void initState() {
+    super.initState();
+    _audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+      if (state == PlayerState.stopped || state == PlayerState.completed) {
+        setState(() {
+          _isPlaying = false;
+        });
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _audioPlayer.dispose();
     super.dispose();
   }
 
-  void _playOrStopAudio(AudioFile audio) async {
+  void _playOrPauseAudio(AudioFile audio) async {
     if (_currentAudio != null) {
       if (_currentAudio!.id == audio.id) {
         // Toggle playback
         if (_isPlaying) {
-          await _audioPlayer.stop();
+          await _audioPlayer.pause();
           setState(() {
             _isPlaying = false;
           });
         } else {
-          await _audioPlayer.play(UrlSource(audio.audioUrl));
+          await _audioPlayer.resume();
           setState(() {
             _isPlaying = true;
           });
@@ -170,11 +182,14 @@ class _QuranScreenState extends State<QuranScreen> {
                           child: CustomizedSurahWidget(
                             onTap1: () {},
                             onTap2: () {
-                              _playOrStopAudio(audio);
+                              _playOrPauseAudio(audio);
                             },
                             surahOnTap: () {},
                             firstIcon: Icons.book,
-                            secondIcon: Icons.play_arrow,
+                            secondIcon:
+                                _isPlaying && _currentAudio?.id == audio.id
+                                    ? Icons.pause
+                                    : Icons.play_arrow,
                             surahTxet: chapter.nameArabic,
                             thirdIcon: kabbaIcon,
                             surahNumber: chapter.id,
