@@ -144,7 +144,7 @@ class NotificationServices {
       'id_unique_${scheduledTime.millisecondsSinceEpoch}',
       'backgroundTask',
       initialDelay: durationUntilTask,
-      inputData: <String, dynamic>{'task': 'playAzan'},
+      inputData: <String, dynamic>{'task': playAzan},
       constraints: Constraints(
         networkType: NetworkType.connected,
         requiresBatteryNotLow: true,

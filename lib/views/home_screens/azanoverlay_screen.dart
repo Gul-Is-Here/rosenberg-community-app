@@ -1,10 +1,5 @@
-import 'dart:async';
-
-import 'package:audioplayers/audioplayers.dart';
-import 'package:community_islamic_app/services/notification_service.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../../controllers/home_controller.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class AzanoverlayScreen extends StatelessWidget {
   final AudioPlayer audioPlayer;
@@ -14,154 +9,18 @@ class AzanoverlayScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Azan Playing'),
+      appBar: AppBar(
+        title: Text('Azan is playing'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            audioPlayer.stop();
+            Navigator.of(context).pop();
+          },
+          child: Text('Stop Azan'),
         ),
-        body: PlayerWidget(
-          player: audioPlayer,
-        ));
-  }
-}
-
-class PlayerWidget extends StatefulWidget {
-  final AudioPlayer player;
-
-  const PlayerWidget({
-    required this.player,
-    super.key,
-  });
-
-  @override
-  State<StatefulWidget> createState() {
-    return _PlayerWidgetState();
-  }
-}
-
-class _PlayerWidgetState extends State<PlayerWidget> {
-  PlayerState? _playerState;
-  Duration? _duration;
-  Duration? _position;
-
-  StreamSubscription? _durationSubscription;
-  StreamSubscription? _positionSubscription;
-  StreamSubscription? _playerCompleteSubscription;
-  StreamSubscription? _playerStateChangeSubscription;
-
-  bool get _isPlaying => _playerState == PlayerState.playing;
-
-  bool get _isPaused => _playerState == PlayerState.paused;
-
-  String get _durationText => _duration?.toString().split('.').first ?? '';
-
-  String get _positionText => _position?.toString().split('.').first ?? '';
-
-  AudioPlayer get player => widget.player;
-
-  @override
-  void initState() {
-    super.initState();
-    // Use initial values from player
-    _playerState = player.state;
-    player.getDuration().then(
-          (value) => setState(() {
-            _duration = value;
-          }),
-        );
-    player.getCurrentPosition().then(
-          (value) => setState(() {
-            _position = value;
-          }),
-        );
-    _initStreams();
-  }
-
-  @override
-  void setState(VoidCallback fn) {
-    // Subscriptions only can be closed asynchronously,
-    // therefore events can occur after widget has been disposed.
-    if (mounted) {
-      super.setState(fn);
-    }
-  }
-
-  @override
-  void dispose() {
-    _durationSubscription?.cancel();
-    _positionSubscription?.cancel();
-    _playerCompleteSubscription?.cancel();
-    _playerStateChangeSubscription?.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final color = Theme.of(context).primaryColor;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              key: const Key('stop_button'),
-              onPressed: _isPlaying ? _stop : null,
-              iconSize: 48.0,
-              icon: const Icon(Icons.stop),
-              color: color,
-            ),
-          ],
-        ),
-        Text(
-          _position != null
-              ? '$_positionText / $_durationText'
-              : _duration != null
-                  ? _durationText
-                  : '',
-          style: const TextStyle(fontSize: 16.0),
-        ),
-      ],
+      ),
     );
-  }
-
-  void _initStreams() {
-    _durationSubscription = player.onDurationChanged.listen((duration) {
-      setState(() => _duration = duration);
-    });
-
-    _positionSubscription = player.onPositionChanged.listen(
-      (p) => setState(() => _position = p),
-    );
-
-    _playerCompleteSubscription = player.onPlayerComplete.listen((event) {
-      setState(() {
-        _playerState = PlayerState.stopped;
-        _position = Duration.zero;
-      });
-    });
-
-    _playerStateChangeSubscription =
-        player.onPlayerStateChanged.listen((state) {
-      setState(() {
-        _playerState = state;
-      });
-    });
-  }
-
-  Future<void> _play() async {
-    await player.resume();
-    setState(() => _playerState = PlayerState.playing);
-  }
-
-  Future<void> _pause() async {
-    await player.pause();
-    setState(() => _playerState = PlayerState.paused);
-  }
-
-  Future<void> _stop() async {
-    await player.stop();
-    setState(() {
-      _playerState = PlayerState.stopped;
-      _position = Duration.zero;
-    });
   }
 }

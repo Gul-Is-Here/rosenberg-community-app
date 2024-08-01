@@ -20,6 +20,7 @@ const quranIcon = "assets/home_icon/Quranicon.png";
 const donationIcon3 = "assets/home_icon/donationIcon3.png";
 const donationIcon4 = "assets/home_icon/donationIcon4.png";
 const donationIcon5 = "assets/home_icon/donationIcon5.png";
+const kabbaIcon = 'assets/home_icon/kabba.png';
 
 /// Qibla Bottom Icons / images  List
 // Sample list of images for demonstration

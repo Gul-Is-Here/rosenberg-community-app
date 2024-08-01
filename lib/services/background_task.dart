@@ -18,7 +18,7 @@ void callbackDispatcher() {
 
     // Setup audio player
     final AudioPlayer audioPlayer = AudioPlayer();
-    audioPlayer.setReleaseMode(ReleaseMode.loop);
+    audioPlayer.setReleaseMode(ReleaseMode.release);
 
     // Define your notification details
     AndroidNotificationDetails androidNotificationDetails =
