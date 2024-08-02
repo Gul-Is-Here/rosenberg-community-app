@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:community_islamic_app/controllers/quran_controller.dart';
+
 import 'package:community_islamic_app/widgets/customized_surah_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../constants/image_constants.dart';
 import '../../model/quran_audio_model.dart';
+import '../../widgets/audio_player_bar_widget.dart';
 
 class QuranScreen extends StatefulWidget {
   const QuranScreen({super.key});
@@ -70,6 +72,14 @@ class _QuranScreenState extends State<QuranScreen> {
     } else {
       print('Audio not available');
     }
+  }
+
+  void _stopAudio() async {
+    await _audioPlayer.stop();
+    setState(() {
+      _isPlaying = false;
+      _currentAudio = null;
+    });
   }
 
   @override
@@ -202,8 +212,118 @@ class _QuranScreenState extends State<QuranScreen> {
               }
             }),
           ),
+          AudioPlayerBar(
+            quranController: quranController,
+            // index: ,
+            audioPlayer: _audioPlayer,
+            currentAudio: _currentAudio,
+            isPlaying: _isPlaying,
+            onPlayPause: () {
+              if (_currentAudio != null) {
+                _playOrPauseAudio(_currentAudio!);
+              }
+            },
+            onStop: _stopAudio,
+          ),
+          100.heightBox
         ],
       ),
     );
   }
 }
+
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:community_islamic_app/controllers/audio_controller.dart';
+// import 'package:velocity_x/velocity_x.dart';
+
+// import '../../constants/image_constants.dart';
+// import '../../controllers/quran_controller.dart';
+// import '../../model/quran_audio_model.dart';
+// import '../../widgets/audio_player_bar_widget.dart';
+// import '../../widgets/customized_surah_widget.dart';
+// // Other imports...
+
+// class QuranScreen extends StatelessWidget {
+//   // Other properties...
+
+//   @override
+//   Widget build(BuildContext context) {
+//     var quranController = Get.put(QuranController());
+//     var audioController = Get.put(AudioController());
+//     // var screenHeight = MediaQuery.of(context).size.height;
+
+//     return Scaffold(
+//       appBar: AppBar(
+//         toolbarHeight: 0,
+//       ),
+//       body: Column(
+//         children: [
+//           // ...Other UI elements...
+//           Expanded(
+//             child: Obx(() {
+//               if (quranController.isLoading.value) {
+//                 return const Center(child: CircularProgressIndicator());
+//               } else if (quranController.chapters.isEmpty) {
+//                 return const Center(child: Text('No data available'));
+//               } else {
+//                 return ListView.builder(
+//                   itemCount: quranController.chapters.length,
+//                   itemBuilder: (context, index) {
+//                     final chapter = quranController.chapters[index];
+//                     final audio = quranController.audioFiles.firstWhere(
+//                         (audio) => audio.chapterId == chapter.id,
+//                         orElse: () => AudioFile(
+//                             id: 0,
+//                             chapterId: 0,
+//                             fileSize: 0,
+//                             format: Format.MP3,
+//                             audioUrl: ''));
+
+//                     return SizedBox(
+//                       height: 70,
+//                       child: Card(
+//                         child: Padding(
+//                           padding: const EdgeInsets.all(4.0),
+//                           child: CustomizedSurahWidget(
+//                             onTap1: () {},
+//                             onTap2: () {
+//                               audioController.playOrPauseAudio(audio);
+//                             },
+//                             surahOnTap: () {},
+//                             firstIcon: Icons.book,
+//                             secondIcon: audioController.isPlaying.value &&
+//                                     audioController.currentAudio.value?.id ==
+//                                         audio.id
+//                                 ? Icons.pause
+//                                 : Icons.play_arrow,
+//                             surahTxet: chapter.nameArabic,
+//                             thirdIcon: kabbaIcon,
+//                             surahNumber: chapter.id,
+//                           ),
+//                         ),
+//                       ),
+//                     );
+//                   },
+//                 );
+//               }
+//             }),
+//           ),
+//           Obx(() => AudioPlayerBar(
+//                 audioPlayer: audioController.audioPlayer,
+//                 currentAudio: audioController.currentAudio.value,
+//                 isPlaying: audioController.isPlaying.value,
+//                 onPlayPause: () {
+//                   if (audioController.currentAudio.value != null) {
+//                     audioController
+//                         .playOrPauseAudio(audioController.currentAudio.value!);
+//                   }
+//                 },
+//                 onStop: audioController.stopAudio,
+//               )),
+//           100.heightBox,
+//         ],
+//       ),
+//     );
+//   }
+// }

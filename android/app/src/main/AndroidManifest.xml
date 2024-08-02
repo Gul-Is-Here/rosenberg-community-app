@@ -3,6 +3,7 @@
 
     <!-- Add the internet permission here -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -52,6 +53,11 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
             </intent-filter>
         </receiver>
+        <service
+                android:name="com.ryanheise.audioservice.AudioService"
+                android:permission="android.permission.BIND_JOB_SERVICE"
+                android:exported="true"
+                android:foregroundServiceType="mediaPlayback" />
         <service android:name="androidx.work.impl.background.systemalarm.SystemAlarmService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false"/>
         <service android:name="androidx.work.impl.background.systemjob.SystemJobService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
     </application>

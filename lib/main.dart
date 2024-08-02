@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
     final List<Widget> _pages = [
       const HomeScreen(),
       QiblahScreen(),
-      const QuranScreen(),
+      QuranScreen(),
       const DonationScreen()
     ];
 
