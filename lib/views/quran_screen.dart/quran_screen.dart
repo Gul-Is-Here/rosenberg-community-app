@@ -1,90 +1,23 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:community_islamic_app/controllers/quran_controller.dart';
-
+import 'package:community_islamic_app/views/quran_screen.dart/surah_detail_screen.dart';
 import 'package:community_islamic_app/widgets/customized_surah_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
-
 import '../../constants/image_constants.dart';
+import '../../controllers/audio_controller.dart';
 import '../../model/quran_audio_model.dart';
+
 import '../../widgets/audio_player_bar_widget.dart';
 
-class QuranScreen extends StatefulWidget {
+class QuranScreen extends StatelessWidget {
   const QuranScreen({super.key});
 
   @override
-  _QuranScreenState createState() => _QuranScreenState();
-}
-
-class _QuranScreenState extends State<QuranScreen> {
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  AudioFile? _currentAudio;
-  bool _isPlaying = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
-      if (state == PlayerState.stopped || state == PlayerState.completed) {
-        setState(() {
-          _isPlaying = false;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    super.dispose();
-  }
-
-  void _playOrPauseAudio(AudioFile audio) async {
-    if (_currentAudio != null) {
-      if (_currentAudio!.id == audio.id) {
-        // Toggle playback
-        if (_isPlaying) {
-          await _audioPlayer.pause();
-          setState(() {
-            _isPlaying = false;
-          });
-        } else {
-          await _audioPlayer.resume();
-          setState(() {
-            _isPlaying = true;
-          });
-        }
-        return;
-      } else {
-        // Stop previous audio
-        await _audioPlayer.stop();
-      }
-    }
-
-    // Play new audio
-    if (audio.audioUrl.isNotEmpty) {
-      await _audioPlayer.play(UrlSource(audio.audioUrl));
-      setState(() {
-        _currentAudio = audio;
-        _isPlaying = true;
-      });
-    } else {
-      print('Audio not available');
-    }
-  }
-
-  void _stopAudio() async {
-    await _audioPlayer.stop();
-    setState(() {
-      _isPlaying = false;
-      _currentAudio = null;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var quranController = Get.put(QuranController());
+    final QuranController quranController = Get.put(QuranController());
+    final AudioPlayerController audioController =
+        Get.put(AudioPlayerController());
     var screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -192,17 +125,37 @@ class _QuranScreenState extends State<QuranScreen> {
                           child: CustomizedSurahWidget(
                             onTap1: () {},
                             onTap2: () {
-                              _playOrPauseAudio(audio);
+                              audioController.playOrPauseAudio(audio);
                             },
-                            surahOnTap: () {},
+                            surahOnTap: () {
+                              Get.to(() => SurahDetailsScreen(
+                                    audioPlayerUrl: audio.audioUrl,
+                                    surahName: chapter.nameArabic,
+                                    surahNumber: chapter.id,
+                                    surahverseCount: chapter.versesCount,
+                                    englishVerse: chapter.nameArabic,
+                                    verse: chapter.nameSimple,
+                                  ));
+                            },
                             firstIcon: Icons.book,
-                            secondIcon:
-                                _isPlaying && _currentAudio?.id == audio.id
-                                    ? Icons.pause
-                                    : Icons.play_arrow,
+                            secondIcon: audioController.isPlaying.value &&
+                                    audioController.currentAudio.value?.id ==
+                                        audio.id
+                                ? Icons.pause
+                                : Icons.play_arrow,
                             surahTxet: chapter.nameArabic,
                             thirdIcon: kabbaIcon,
                             surahNumber: chapter.id,
+                            onTapNavigation: () {
+                              Get.to(() => SurahDetailsScreen(
+                                    audioPlayerUrl: audio.audioUrl,
+                                    surahName: chapter.nameArabic,
+                                    surahNumber: chapter.id,
+                                    surahverseCount: chapter.versesCount,
+                                    englishVerse: chapter.nameComplex,
+                                    verse: chapter.nameComplex,
+                                  ));
+                            },
                           ),
                         ),
                       ),
@@ -212,118 +165,23 @@ class _QuranScreenState extends State<QuranScreen> {
               }
             }),
           ),
-          AudioPlayerBar(
-            quranController: quranController,
-            // index: ,
-            audioPlayer: _audioPlayer,
-            currentAudio: _currentAudio,
-            isPlaying: _isPlaying,
-            onPlayPause: () {
-              if (_currentAudio != null) {
-                _playOrPauseAudio(_currentAudio!);
-              }
-            },
-            onStop: _stopAudio,
-          ),
+          Obx(() {
+            return AudioPlayerBar(
+              audioPlayerController: audioController,
+              isPlaying: audioController.isPlaying.value,
+              currentAudio: audioController.currentAudio.value,
+              onPlayPause: () {
+                if (audioController.currentAudio.value != null) {
+                  audioController
+                      .playOrPauseAudio(audioController.currentAudio.value!);
+                }
+              },
+              onStop: audioController.stopAudio, onNext: () {  }, onPrevious: () {  },
+            );
+          }),
           100.heightBox
         ],
       ),
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:community_islamic_app/controllers/audio_controller.dart';
-// import 'package:velocity_x/velocity_x.dart';
-
-// import '../../constants/image_constants.dart';
-// import '../../controllers/quran_controller.dart';
-// import '../../model/quran_audio_model.dart';
-// import '../../widgets/audio_player_bar_widget.dart';
-// import '../../widgets/customized_surah_widget.dart';
-// // Other imports...
-
-// class QuranScreen extends StatelessWidget {
-//   // Other properties...
-
-//   @override
-//   Widget build(BuildContext context) {
-//     var quranController = Get.put(QuranController());
-//     var audioController = Get.put(AudioController());
-//     // var screenHeight = MediaQuery.of(context).size.height;
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         toolbarHeight: 0,
-//       ),
-//       body: Column(
-//         children: [
-//           // ...Other UI elements...
-//           Expanded(
-//             child: Obx(() {
-//               if (quranController.isLoading.value) {
-//                 return const Center(child: CircularProgressIndicator());
-//               } else if (quranController.chapters.isEmpty) {
-//                 return const Center(child: Text('No data available'));
-//               } else {
-//                 return ListView.builder(
-//                   itemCount: quranController.chapters.length,
-//                   itemBuilder: (context, index) {
-//                     final chapter = quranController.chapters[index];
-//                     final audio = quranController.audioFiles.firstWhere(
-//                         (audio) => audio.chapterId == chapter.id,
-//                         orElse: () => AudioFile(
-//                             id: 0,
-//                             chapterId: 0,
-//                             fileSize: 0,
-//                             format: Format.MP3,
-//                             audioUrl: ''));
-
-//                     return SizedBox(
-//                       height: 70,
-//                       child: Card(
-//                         child: Padding(
-//                           padding: const EdgeInsets.all(4.0),
-//                           child: CustomizedSurahWidget(
-//                             onTap1: () {},
-//                             onTap2: () {
-//                               audioController.playOrPauseAudio(audio);
-//                             },
-//                             surahOnTap: () {},
-//                             firstIcon: Icons.book,
-//                             secondIcon: audioController.isPlaying.value &&
-//                                     audioController.currentAudio.value?.id ==
-//                                         audio.id
-//                                 ? Icons.pause
-//                                 : Icons.play_arrow,
-//                             surahTxet: chapter.nameArabic,
-//                             thirdIcon: kabbaIcon,
-//                             surahNumber: chapter.id,
-//                           ),
-//                         ),
-//                       ),
-//                     );
-//                   },
-//                 );
-//               }
-//             }),
-//           ),
-//           Obx(() => AudioPlayerBar(
-//                 audioPlayer: audioController.audioPlayer,
-//                 currentAudio: audioController.currentAudio.value,
-//                 isPlaying: audioController.isPlaying.value,
-//                 onPlayPause: () {
-//                   if (audioController.currentAudio.value != null) {
-//                     audioController
-//                         .playOrPauseAudio(audioController.currentAudio.value!);
-//                   }
-//                 },
-//                 onStop: audioController.stopAudio,
-//               )),
-//           100.heightBox,
-//         ],
-//       ),
-//     );
-//   }
-// }

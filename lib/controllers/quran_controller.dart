@@ -2,17 +2,19 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../model/quran_model.dart';
-import '../model/quran_audio_model.dart'; // Ensure you have this import
+import '../model/quran_audio_model.dart';
 
 class QuranController extends GetxController {
   var isLoading = false.obs;
   var chapters = <Chapter>[].obs;
-  var audioFiles = <AudioFile>[].obs; // Add this line
+  var audioFiles = <AudioFile>[].obs;
 
+  var chapterId;
   @override
   void onInit() {
     fetchChapters();
-    fetchAudioFiles(); // Add this line
+    fetchAudioFiles();
+
     super.onInit();
   }
 
@@ -36,7 +38,7 @@ class QuranController extends GetxController {
     }
   }
 
-// Surah Audio Method
+  /// Surah Audio Method
   Future<void> fetchAudioFiles() async {
     try {
       final response = await http

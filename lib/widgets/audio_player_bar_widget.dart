@@ -1,151 +1,112 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayers/audioplayers.dart'; // Ensure you import the correct AudioPlayer package
 import 'package:flutter/material.dart';
-import 'package:velocity_x/velocity_x.dart';
-import '../controllers/quran_controller.dart';
+import 'package:get/get.dart';
+import '../controllers/audio_controller.dart';
 import '../model/quran_audio_model.dart';
 
-class AudioPlayerBar extends StatefulWidget {
-  final AudioPlayer audioPlayer;
-  final AudioFile? currentAudio;
+class AudioPlayerBar extends StatelessWidget {
+  final AudioPlayerController audioPlayerController;
   final bool isPlaying;
+  final AudioFile? currentAudio;
   final VoidCallback onPlayPause;
   final VoidCallback onStop;
-  final QuranController quranController;
+  final VoidCallback onNext;
+  final VoidCallback onPrevious;
 
   const AudioPlayerBar({
-    required this.quranController,
-    required this.audioPlayer,
-    required this.currentAudio,
+    required this.audioPlayerController,
     required this.isPlaying,
+    required this.currentAudio,
     required this.onPlayPause,
     required this.onStop,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  _AudioPlayerBarState createState() => _AudioPlayerBarState();
-}
-
-class _AudioPlayerBarState extends State<AudioPlayerBar> {
-  Duration _currentPosition = Duration.zero;
-  Duration _totalDuration = Duration.zero;
-
-  @override
-  void initState() {
-    super.initState();
-    widget.audioPlayer.onPositionChanged.listen((duration) {
-      setState(() {
-        _currentPosition = duration;
-      });
-    });
-    widget.audioPlayer.onDurationChanged.listen((duration) {
-      setState(() {
-        _totalDuration = duration;
-      });
-    });
-  }
-
-  String _formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(duration.inMinutes);
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return '$minutes:$seconds';
-  }
+    required this.onNext,
+    required this.onPrevious,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return widget.currentAudio == null
-        ? const SizedBox.shrink()
-        : Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF0F6467),
-              borderRadius: BorderRadius.circular(10),
+    return Obx(() {
+      final progress = audioPlayerController.progress.value;
+      final duration = audioPlayerController.duration.value;
+
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        color: Colors.black,
+        child: Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.skip_previous, color: Colors.white),
+              onPressed: onPrevious,
             ),
-            padding: const EdgeInsets.all(8.0),
-            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        'https://via.placeholder.com/50', // Placeholder image URL
-                        width: 50,
-                        height: 50,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    10.widthBox,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Surah ${widget.quranController.chapters[widget.currentAudio!.chapterId - 1].nameArabic}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            'Chapter ${widget.currentAudio!.chapterId}',
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        widget.isPlaying
-                            ? Icons.pause_circle_filled
-                            : Icons.play_circle_filled,
-                        color: Colors.white,
-                        size: 36,
-                      ),
-                      onPressed: widget.onPlayPause,
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.stop_circle,
-                        color: Colors.white,
-                        size: 36,
-                      ),
-                      onPressed: widget.onStop,
-                    ),
-                  ],
-                ),
-                Slider(
-                  value: _currentPosition.inSeconds.toDouble(),
-                  max: _totalDuration.inSeconds.toDouble(),
-                  onChanged: (value) async {
-                    await widget.audioPlayer
-                        .seek(Duration(seconds: value.toInt()));
-                  },
-                  activeColor: Colors.white,
-                  inactiveColor: Colors.white54,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      _formatDuration(_currentPosition),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    Text(
-                      _formatDuration(_totalDuration),
-                      style: const TextStyle(color: Colors.white54),
-                    ),
-                  ],
-                ),
-              ],
+            IconButton(
+              icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow,
+                  color: Colors.white),
+              onPressed: onPlayPause,
             ),
-          );
+            IconButton(
+              icon: Icon(Icons.stop, color: Colors.white),
+              onPressed: onStop,
+            ),
+            IconButton(
+              icon: Icon(Icons.skip_next, color: Colors.white),
+              onPressed: onNext,
+            ),
+            Expanded(
+              child: Column(
+                children: [
+                  Container(
+                    height: 4.0,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4.0),
+                      gradient: LinearGradient(
+                        colors: [Colors.greenAccent, Colors.green],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          left: 0,
+                          right: (1 - (progress / duration)) * 100,
+                          child: Container(
+                            height: 4.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4.0),
+                              color: Colors.grey[800],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        formatDuration(
+                            Duration(milliseconds: progress.toInt())),
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                      Text(
+                        formatDuration(
+                            Duration(milliseconds: duration.toInt())),
+                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  String formatDuration(Duration duration) {
+    final minutes = duration.inMinutes.toString().padLeft(2, '0');
+    final seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
   }
 }

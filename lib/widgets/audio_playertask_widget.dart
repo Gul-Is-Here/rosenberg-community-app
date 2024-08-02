@@ -11,12 +11,12 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
           MediaControl.pause,
           MediaControl.stop,
         ],
-        systemActions: <MediaAction>{
+        systemActions: <MediaAction>[
           MediaAction.seek,
           MediaAction.seekForward,
           MediaAction.seekBackward,
-        }, // Convert list to set here
-        androidCompactActionIndices: [0, 1, 2], // Updated index if needed
+        ].toSet(),
+        androidCompactActionIndices: [0, 1, 2],
         playing: _player.playing,
         processingState: {
           ProcessingState.idle: AudioProcessingState.idle,
@@ -62,11 +62,10 @@ Future<AudioHandler> initAudioService() async {
   return await AudioService.init(
     builder: () => MyAudioHandler(),
     config: AudioServiceConfig(
-        androidNotificationChannelId: 'com.yourcompany.app.channel.audio',
-        androidNotificationChannelName: 'Audio playback',
-        androidNotificationOngoing: true,
-        androidNotificationChannelDescription: 'Playing'
-        // ].toSet(), // Convert list to set here
-        ),
+      androidNotificationChannelId: 'com.community_islamic_app.channel.audio',
+      androidNotificationChannelName: 'Audio playback',
+      androidNotificationOngoing: true,
+      androidNotificationChannelDescription: 'Playing',
+    ),
   );
 }
