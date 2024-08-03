@@ -8,8 +8,6 @@ import '../../constants/image_constants.dart';
 import '../../controllers/audio_controller.dart';
 import '../../model/quran_audio_model.dart';
 
-import '../../widgets/audio_player_bar_widget.dart';
-
 class QuranScreen extends StatelessWidget {
   const QuranScreen({super.key});
 
@@ -24,98 +22,107 @@ class QuranScreen extends StatelessWidget {
       appBar: AppBar(
         toolbarHeight: 0,
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: screenHeight * .25,
-            child: Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Card(
-                    elevation: 10,
-                    margin: EdgeInsets.zero,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(20),
-                        bottomRight: Radius.circular(20),
-                      ),
-                    ),
-                    child: Container(
-                      height: screenHeight * 0.3,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        image: DecorationImage(
-                          image: AssetImage(qiblaTopBg),
-                          fit: BoxFit.cover,
+      body: Obx(() {
+        if (quranController.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (quranController.chapters.isEmpty) {
+          return const Center(child: Text('No chapters available'));
+        }
+
+        return Column(
+          children: [
+            SizedBox(
+              height: screenHeight * .25,
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Card(
+                      elevation: 10,
+                      margin: EdgeInsets.zero,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: screenHeight * 0.01,
-                  left: 0,
-                  right: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        const CircleAvatar(
-                          maxRadius: 35,
-                          minRadius: 10,
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            size: 60,
-                            Icons.person,
-                            color: Colors.amber,
+                      child: Container(
+                        height: screenHeight * 0.3,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage(qiblaTopBg),
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        20.widthBox,
-                        const Text(
-                          'Assalamualaikum \nGul Faraz',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  top: screenHeight * 0.13,
-                  left: screenHeight * 0.18,
-                  child: Text(
-                    'Quran',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: screenHeight * 0.04,
-                      fontWeight: FontWeight.bold,
+                  Positioned(
+                    top: screenHeight * 0.01,
+                    left: 0,
+                    right: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          const CircleAvatar(
+                            maxRadius: 35,
+                            minRadius: 10,
+                            backgroundColor: Colors.white,
+                            child: Icon(
+                              size: 60,
+                              Icons.person,
+                              color: Colors.amber,
+                            ),
+                          ),
+                          20.widthBox,
+                          const Text(
+                            'Assalamualaikum \nGul Faraz',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  Positioned(
+                    top: screenHeight * 0.13,
+                    left: screenHeight * 0.18,
+                    child: Text(
+                      'Quran',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: screenHeight * 0.04,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: Obx(() {
-              if (quranController.isLoading.value) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (quranController.chapters.isEmpty) {
-                return const Center(child: Text('No data available'));
-              } else {
-                return ListView.builder(
+            Expanded(
+              child: Obx(
+                () => ListView.builder(
                   itemCount: quranController.chapters.length,
                   itemBuilder: (context, index) {
                     final chapter = quranController.chapters[index];
+                    quranController.chapterId.value =
+                        chapter.id; // Update chapter ID
+                    final surah =
+                        quranController.getSurahByChapterId(chapter.id);
                     final audio = quranController.audioFiles.firstWhere(
-                        (audio) => audio.chapterId == chapter.id,
-                        orElse: () => AudioFile(
-                            id: 0,
-                            chapterId: 0,
-                            fileSize: 0,
-                            format: Format.MP3,
-                            audioUrl: ''));
+                      (audio) => audio.chapterId == chapter.id,
+                      orElse: () => AudioFile(
+                          id: 0,
+                          chapterId: 0,
+                          fileSize: 0,
+                          format: Format.MP3,
+                          audioUrl: ''),
+                    );
 
                     return SizedBox(
                       height: 70,
@@ -123,19 +130,30 @@ class QuranScreen extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: CustomizedSurahWidget(
-                            onTap1: () {},
+                            onTap1: () {
+                              print('----Surah-------');
+                              print(surah);
+                            },
                             onTap2: () {
                               audioController.playOrPauseAudio(audio);
                             },
-                            surahOnTap: () {
-                              Get.to(() => SurahDetailsScreen(
-                                    audioPlayerUrl: audio.audioUrl,
-                                    surahName: chapter.nameArabic,
-                                    surahNumber: chapter.id,
-                                    surahverseCount: chapter.versesCount,
-                                    englishVerse: chapter.nameArabic,
-                                    verse: chapter.nameSimple,
-                                  ));
+                            surahOnTap: () async {
+                              if (surah != null) {
+                                await quranController.fetchTranslationData(
+                                    chapter.id); // Fetch translation data
+                                Get.to(() => SurahDetailsScreen(
+                                      surahVerseCount: surah.ayahs.length,
+                                      surahVerseEng:
+                                          quranController.translationData,
+                                      audioPlayerUrl: audio.audioUrl,
+                                      surahName: surah.name,
+                                      surahNumber: surah.number,
+                                      surahverseCount: surah.ayahs.length,
+                                      englishVerse: surah.englishName,
+                                      verse: surah.name,
+                                      surahVerse: surah.ayahs,
+                                    ));
+                              }
                             },
                             firstIcon: Icons.book,
                             secondIcon: audioController.isPlaying.value &&
@@ -143,45 +161,38 @@ class QuranScreen extends StatelessWidget {
                                         audio.id
                                 ? Icons.pause
                                 : Icons.play_arrow,
-                            surahTxet: chapter.nameArabic,
+                            surahTxet: surah?.name ?? 'Surah not found',
                             thirdIcon: kabbaIcon,
                             surahNumber: chapter.id,
-                            onTapNavigation: () {
-                              Get.to(() => SurahDetailsScreen(
-                                    audioPlayerUrl: audio.audioUrl,
-                                    surahName: chapter.nameArabic,
-                                    surahNumber: chapter.id,
-                                    surahverseCount: chapter.versesCount,
-                                    englishVerse: chapter.nameComplex,
-                                    verse: chapter.nameComplex,
-                                  ));
+                            onTapNavigation: () async {
+                              if (surah != null) {
+                                await quranController.fetchTranslationData(
+                                    chapter.id); // Fetch translation data
+                                Get.to(() => SurahDetailsScreen(
+                                      surahVerseCount: surah.ayahs.length,
+                                      surahVerseEng:
+                                          quranController.translationData,
+                                      audioPlayerUrl: audio.audioUrl,
+                                      surahName: surah.name,
+                                      surahNumber: surah.number,
+                                      surahverseCount: surah.ayahs.length,
+                                      englishVerse: surah.englishName,
+                                      verse: surah.name,
+                                      surahVerse: surah.ayahs,
+                                    ));
+                              }
                             },
                           ),
                         ),
                       ),
                     );
                   },
-                );
-              }
-            }),
-          ),
-          Obx(() {
-            return AudioPlayerBar(
-              audioPlayerController: audioController,
-              isPlaying: audioController.isPlaying.value,
-              currentAudio: audioController.currentAudio.value,
-              onPlayPause: () {
-                if (audioController.currentAudio.value != null) {
-                  audioController
-                      .playOrPauseAudio(audioController.currentAudio.value!);
-                }
-              },
-              onStop: audioController.stopAudio, onNext: () {  }, onPrevious: () {  },
-            );
-          }),
-          100.heightBox
-        ],
-      ),
+                ),
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 }

@@ -21,9 +21,7 @@
 
         <meta-data android:name="flutterEmbedding" android:value="2"/>
 
-        <!-- WebView Activity for URL Launcher -->
-        <activity android:name="io.flutter.plugins.urllauncher.WebViewActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:exported="false"/>
-
+        
         <!-- Notification Receivers -->
         <receiver android:name="com.dexterous.flutterlocalnotifications.receivers.NotificationReceiver" android:exported="true">
             <intent-filter>

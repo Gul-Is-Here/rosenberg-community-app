@@ -8,6 +8,8 @@ class AudioPlayerBar extends StatelessWidget {
   final AudioFile? currentAudio;
   final VoidCallback onPlayPause;
   final VoidCallback onStop;
+  final VoidCallback onNext;
+  final VoidCallback onPrevious;
 
   const AudioPlayerBar({
     super.key,
@@ -16,6 +18,8 @@ class AudioPlayerBar extends StatelessWidget {
     required this.currentAudio,
     required this.onPlayPause,
     required this.onStop,
+    required this.onNext,
+    required this.onPrevious,
   });
 
   @override
@@ -26,6 +30,10 @@ class AudioPlayerBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          IconButton(
+            icon: const Icon(Icons.skip_previous),
+            onPressed: onPrevious,
+          ),
           Text(currentAudio != null ? currentAudio!.audioUrl : 'No Audio'),
           IconButton(
             icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
@@ -34,6 +42,10 @@ class AudioPlayerBar extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.stop),
             onPressed: onStop,
+          ),
+          IconButton(
+            icon: const Icon(Icons.skip_next),
+            onPressed: onNext,
           ),
         ],
       ),

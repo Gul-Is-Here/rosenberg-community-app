@@ -8,8 +8,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:workmanager/workmanager.dart';
 import 'constants/image_constants.dart';
 import 'controllers/home_controller.dart';
-import 'views/quran_screen.dart/audio_play_back_services.dart';
-import 'widgets/audio_playertask_widget.dart';
+// import 'views/quran_screen.dart/audio_play_back_services.dart';
 import 'services/background_task.dart';
 import 'services/notification_service.dart';
 import 'views/donation_screens/donation_screen.dart';
@@ -23,7 +22,7 @@ void main() {
   notificationServices.initializeNotifications();
   tz.initializeTimeZones();
   Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
-  AudioServiceBackground.run(() => AudioPlayerTask());
+  // AudioServiceBackground.run(() => AudioPlayerTask());
   runApp(const MyApp());
 }
 
@@ -32,7 +31,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void backgroundTaskEntrypoint() {}
     final HomeController controller = Get.put(HomeController());
 
     final List<Widget> _pages = [

@@ -84,8 +84,8 @@ class CustomizedSurahWidget extends StatelessWidget {
           10.widthBox,
           Expanded(
             child: Text(
-              'سُورَةُ $surahTxet',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              '$surahTxet',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           10.widthBox,
@@ -99,7 +99,6 @@ class CustomizedSurahWidget extends StatelessWidget {
             surahNumber.toString(),
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          
         ],
       ),
     );

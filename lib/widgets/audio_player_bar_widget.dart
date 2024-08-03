@@ -1,6 +1,6 @@
-import 'package:audioplayers/audioplayers.dart'; // Ensure you import the correct AudioPlayer package
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:velocity_x/velocity_x.dart';
 import '../controllers/audio_controller.dart';
 import '../model/quran_audio_model.dart';
 
@@ -12,8 +12,11 @@ class AudioPlayerBar extends StatelessWidget {
   final VoidCallback onStop;
   final VoidCallback onNext;
   final VoidCallback onPrevious;
+  final String? totalVerseCount;
+  final String? artistName;
 
   const AudioPlayerBar({
+    super.key,
     required this.audioPlayerController,
     required this.isPlaying,
     required this.currentAudio,
@@ -21,6 +24,8 @@ class AudioPlayerBar extends StatelessWidget {
     required this.onStop,
     required this.onNext,
     required this.onPrevious,
+    this.artistName,
+    this.totalVerseCount,
   });
 
   @override
@@ -30,75 +35,151 @@ class AudioPlayerBar extends StatelessWidget {
       final duration = audioPlayerController.duration.value;
 
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        color: Colors.black,
-        child: Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.skip_previous, color: Colors.white),
-              onPressed: onPrevious,
-            ),
-            IconButton(
-              icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow,
-                  color: Colors.white),
-              onPressed: onPlayPause,
-            ),
-            IconButton(
-              icon: Icon(Icons.stop, color: Colors.white),
-              onPressed: onStop,
-            ),
-            IconButton(
-              icon: Icon(Icons.skip_next, color: Colors.white),
-              onPressed: onNext,
-            ),
-            Expanded(
-              child: Column(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+            color: const Color(0xFF006367),
+            borderRadius: BorderRadius.circular(10)),
+        child: Obx(
+          () => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    height: 4.0,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4.0),
-                      gradient: LinearGradient(
-                        colors: [Colors.greenAccent, Colors.green],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 0,
-                          right: (1 - (progress / duration)) * 100,
-                          child: Container(
-                            height: 4.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4.0),
-                              color: Colors.grey[800],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        formatDuration(
-                            Duration(milliseconds: progress.toInt())),
-                        style: TextStyle(color: Colors.white, fontSize: 12),
+                        totalVerseCount ?? '',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
                       ),
+                      5.heightBox,
                       Text(
-                        formatDuration(
-                            Duration(milliseconds: duration.toInt())),
-                        style: TextStyle(color: Colors.white, fontSize: 12),
+                        artistName ?? '',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
                       ),
                     ],
                   ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(50)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF006367),
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: IconButton(
+                          icon: Text(
+                            '${audioPlayerController.playbackSpeed.value}x',
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          onPressed: audioPlayerController.toggleSpeed,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.skip_previous,
+                      color: Colors.white,
+                      size: 50,
+                    ),
+                    onPressed: onPrevious,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      isPlaying ? Icons.pause : Icons.play_arrow,
+                      color: Colors.white,
+                      size: 50,
+                    ),
+                    onPressed: onPlayPause,
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.skip_next,
+                      color: Colors.white,
+                      size: 50,
+                    ),
+                    onPressed: onNext,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Container(
+                height: 4.0,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4.0),
+                  gradient: const LinearGradient(
+                    colors: [Colors.greenAccent, Colors.green],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      right: (1 - (progress / duration)) * 100,
+                      child: Container(
+                        height: 4.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4.0),
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    formatDuration(Duration(milliseconds: progress.toInt())),
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                  Text(
+                    formatDuration(Duration(milliseconds: duration.toInt())),
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      audioPlayerController.isRepeating.value
+                          ? Icons.repeat_one_on_outlined
+                          : Icons.repeat_one,
+                      color: Colors.white,
+                    ),
+                    onPressed: audioPlayerController.toggleRepeat,
+                  ),
+                  const SizedBox(width: 8),
+                ],
+              ),
+            ],
+          ),
         ),
       );
     });
