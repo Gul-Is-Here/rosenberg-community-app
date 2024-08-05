@@ -21,8 +21,10 @@ void main() {
   final notificationServices = NotificationServices();
   notificationServices.initializeNotifications();
   tz.initializeTimeZones();
-  Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: false,);
+  // Workmanager().registerPeriodicTask
   // AudioServiceBackground.run(() => AudioPlayerTask());
+  
   runApp(const MyApp());
 }
 

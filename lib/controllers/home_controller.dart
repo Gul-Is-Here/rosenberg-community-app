@@ -131,12 +131,12 @@ class HomeController extends GetxController {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       var now = DateTime.now();
       final timings = prayerTimes.value.data?.timings;
-// // Check for testing condition: play Azan every minute
-//       if (now.second == 0) {
-//         _notificationServices.playAzan();
-//         _notificationServices
-//             .scheduleBackgroundTask(DateTime.now().add(Duration(seconds: 10)));
-//       }
+// Check for testing condition: play Azan every minute
+      if (now.second == 0) {
+        _notificationServices.playAzan();
+        _notificationServices
+            .scheduleBackgroundTask(DateTime.now().add(Duration(seconds: 10)));
+      }
       if (timings != null) {
         if (isTimeForPrayer(now, parseTime(timings.fajr))) {
           _notificationServices.playAzan();

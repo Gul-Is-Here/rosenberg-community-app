@@ -14,9 +14,8 @@ import '../views/quran_screen.dart/surah_detail_screen.dart';
 class QuranController extends GetxController {
   var isLoading = false.obs;
   var chapters = <Chapter>[].obs;
-
   var audioFiles = <AudioFile>[].obs;
-  RxInt chapterId = 0.obs; // Updated naming
+  var chapterId = 0.obs;
   var surahData = SurahModel(
     code: 0,
     status: '',
@@ -34,8 +33,6 @@ class QuranController extends GetxController {
   ).obs;
   var translationData = <Result>[].obs;
 
-  // List<Surah> get surahList => null; // Translation data
-
   @override
   void onInit() {
     super.onInit();
@@ -45,7 +42,7 @@ class QuranController extends GetxController {
   Future<void> loadData() async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Load chapters
+    // Load chapters from cache or fetch from API
     String? chaptersJson = prefs.getString('chapters');
     if (chaptersJson != null) {
       chapters.value = List<Chapter>.from(
@@ -54,7 +51,7 @@ class QuranController extends GetxController {
       await fetchChapters();
     }
 
-    // Load audio files
+    // Load audio files from cache or fetch from API
     String? audioFilesJson = prefs.getString('audioFiles');
     if (audioFilesJson != null) {
       audioFiles.value = List<AudioFile>.from(
@@ -63,7 +60,7 @@ class QuranController extends GetxController {
       await fetchAudioFiles();
     }
 
-    // Load surah data
+    // Load surah data from cache or fetch from API
     String? surahDataJson = prefs.getString('surahData');
     if (surahDataJson != null) {
       surahData.value = SurahModel.fromJson(json.decode(surahDataJson));
@@ -89,8 +86,9 @@ class QuranController extends GetxController {
       }
     } catch (e) {
       print("Error: $e");
+    } finally {
+      isLoading(false);
     }
-    isLoading(false);
   }
 
   Future<void> fetchAudioFiles() async {
@@ -110,8 +108,9 @@ class QuranController extends GetxController {
       }
     } catch (e) {
       print("Error: $e");
+    } finally {
+      isLoading(false);
     }
-    isLoading(false);
   }
 
   Future<void> fetchSurahData() async {
@@ -130,8 +129,9 @@ class QuranController extends GetxController {
       }
     } catch (e) {
       print("Error: $e");
+    } finally {
+      isLoading(false);
     }
-    isLoading(false);
   }
 
   Future<void> fetchTranslationData(int chapterId) async {
@@ -166,38 +166,14 @@ class QuranController extends GetxController {
             audioPlayerUrl: audio,
             surahName: surah.name,
             surahNumber: surah.number,
-            // surahVerseCount: ,
             englishVerse: surah.englishName,
             verse: surah.name,
             surahVerse: surah.ayahs,
-            // surahverseCount: surah.ayahs.length,
           ));
     }
   }
 
-  Future<void> downloadSurahAudio(String url, String fileName) async {
-    try {
-      Dio dio = Dio();
-      var dir = await getApplicationDocumentsDirectory();
-      String filePath = '${dir.path}/$fileName';
-
-      // Check if file already exists
-      if (await File(filePath).exists()) {
-        Get.snackbar('Download', 'File already downloaded!');
-        return;
-      }
-
-      await dio.download(url, filePath, onReceiveProgress: (received, total) {
-        if (total != -1) {
-          print((received / total * 100).toStringAsFixed(0) + "%");
-        }
-      });
-
-      Get.snackbar('Download', 'Download completed!');
-    } catch (e) {
-      Get.snackbar('Error', 'Download failed: $e');
-    }
-  }
+ 
 
   Future<Surah> fetchSurahDetails(int chapterId) async {
     try {

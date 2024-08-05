@@ -140,7 +140,8 @@ class NotificationServices {
     final durationUntilTask = scheduledTime.difference(DateTime.now());
     if (durationUntilTask.isNegative) return;
 
-    Workmanager().registerOneOffTask(
+    Workmanager().registerPeriodicTask(
+      frequency: durationUntilTask,
       'id_unique_${scheduledTime.millisecondsSinceEpoch}',
       'backgroundTask',
       initialDelay: durationUntilTask,

@@ -34,7 +34,10 @@ class _QuranScreenState extends State<QuranScreen> {
         }
 
         if (quranController.chapters.isEmpty) {
-          return const Center(child: Text('No chapters available'));
+          return const Center(
+              child: Center(
+            child: CircularProgressIndicator(),
+          ));
         }
 
         return Column(
@@ -61,7 +64,7 @@ class _QuranScreenState extends State<QuranScreen> {
                         height: screenHeight * 0.3,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
+                          image: const DecorationImage(
                             image: AssetImage(qiblaTopBg), // Background image
                             fit: BoxFit.cover,
                           ),
@@ -136,71 +139,73 @@ class _QuranScreenState extends State<QuranScreen> {
                       child: Card(
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
-                          child: CustomizedSurahWidget(
-                            onTap1: () {
-                              print('----Surah-------');
-                              print(surah);
-                            },
-                            onTap2: () {
-                              if (audio.audioUrl.isNotEmpty) {
-                                audioController.playOrPauseAudio(audio);
-                              } else {
-                                print(
-                                    'Audio file not found for chapter ${chapter.id}');
-                              }
-                            },
-                            surahOnTap: () async {
-                              if (surah != null) {
-                                // Stop any currently playing audio
-                                // audioController.stopAudio();
+                          child: Obx(
+                            () => CustomizedSurahWidget(
+                              onTap1: () {
+                                print('----Surah-------');
+                                print(surah);
+                              },
+                              onTap2: () {
+                                if (audio.audioUrl.isNotEmpty) {
+                                  audioController.playOrPauseAudio(audio);
+                                } else {
+                                  print(
+                                      'Audio file not found for chapter ${chapter.id}');
+                                }
+                              },
+                              surahOnTap: () async {
+                                if (surah != null) {
+                                  // Stop any currently playing audio
+                                  // audioController.stopAudio();
 
-                                // Fetch translation data and navigate to SurahDetailsScreen
-                                await quranController
-                                    .fetchTranslationData(chapter.id);
-                                Get.to(() => SurahDetailsScreen(
-                                      surahM: surah,
-                                      surahVerseCount: surah.ayahs.length,
-                                      surahVerseEng:
-                                          quranController.translationData,
-                                      audioPlayerUrl: audio,
-                                      surahName: surah.name,
-                                      surahNumber: surah.number,
-                                      englishVerse: surah.englishName,
-                                      verse: surah.name,
-                                      surahVerse: surah.ayahs,
-                                    ));
-                              }
-                            },
-                            firstIcon: Icons.book,
-                            secondIcon: audioController.isPlaying.value &&
-                                    audioController.currentAudio.value?.id ==
-                                        audio.id
-                                ? Icons.pause
-                                : Icons.play_arrow,
-                            surahTxet: surah?.name ?? 'Surah not found',
-                            thirdIcon: chapter.revelationPlace ==
-                                    RevelationPlace.MAKKAH
-                                ? kabbaIcon
-                                : masjidIcon,
-                            surahNumber: chapter.id,
-                            onTapNavigation: () async {
-                              if (surah != null) {
-                                await quranController
-                                    .fetchTranslationData(chapter.id);
-                                Get.to(() => SurahDetailsScreen(
-                                      surahM: surah,
-                                      surahVerseCount: surah.ayahs.length,
-                                      surahVerseEng:
-                                          quranController.translationData,
-                                      audioPlayerUrl: audio,
-                                      surahName: surah.name,
-                                      surahNumber: surah.number,
-                                      englishVerse: surah.englishName,
-                                      verse: surah.name,
-                                      surahVerse: surah.ayahs,
-                                    ));
-                              }
-                            },
+                                  // Fetch translation data and navigate to SurahDetailsScreen
+                                  await quranController
+                                      .fetchTranslationData(chapter.id);
+                                  Get.to(() => SurahDetailsScreen(
+                                        surahM: surah,
+                                        surahVerseCount: surah.ayahs.length,
+                                        surahVerseEng:
+                                            quranController.translationData,
+                                        audioPlayerUrl: audio,
+                                        surahName: surah.name,
+                                        surahNumber: surah.number,
+                                        englishVerse: surah.englishName,
+                                        verse: surah.name,
+                                        surahVerse: surah.ayahs,
+                                      ));
+                                }
+                              },
+                              firstIcon: Icons.book,
+                              secondIcon: audioController.isPlaying.value &&
+                                      audioController.currentAudio.value?.id ==
+                                          audio.id
+                                  ? Icons.pause
+                                  : Icons.play_arrow,
+                              surahTxet: surah?.name ?? 'Surah not found',
+                              thirdIcon: chapter.revelationPlace ==
+                                      RevelationPlace.MAKKAH
+                                  ? kabbaIcon
+                                  : masjidIcon,
+                              surahNumber: chapter.id,
+                              onTapNavigation: () async {
+                                if (surah != null) {
+                                  await quranController
+                                      .fetchTranslationData(chapter.id);
+                                  Get.to(() => SurahDetailsScreen(
+                                        surahM: surah,
+                                        surahVerseCount: surah.ayahs.length,
+                                        surahVerseEng:
+                                            quranController.translationData,
+                                        audioPlayerUrl: audio,
+                                        surahName: surah.name,
+                                        surahNumber: surah.number,
+                                        englishVerse: surah.englishName,
+                                        verse: surah.name,
+                                        surahVerse: surah.ayahs,
+                                      ));
+                                }
+                              },
+                            ),
                           ),
                         ),
                       ),

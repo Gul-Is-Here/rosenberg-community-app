@@ -76,7 +76,7 @@ class CustomizedMobileLayout extends StatelessWidget {
                         homeController.adjustment =
                             homeController.jummaTimes.value.data?.adjustment;
                         homeController.adjustment =
-                            homeController.adjustment!.apiAdjustAdjustment;
+                            homeController.adjustment.apiAdjustAdjustment;
 
                         var currentPrayer = getCurrentPrayer();
                         var currentIqamaTime = getCurrentIqamaTime();

@@ -1,10 +1,13 @@
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:community_islamic_app/controllers/audio_controller.dart';
 import 'package:community_islamic_app/controllers/quran_controller.dart';
 import 'package:community_islamic_app/model/surah_detail_model.dart';
 import 'package:community_islamic_app/widgets/audio_player_bar_widget.dart';
-import 'package:quran/surah_data.dart';
+import 'package:dio/dio.dart';
 
 import '../../model/quran_audio_model.dart';
 import '../../model/surah_english_model.dart';
@@ -40,21 +43,36 @@ class SurahDetailsScreen extends StatefulWidget {
 class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
   late AudioPlayerController audioController;
   late QuranController quranController;
-  int currentIndex = 1; // To track the current Ayah index
+  late ScrollController scrollController;
+  int currentIndex = 0; // To track the current Ayah index
+  Timer? autoScrollTimer; // Timer for automatic scrolling
+  bool isDownloading = false;
+  double downloadProgress = 0.0;
+  bool isAudioDownloaded = false;
 
   @override
   void initState() {
     super.initState();
     audioController = Get.find();
     quranController = Get.find();
+    scrollController = ScrollController();
+    checkIfAudioDownloaded();
     playCurrentAyahAudio();
+    scrollToCurrentAyah();
+  }
+
+  void checkIfAudioDownloaded() async {
+    final dir = await getApplicationDocumentsDirectory();
+    final filePath = '${dir.path}/${widget.surahName}.mp3';
+    setState(() {
+      isAudioDownloaded = File(filePath).existsSync();
+    });
   }
 
   void playCurrentAyahAudio() {
     final ayah = widget.surahVerse[currentIndex];
     final audioFile = quranController.audioFiles.firstWhere(
       (audio) => audio.chapterId == widget.surahNumber,
-      // You can add specific logic here if you have separate audio files for each Ayah
       orElse: () {
         print(
             'Audio file not found for Ayah ${ayah.numberInSurah} in Surah ${widget.surahNumber}');
@@ -73,12 +91,18 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
     }
   }
 
+  void scrollToCurrentAyah() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent *
+          (currentIndex / widget.surahVerse.length));
+    });
+  }
+
   void playNextAyah() {
-    if (currentIndex < widget.surahM.number - 1) {
-      print(currentIndex);
+    if (currentIndex < widget.surahVerse.length - 1) {
       setState(() {
         currentIndex++;
-        playCurrentAyahAudio();
+        scrollToCurrentAyah();
       });
     }
   }
@@ -87,9 +111,69 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
     if (currentIndex > 0) {
       setState(() {
         currentIndex--;
+        scrollToCurrentAyah();
         playCurrentAyahAudio();
       });
     }
+  }
+
+  Future<void> downloadSurahAudio() async {
+    setState(() {
+      isDownloading = true;
+      downloadProgress = 0.0;
+    });
+
+    try {
+      final dio = Dio();
+      final dir = await getApplicationDocumentsDirectory();
+      final audioFile = quranController.audioFiles.firstWhere(
+        (audio) => audio.chapterId == widget.surahNumber,
+        orElse: () => AudioFile(
+          id: 0,
+          chapterId: widget.surahNumber,
+          fileSize: 0,
+          format: Format.MP3,
+          audioUrl: '',
+        ),
+      );
+
+      if (audioFile.audioUrl.isNotEmpty) {
+        final savePath = '${dir.path}/${widget.surahName}.mp3';
+
+        await dio.download(
+          audioFile.audioUrl,
+          savePath,
+          onReceiveProgress: (received, total) {
+            setState(() {
+              downloadProgress = (received / total) * 100;
+            });
+          },
+        );
+
+        setState(() {
+          isDownloading = false;
+          isAudioDownloaded = true;
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Download completed: ${widget.surahName}')),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        isDownloading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Download failed: $e')),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    autoScrollTimer?.cancel();
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -111,15 +195,35 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
           style: const TextStyle(color: Colors.white, fontSize: 18),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              // Implement download functionality if needed
-            },
-            icon: const Icon(
-              Icons.download,
-              color: Colors.white,
-            ),
-          ),
+          isDownloading
+              ? Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      value: downloadProgress / 100,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                )
+              : isAudioDownloaded
+                  ? IconButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Audio already downloaded')),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.done,
+                        color: Colors.white,
+                      ),
+                    )
+                  : IconButton(
+                      onPressed: downloadSurahAudio,
+                      icon: const Icon(
+                        Icons.download,
+                        color: Colors.white,
+                      ),
+                    ),
         ],
       ),
       body: Column(
@@ -138,6 +242,7 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
                   const Divider(height: 20),
                   Expanded(
                     child: ListView.builder(
+                      controller: scrollController,
                       itemCount: widget.surahVerse.length,
                       itemBuilder: (context, index) {
                         final ayah = widget.surahVerse[index];
@@ -149,7 +254,7 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
                             sura: '',
                             aya: '',
                             arabicText: '',
-                            translation: 'Translation not available',
+                            translation: '',
                             footnotes: '',
                           ),
                         );
@@ -207,27 +312,25 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
               currentAudio: audioController.currentAudio.value,
               onPlayPause: () {
                 final audioFile = quranController.audioFiles.firstWhere(
-                  (audio) => audio.chapterId == widget.surahNumber,
-                  orElse: () {
-                    print(
-                        "Audio file not found for Surah number ${widget.surahNumber}");
-                    return AudioFile(
-                      id: 0,
-                      chapterId: widget.surahNumber,
-                      fileSize: 0,
-                      format: Format.MP3,
-                      audioUrl: '',
-                    );
-                  },
+                  (audio) =>
+                      audio.chapterId == widget.surahNumber &&
+                      audio.format == Format.MP3,
+                  orElse: () => AudioFile(
+                    id: 0,
+                    chapterId: widget.surahNumber,
+                    fileSize: 0,
+                    format: Format.MP3,
+                    audioUrl: '',
+                  ),
                 );
 
                 if (audioFile.audioUrl.isNotEmpty) {
                   audioController.playOrPauseAudio(audioFile);
                 }
               },
-              onStop: audioController.stopAudio,
               onNext: playNextAyah,
               onPrevious: playPreviousAyah,
+              onStop: audioController.stopAudio,
             );
           }),
         ],

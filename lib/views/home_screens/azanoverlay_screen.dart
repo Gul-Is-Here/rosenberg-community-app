@@ -16,6 +16,7 @@ class AzanoverlayScreen extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () {
             audioPlayer.stop();
+            audioPlayer.dispose();
             Navigator.of(context).pop();
           },
           child: Text('Stop Azan'),

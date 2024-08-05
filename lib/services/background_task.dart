@@ -26,7 +26,7 @@ void callbackDispatcher() {
             importance: Importance.max,
             priority: Priority.high,
             playSound: true,
-            fullScreenIntent: true);
+            fullScreenIntent: true, ) ;
     NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
 
