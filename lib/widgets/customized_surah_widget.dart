@@ -47,7 +47,7 @@ class CustomizedSurahWidget extends StatelessWidget {
                     onPressed: onTap1,
                     icon: Icon(
                       firstIcon,
-                      size: 32,
+                      size: 24,
                       color: Colors.green,
                     ),
                   ),
@@ -73,7 +73,7 @@ class CustomizedSurahWidget extends StatelessWidget {
                     onPressed: onTap2,
                     icon: Icon(
                       secondIcon,
-                      size: 32,
+                      size: 24,
                       color: Colors.green,
                     ),
                   ),
@@ -91,7 +91,7 @@ class CustomizedSurahWidget extends StatelessWidget {
           10.widthBox,
           Image.asset(
             thirdIcon,
-            height: 40,
+            height: 24,
             fit: BoxFit.cover,
           ),
           10.widthBox,

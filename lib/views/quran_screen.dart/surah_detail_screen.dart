@@ -1,25 +1,28 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:community_islamic_app/controllers/audio_controller.dart';
 import 'package:community_islamic_app/controllers/quran_controller.dart';
 import 'package:community_islamic_app/model/surah_detail_model.dart';
 import 'package:community_islamic_app/widgets/audio_player_bar_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:quran/surah_data.dart';
 
 import '../../model/quran_audio_model.dart';
 import '../../model/surah_english_model.dart';
 
-class SurahDetailsScreen extends StatelessWidget {
+class SurahDetailsScreen extends StatefulWidget {
   final int surahNumber;
+  final Surah surahM;
   final String surahName;
   final int surahVerseCount;
   final String verse;
   final String englishVerse;
-  final String audioPlayerUrl;
+  final AudioFile audioPlayerUrl;
   final List<Ayah> surahVerse;
   final List<Result> surahVerseEng;
 
-  const SurahDetailsScreen({
-    super.key,
+  SurahDetailsScreen({
+    Key? key,
+    required this.surahM,
     required this.surahVerseEng,
     required this.surahVerse,
     required this.audioPlayerUrl,
@@ -28,21 +31,69 @@ class SurahDetailsScreen extends StatelessWidget {
     required this.surahVerseCount,
     required this.englishVerse,
     required this.verse,
-    required int surahverseCount,
-  });
+  }) : super(key: key);
+
+  @override
+  _SurahDetailsScreenState createState() => _SurahDetailsScreenState();
+}
+
+class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
+  late AudioPlayerController audioController;
+  late QuranController quranController;
+  int currentIndex = 1; // To track the current Ayah index
+
+  @override
+  void initState() {
+    super.initState();
+    audioController = Get.find();
+    quranController = Get.find();
+    playCurrentAyahAudio();
+  }
+
+  void playCurrentAyahAudio() {
+    final ayah = widget.surahVerse[currentIndex];
+    final audioFile = quranController.audioFiles.firstWhere(
+      (audio) => audio.chapterId == widget.surahNumber,
+      // You can add specific logic here if you have separate audio files for each Ayah
+      orElse: () {
+        print(
+            'Audio file not found for Ayah ${ayah.numberInSurah} in Surah ${widget.surahNumber}');
+        return AudioFile(
+          id: 0,
+          chapterId: widget.surahNumber,
+          fileSize: 0,
+          format: Format.MP3,
+          audioUrl: '',
+        );
+      },
+    );
+
+    if (audioFile.audioUrl.isNotEmpty) {
+      audioController.playOrPauseAudio(audioFile);
+    }
+  }
+
+  void playNextAyah() {
+    if (currentIndex < widget.surahM.number - 1) {
+      print(currentIndex);
+      setState(() {
+        currentIndex++;
+        playCurrentAyahAudio();
+      });
+    }
+  }
+
+  void playPreviousAyah() {
+    if (currentIndex > 0) {
+      setState(() {
+        currentIndex--;
+        playCurrentAyahAudio();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final AudioPlayerController audioController = Get.find();
-    final QuranController quranController = Get.find();
-    final AudioFile audioFile = AudioFile(
-      id: 0,
-      chapterId: surahNumber,
-      fileSize: 0,
-      format: Format.MP3,
-      audioUrl: audioPlayerUrl,
-    );
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -56,7 +107,7 @@ class SurahDetailsScreen extends StatelessWidget {
         ),
         backgroundColor: const Color(0xFF0F6467),
         title: Text(
-          '$surahNumber. $surahName',
+          '${widget.surahNumber}. ${widget.surahName}',
           style: const TextStyle(color: Colors.white, fontSize: 18),
         ),
         actions: [
@@ -80,16 +131,16 @@ class SurahDetailsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    '$surahVerseCount verses | $englishVerse',
+                    '${widget.surahVerseCount} verses | ${widget.englishVerse}',
                     style:
                         const TextStyle(fontSize: 16, color: Color(0xFF0F6467)),
                   ),
                   const Divider(height: 20),
                   Expanded(
                     child: ListView.builder(
-                      itemCount: surahVerse.length,
+                      itemCount: widget.surahVerse.length,
                       itemBuilder: (context, index) {
-                        final ayah = surahVerse[index];
+                        final ayah = widget.surahVerse[index];
                         final translation =
                             quranController.translationData.firstWhere(
                           (t) => t.aya == ayah.numberInSurah.toString(),
@@ -150,23 +201,33 @@ class SurahDetailsScreen extends StatelessWidget {
           ),
           Obx(() {
             return AudioPlayerBar(
-              totalVerseCount: 'Verses ${surahVerse.length} ',
+              totalVerseCount: 'Verses ${widget.surahVerse.length}',
               audioPlayerController: audioController,
               isPlaying: audioController.isPlaying.value,
               currentAudio: audioController.currentAudio.value,
               onPlayPause: () {
-                if (audioController.currentAudio.value != null) {
-                  audioController
-                      .playOrPauseAudio(audioController.currentAudio.value!);
+                final audioFile = quranController.audioFiles.firstWhere(
+                  (audio) => audio.chapterId == widget.surahNumber,
+                  orElse: () {
+                    print(
+                        "Audio file not found for Surah number ${widget.surahNumber}");
+                    return AudioFile(
+                      id: 0,
+                      chapterId: widget.surahNumber,
+                      fileSize: 0,
+                      format: Format.MP3,
+                      audioUrl: '',
+                    );
+                  },
+                );
+
+                if (audioFile.audioUrl.isNotEmpty) {
+                  audioController.playOrPauseAudio(audioFile);
                 }
               },
               onStop: audioController.stopAudio,
-              onNext: () {
-                audioController.playNextAudio(quranController.audioFiles);
-              },
-              onPrevious: () {
-                audioController.playPreviousAudio(quranController.audioFiles);
-              },
+              onNext: playNextAyah,
+              onPrevious: playPreviousAyah,
             );
           }),
         ],

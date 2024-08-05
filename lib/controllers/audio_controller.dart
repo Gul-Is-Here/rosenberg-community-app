@@ -1,7 +1,10 @@
+// audio_controller.dart
+
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import '../model/quran_audio_model.dart';
-// import '../views/quran_screen.dart/audio_hanadler.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AudioPlayerController extends GetxController {
   var isPlaying = false.obs;
@@ -12,7 +15,7 @@ class AudioPlayerController extends GetxController {
   var currentAudio = Rxn<AudioFile>();
 
   final AudioPlayer audioPlayer = AudioPlayer();
-  List<AudioFile> audioFiles = [];
+  // var audioFiles = <AudioFile>[].obs;
 
   final List<double> speedOptions = [0.5, 1.0, 1.5, 2.0];
 
@@ -35,24 +38,55 @@ class AudioPlayerController extends GetxController {
     });
   }
 
+  // Future<void> fetchAudioFiles() async {
+  //   try {
+  //     final response = await http
+  //         .get(Uri.parse('https://api.quran.com/api/v4/chapter_recitations/2'));
+
+  //     if (response.statusCode == 200) {
+  //       final jsonData = json.decode(response.body);
+  //       audioFiles.value = (jsonData['audio_file'] as List)
+  //           .map((item) => AudioFile.fromJson(item))
+  //           .toList();
+  //     } else {
+  //       throw Exception('Failed to load audio files');
+  //     }
+  //   } catch (e) {
+  //     // Handle error (e.g., show a message to the user)
+  //     print('Error fetching audio files: $e');
+  //   }
+  // }
+
   Future<void> playOrPauseAudio(AudioFile audio) async {
-    if (currentAudio.value?.id == audio.id && isPlaying.value) {
-      await audioPlayer.pause();
-    } else {
-      await audioPlayer.setUrl(audio.audioUrl);
-      await audioPlayer.setSpeed(playbackSpeed.value);
-      await audioPlayer.play();
-      currentAudio.value = audio;
+    try {
+      if (currentAudio.value?.id == audio.id && isPlaying.value) {
+        await audioPlayer.pause();
+        isPlaying.value = false;
+      } else {
+        await audioPlayer.setUrl(audio.audioUrl);
+        await audioPlayer.setSpeed(playbackSpeed.value);
+        await audioPlayer.play();
+        currentAudio.value = audio;
+        isPlaying.value = true;
+      }
+    } catch (e) {
+      // Handle error (e.g., show a message to the user)
+      print('Error playing or pausing audio: $e');
     }
   }
 
   Future<void> stopAudio() async {
-    await audioPlayer.stop();
-    isPlaying.value = false;
+    try {
+      await audioPlayer.stop();
+      currentAudio.value = null;
+      isPlaying.value = false;
+    } catch (e) {
+      // Handle error (e.g., show a message to the user)
+      print('Error stopping audio: $e');
+    }
   }
 
-  Future<void> playNextAudio(List<AudioFile> audioFiles) async {
-    this.audioFiles = audioFiles;
+  Future<void> playNextAudio(RxList<AudioFile> audioFiles) async {
     if (currentAudio.value == null) return;
 
     int currentIndex =
@@ -63,8 +97,7 @@ class AudioPlayerController extends GetxController {
     await playOrPauseAudio(nextAudio);
   }
 
-  Future<void> playPreviousAudio(List<AudioFile> audioFiles) async {
-    this.audioFiles = audioFiles;
+  Future<void> playPreviousAudio(RxList<AudioFile> audioFiles) async {
     if (currentAudio.value == null) return;
 
     int currentIndex =
@@ -76,9 +109,14 @@ class AudioPlayerController extends GetxController {
   }
 
   Future<void> setPlaybackSpeed(double speed) async {
-    playbackSpeed.value = speed;
-    if (isPlaying.value) {
-      await audioPlayer.setSpeed(speed);
+    try {
+      playbackSpeed.value = speed;
+      if (isPlaying.value) {
+        await audioPlayer.setSpeed(speed);
+      }
+    } catch (e) {
+      // Handle error (e.g., show a message to the user)
+      print('Error setting playback speed: $e');
     }
   }
 

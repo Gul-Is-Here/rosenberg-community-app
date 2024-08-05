@@ -1,5 +1,4 @@
 import 'package:community_islamic_app/controllers/quran_controller.dart';
-import 'package:community_islamic_app/views/quran_screen.dart/surah_detail_screen.dart';
 import 'package:community_islamic_app/widgets/customized_surah_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,10 +6,17 @@ import 'package:velocity_x/velocity_x.dart';
 import '../../constants/image_constants.dart';
 import '../../controllers/audio_controller.dart';
 import '../../model/quran_audio_model.dart';
+import '../../model/quran_model.dart';
+import 'surah_detail_screen.dart';
 
-class QuranScreen extends StatelessWidget {
+class QuranScreen extends StatefulWidget {
   const QuranScreen({super.key});
 
+  @override
+  State<QuranScreen> createState() => _QuranScreenState();
+}
+
+class _QuranScreenState extends State<QuranScreen> {
   @override
   Widget build(BuildContext context) {
     final QuranController quranController = Get.put(QuranController());
@@ -33,6 +39,7 @@ class QuranScreen extends StatelessWidget {
 
         return Column(
           children: [
+            // Header Section
             SizedBox(
               height: screenHeight * .25,
               child: Stack(
@@ -55,7 +62,7 @@ class QuranScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           image: DecorationImage(
-                            image: AssetImage(qiblaTopBg),
+                            image: AssetImage(qiblaTopBg), // Background image
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -104,16 +111,16 @@ class QuranScreen extends StatelessWidget {
                 ],
               ),
             ),
+            // List of Surahs
             Expanded(
               child: Obx(
                 () => ListView.builder(
                   itemCount: quranController.chapters.length,
                   itemBuilder: (context, index) {
                     final chapter = quranController.chapters[index];
-                    quranController.chapterId.value =
-                        chapter.id; // Update chapter ID
                     final surah =
                         quranController.getSurahByChapterId(chapter.id);
+
                     final audio = quranController.audioFiles.firstWhere(
                       (audio) => audio.chapterId == chapter.id,
                       orElse: () => AudioFile(
@@ -135,20 +142,29 @@ class QuranScreen extends StatelessWidget {
                               print(surah);
                             },
                             onTap2: () {
-                              audioController.playOrPauseAudio(audio);
+                              if (audio.audioUrl.isNotEmpty) {
+                                audioController.playOrPauseAudio(audio);
+                              } else {
+                                print(
+                                    'Audio file not found for chapter ${chapter.id}');
+                              }
                             },
                             surahOnTap: () async {
                               if (surah != null) {
-                                await quranController.fetchTranslationData(
-                                    chapter.id); // Fetch translation data
+                                // Stop any currently playing audio
+                                // audioController.stopAudio();
+
+                                // Fetch translation data and navigate to SurahDetailsScreen
+                                await quranController
+                                    .fetchTranslationData(chapter.id);
                                 Get.to(() => SurahDetailsScreen(
+                                      surahM: surah,
                                       surahVerseCount: surah.ayahs.length,
                                       surahVerseEng:
                                           quranController.translationData,
-                                      audioPlayerUrl: audio.audioUrl,
+                                      audioPlayerUrl: audio,
                                       surahName: surah.name,
                                       surahNumber: surah.number,
-                                      surahverseCount: surah.ayahs.length,
                                       englishVerse: surah.englishName,
                                       verse: surah.name,
                                       surahVerse: surah.ayahs,
@@ -162,20 +178,23 @@ class QuranScreen extends StatelessWidget {
                                 ? Icons.pause
                                 : Icons.play_arrow,
                             surahTxet: surah?.name ?? 'Surah not found',
-                            thirdIcon: kabbaIcon,
+                            thirdIcon: chapter.revelationPlace ==
+                                    RevelationPlace.MAKKAH
+                                ? kabbaIcon
+                                : masjidIcon,
                             surahNumber: chapter.id,
                             onTapNavigation: () async {
                               if (surah != null) {
-                                await quranController.fetchTranslationData(
-                                    chapter.id); // Fetch translation data
+                                await quranController
+                                    .fetchTranslationData(chapter.id);
                                 Get.to(() => SurahDetailsScreen(
+                                      surahM: surah,
                                       surahVerseCount: surah.ayahs.length,
                                       surahVerseEng:
                                           quranController.translationData,
-                                      audioPlayerUrl: audio.audioUrl,
+                                      audioPlayerUrl: audio,
                                       surahName: surah.name,
                                       surahNumber: surah.number,
-                                      surahverseCount: surah.ayahs.length,
                                       englishVerse: surah.englishName,
                                       verse: surah.name,
                                       surahVerse: surah.ayahs,
