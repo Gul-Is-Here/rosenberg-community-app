@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../constants/image_constants.dart';
 import '../../controllers/audio_controller.dart';
+
 import '../../model/quran_audio_model.dart';
 import '../../model/quran_model.dart';
 import 'surah_detail_screen.dart';

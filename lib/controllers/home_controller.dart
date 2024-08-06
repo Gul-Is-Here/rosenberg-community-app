@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
-import 'package:community_islamic_app/views/home_screens/azanoverlay_screen.dart';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;

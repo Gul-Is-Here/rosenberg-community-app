@@ -3,10 +3,9 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:workmanager/workmanager.dart';
-
+import 'package:timezone/data/latest.dart' as tz;
 import '../views/home_screens/azanoverlay_screen.dart';
 
 class NotificationServices {
@@ -43,8 +42,9 @@ class NotificationServices {
       initializationSettings,
       onDidReceiveNotificationResponse: (payload) async {
         if (payload == 'azan') {
-          // Handle notification tap
-          showAzanOverlay();
+          Get.to(() => AzanoverlayScreen(
+                audioPlayer: audioPlayer,
+              ));
         }
       },
     );
@@ -105,6 +105,7 @@ class NotificationServices {
     await _flutterLocalNotificationsPlugin.zonedSchedule(
         0, title, body, scheduledDate, notificationDetails,
         androidScheduleMode: AndroidScheduleMode.alarmClock,
+        // ignore: deprecated_member_use
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
@@ -115,7 +116,9 @@ class NotificationServices {
     print('Playing Azan...');
     sendNotification('Azan', 'It\'s time for prayer');
     await audioPlayer.play(AssetSource('azan1.wav'));
-    showAzanOverlay();
+    Get.to(() => AzanoverlayScreen(
+          audioPlayer: audioPlayer,
+        ));
   }
 
   Future<void> stopAzan() async {
@@ -140,12 +143,11 @@ class NotificationServices {
     final durationUntilTask = scheduledTime.difference(DateTime.now());
     if (durationUntilTask.isNegative) return;
 
-    Workmanager().registerPeriodicTask(
-      frequency: durationUntilTask,
+    Workmanager().registerOneOffTask(
       'id_unique_${scheduledTime.millisecondsSinceEpoch}',
-      'backgroundTask',
+      'playAzanTask',
       initialDelay: durationUntilTask,
-      inputData: <String, dynamic>{'task': playAzan},
+      inputData: <String, dynamic>{'task': 'playAzan'},
       constraints: Constraints(
         networkType: NetworkType.connected,
         requiresBatteryNotLow: true,
@@ -154,6 +156,17 @@ class NotificationServices {
       ),
     );
     print('Background task scheduled for: $scheduledTime');
+  }
+
+  static void callbackDispatcher() {
+    Workmanager().executeTask((task, inputData) {
+      if (inputData!['task'] == 'playAzan') {
+        // Perform the task here (e.g., play Azan sound)
+        final notificationServices = NotificationServices();
+        notificationServices.playAzan();
+      }
+      return Future.value(true);
+    });
   }
 
   void dispose() {

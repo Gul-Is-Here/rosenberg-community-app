@@ -1,4 +1,3 @@
-import 'package:community_islamic_app/model/prayer_times_static_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppClass {
