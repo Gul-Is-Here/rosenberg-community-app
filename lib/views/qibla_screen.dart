@@ -1,23 +1,29 @@
 import 'dart:math';
+import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/widgets/customized_prayertext_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../constants/image_constants.dart';
 import '../controllers/qibla_controller.dart';
-// import '../controllers/qiblah_controller.dart';
 
+// ignore: must_be_immutable
 class QiblahScreen extends StatelessWidget {
   QiblahScreen({super.key});
 
   final QiblahController controller = Get.put(QiblahController());
+  final homeController = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
+    String? currentIqamaTime = homeController.getCurrentIqamaTime();
+
+    print('Qibla Screen $currentIqamaTime');
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -121,14 +127,12 @@ class QiblahScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                          height: screenHeight *
-                              0.10), // Space for background card and 20-pixel gap
+                      SizedBox(height: screenHeight * 0.10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Padding(
+                          Padding(
                             padding: EdgeInsets.symmetric(horizontal: 8.0),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -138,19 +142,23 @@ class QiblahScreen extends StatelessWidget {
                                     iconColor: Colors.white,
                                     color: Colors.black,
                                     title: 'PRAYER: ',
-                                    prayerName: 'ASR'),
+                                    prayerName:
+                                        homeController.currentPrayerTime!),
                                 CustomizedPrayerTextWidget(
                                     iconColor: Colors.white,
                                     color: Colors.black,
                                     icon: Icons.timelapse,
                                     title: "NAMAZ",
-                                    prayerName: ': 3 hours 45 mins'),
+                                    prayerName: homeController.formatPrayerTime(
+                                        homeController
+                                            .getPrayerTimes()
+                                            .toString())),
                                 CustomizedPrayerTextWidget(
                                     iconColor: Colors.white,
                                     color: Colors.black,
                                     icon: Icons.timelapse,
                                     title: "IQAMA",
-                                    prayerName: ': 3 hours 45 mins')
+                                    prayerName: currentIqamaTime)
                               ],
                             ),
                           ),
@@ -182,7 +190,7 @@ class QiblahScreen extends StatelessWidget {
                                       5.widthBox,
                                       const Icon(
                                         Icons.location_on,
-                                        color: Color.fromARGB(255, 43, 4, 94),
+                                        color: Color(0xFF006367),
                                       ),
                                     ],
                                   ),
@@ -207,7 +215,8 @@ class QiblahScreen extends StatelessWidget {
                       ),
                       Container(
                         width: double.infinity,
-                        height: 40, color: Color(0xFF006367),
+                        height: 40,
+                        color: Color(0xFF006367),
                         child: const Padding(
                           padding: EdgeInsets.all(4.0),
                           child: Text(
@@ -217,7 +226,7 @@ class QiblahScreen extends StatelessWidget {
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold),
                           ),
-                        ), // Re)d container
+                        ),
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -233,11 +242,10 @@ class QiblahScreen extends StatelessWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Card(
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        10,
-                                      ),
-                                      side: BorderSide(
-                                          width: 5, color: Color(0xFF006367))),
+                                    borderRadius: BorderRadius.circular(10),
+                                    side: BorderSide(
+                                        width: 5, color: Color(0xFF006367)),
+                                  ),
                                   color: Colors.white,
                                   child: Padding(
                                     padding: const EdgeInsets.all(4.0),
@@ -264,7 +272,8 @@ class QiblahScreen extends StatelessWidget {
                   child: Container(
                     alignment: Alignment.center,
                     child: const Text(
-                        "Unable to get Qiblah direction,\n       Please restart the app"),
+                      "Unable to get Qiblah direction,\n       Please restart the app",
+                    ),
                   ),
                 );
               }

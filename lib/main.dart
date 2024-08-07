@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/views/home_screens/masjid_map/order_traking_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -60,8 +61,10 @@ class MyApp extends StatelessWidget {
               isExtended: true,
               backgroundColor: Colors.transparent,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40)),
-              onPressed: () {},
+                  borderRadius: BorderRadius.circular(45)),
+              onPressed: () {
+                Get.to(() => OrderTrackingPage());
+              },
               child: Image.asset(
                 masjidIcon,
                 height: 120,

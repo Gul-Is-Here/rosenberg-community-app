@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:workmanager/workmanager.dart';
 import '../model/prayer_model.dart';
 import '../model/jumma_model.dart';
+import '../model/prayer_times_static_model.dart';
 import '../services/background_task.dart';
 import '../services/notification_service.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -18,6 +19,8 @@ class HomeController extends GetxController {
   var timePrayer = ''.obs;
   var jummaTimes = Jumma().obs;
   var isLoading = true.obs;
+  String? currentPrayerTime;
+  var currentIqamaTime;
   late NotchBottomBarController notchBottomBarController;
 
   var adjustment;
@@ -132,11 +135,11 @@ class HomeController extends GetxController {
       var now = DateTime.now();
       final timings = prayerTimes.value.data?.timings;
 // Check for testing condition: play Azan every minute
-      if (now.second == 0) {
-        _notificationServices.playAzan();
-        _notificationServices
-            .scheduleBackgroundTask(DateTime.now().add(Duration(seconds: 10)));
-      }
+      // if (now.second == 0) {
+      //   _notificationServices.playAzan();
+      //   _notificationServices
+      //       .scheduleBackgroundTask(DateTime.now().add(Duration(seconds: 10)));
+      // }
       if (timings != null) {
         if (isTimeForPrayer(now, parseTime(timings.fajr))) {
           _notificationServices.playAzan();
@@ -183,5 +186,102 @@ class HomeController extends GetxController {
 
   void stopAzan() {
     _notificationServices.stopAzan();
+  }
+
+    String getCurrentPrayer() {
+    final now = DateTime.now();
+    final timeNow = DateFormat("HH:mm").format(now);
+    var newTime = DateFormat("HH:mm").parse(timeNow);
+    print('New Time $newTime');
+
+    if (prayerTimes.value.data?.timings != null) {
+      final timings = prayerTimes.value.data!.timings;
+
+      final fajrTime = DateFormat("HH:mm").parse(timings.fajr);
+      final dhuhrTime = DateFormat("HH:mm").parse(timings.dhuhr);
+      final asrTime = DateFormat("HH:mm").parse(timings.asr);
+      final maghribTime = DateFormat("HH:mm").parse(timings.maghrib);
+      final ishaTime = DateFormat("HH:mm").parse(timings.isha);
+
+      if (newTime.isBefore(fajrTime)) {
+        return newTime.isAfter(ishaTime) ? 'Isha' : 'Fajr';
+      } else if (newTime.isBefore(dhuhrTime)) {
+        return 'Dhuhr';
+      } else if (newTime.isBefore(asrTime)) {
+        return 'Asr';
+      } else if (newTime.isBefore(maghribTime)) {
+        return 'Maghrib';
+      } else if (newTime.isBefore(ishaTime)) {
+        return 'Isha';
+      } else {
+        return 'Fajr';
+      }
+    }
+    return 'Isha';
+  }
+
+  // Function to find the current Iqama timings based on the current prayer time
+  String getCurrentIqamaTime() {
+    DateTime now = DateTime.now();
+    String currentDateStr = DateFormat('d/M').format(now);
+    DateTime currentDate = parseDate(currentDateStr);
+
+    for (var timing in iqamahTiming) {
+      DateTime startDate = parseDate(timing.startDate);
+      DateTime endDate = parseDate(timing.endDate);
+
+      if (currentDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
+          currentDate.isBefore(endDate.add(const Duration(days: 1)))) {
+        String currentPrayer = getCurrentPrayer();
+
+        switch (currentPrayer) {
+          case 'Fajr':
+            return timing.fjar;
+          case 'Dhuhr':
+            return timing.zuhr;
+          case 'Asr':
+            return timing.asr;
+          case 'Maghrib':
+            final maghribTime = now.add(const Duration(minutes: 5));
+            return DateFormat("h:mm a").format(maghribTime);
+          case 'Isha':
+            return timing.isha;
+          default:
+            return "Invalid prayer time";
+        }
+      }
+    }
+    return "Iqama time not found";
+  }
+
+  // Function to parse a date string in "d/M" format to DateTime
+  DateTime parseDate(String dateStr) {
+    return DateFormat('d/M').parse(dateStr);
+  }
+
+  // Function to get prayer times
+  Object? getPrayerTimes() {
+    String currentPrayer = getCurrentPrayer();
+    if (currentPrayer == 'Fajr') {
+      return prayerTimes.value.data?.timings.fajr;
+    } else if (currentPrayer == 'Dhuhr') {
+      return prayerTimes.value.data?.timings.dhuhr;
+    } else if (currentPrayer == 'Asr') {
+      return prayerTimes.value.data?.timings.asr;
+    } else if (currentPrayer == 'Maghrib') {
+      return prayerTimes.value.data?.timings.maghrib;
+    } else {
+      return prayerTimes.value.data?.timings.isha;
+    }
+  }
+
+  // Function to format prayer time
+  String formatPrayerTime(String time) {
+    try {
+      final dateTime = DateFormat("HH:mm").parse(time);
+      return DateFormat("h:mm a").format(dateTime);
+    } catch (e) {
+      return time;
+    }
   }
 }
