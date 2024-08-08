@@ -9,7 +9,8 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application android:label="community_islamic_app" android:icon="@mipmap/ic_launcher" android:usesCleartextTraffic="true" android:allowBackup="true" android:theme="@style/LaunchTheme" android:enableOnBackInvokedCallback="true">
 
         <!-- Main Activity -->
@@ -59,7 +60,7 @@
         </receiver>
 
         <meta-data android:name="flutterEmbedding" android:value="2"/>
-
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyD-abc123def456GHIJKLMNOP7890QRSTUV"/>
     </application>
 
     <queries>

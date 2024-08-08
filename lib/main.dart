@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(45)),
               onPressed: () {
-                Get.to(() => OrderTrackingPage());
+                Get.to(() => const OrderTrackingPage());
               },
               child: Image.asset(
                 masjidIcon,
