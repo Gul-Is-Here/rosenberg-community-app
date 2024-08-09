@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -18,7 +19,7 @@ class CustomizedSurahWidget extends StatelessWidget {
   final void Function() onTap1;
   final void Function() onTap2;
   final void Function() surahOnTap;
-  final IconData firstIcon;
+  final String firstIcon;
   final IconData secondIcon;
   final String surahTxet;
   final String thirdIcon;
@@ -42,15 +43,16 @@ class CustomizedSurahWidget extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(25),
                 ),
-                child: Center(
-                  child: IconButton(
-                    onPressed: onTap1,
-                    icon: Icon(
-                      firstIcon,
-                      size: 24,
-                      color: Colors.green,
-                    ),
-                  ),
+                child: GestureDetector(
+                  onTap: onTap1,
+                  child: Center(
+                      child: Image.asset(
+                    firstIcon,
+                    height: 45,
+                    width: 45,
+                    fit: BoxFit.cover,
+                    color: Color(0xFF006367),
+                  )),
                 ),
               ),
             ),

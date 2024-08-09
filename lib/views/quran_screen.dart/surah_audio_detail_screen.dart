@@ -271,7 +271,7 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 16, horizontal: 10),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   Text(
                                     'Ayah ${ayah.numberInSurah}',

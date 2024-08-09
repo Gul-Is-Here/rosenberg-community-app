@@ -7,8 +7,8 @@ import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:velocity_x/velocity_x.dart';
-import '../constants/image_constants.dart';
-import '../controllers/qibla_controller.dart';
+import '../../constants/image_constants.dart';
+import '../../controllers/qibla_controller.dart';
 
 // ignore: must_be_immutable
 class QiblahScreen extends StatelessWidget {

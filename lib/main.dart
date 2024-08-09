@@ -9,7 +9,7 @@ import 'services/background_task.dart';
 import 'services/notification_service.dart';
 import 'views/donation_screens/donation_screen.dart';
 import 'views/home_screens/home_screen.dart';
-import 'views/qibla_screen.dart';
+import 'views/qibla_screen/qibla_screen.dart';
 import 'views/quran_screen.dart/quran_screen.dart';
 import 'widgets/customized_bottom_bar.dart';
 
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
     final List<Widget> _pages = [
       const HomeScreen(),
       QiblahScreen(),
-      QuranScreen(),
+      const QuranScreen(),
       const DonationScreen()
     ];
 
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
               isExtended: true,
               backgroundColor: Colors.transparent,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(45)),
+                  borderRadius: BorderRadius.circular(50)),
               onPressed: () {
                 Get.to(() => const OrderTrackingPage());
               },

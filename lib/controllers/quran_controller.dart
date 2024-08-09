@@ -9,7 +9,7 @@ import '../model/quran_audio_model.dart';
 import '../model/quran_model.dart';
 import '../model/surah_detail_model.dart';
 import '../model/surah_english_model.dart';
-import '../views/quran_screen.dart/surah_detail_screen.dart';
+import '../views/quran_screen.dart/surah_audio_detail_screen.dart';
 
 class QuranController extends GetxController {
   var isLoading = false.obs;

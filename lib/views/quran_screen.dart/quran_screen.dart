@@ -1,14 +1,15 @@
 import 'package:community_islamic_app/controllers/quran_controller.dart';
+import 'package:community_islamic_app/model/quran_model.dart';
+import 'package:community_islamic_app/views/quran_screen.dart/surah_details.dart';
 import 'package:community_islamic_app/widgets/customized_surah_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../constants/image_constants.dart';
 import '../../controllers/audio_controller.dart';
-
 import '../../model/quran_audio_model.dart';
-import '../../model/quran_model.dart';
-import 'surah_detail_screen.dart';
+import '../../widgets/audio_player_bar_quran.dart';
+import 'surah_audio_detail_screen.dart';
 
 class QuranScreen extends StatefulWidget {
   const QuranScreen({super.key});
@@ -144,7 +145,16 @@ class _QuranScreenState extends State<QuranScreen> {
                             () => CustomizedSurahWidget(
                               onTap1: () {
                                 print('----Surah-------');
-                                print(surah);
+                                Get.to(() => OnlySurahDetailsScreen(
+                                    surahM: surah!,
+                                    surahVerseEng:
+                                        quranController.translationData,
+                                    surahVerse: surah.ayahs,
+                                    surahName: surah.name,
+                                    surahNumber: surah.number,
+                                    surahVerseCount: surah.ayahs.length,
+                                    englishVerse: surah.englishName,
+                                    verse: surah.name));
                               },
                               onTap2: () {
                                 if (audio.audioUrl.isNotEmpty) {
@@ -156,10 +166,6 @@ class _QuranScreenState extends State<QuranScreen> {
                               },
                               surahOnTap: () async {
                                 if (surah != null) {
-                                  // Stop any currently playing audio
-                                  // audioController.stopAudio();
-
-                                  // Fetch translation data and navigate to SurahDetailsScreen
                                   await quranController
                                       .fetchTranslationData(chapter.id);
                                   Get.to(() => SurahDetailsScreen(
@@ -176,7 +182,7 @@ class _QuranScreenState extends State<QuranScreen> {
                                       ));
                                 }
                               },
-                              firstIcon: Icons.book,
+                              firstIcon: quranIcon,
                               secondIcon: audioController.isPlaying.value &&
                                       audioController.currentAudio.value?.id ==
                                           audio.id
@@ -192,18 +198,20 @@ class _QuranScreenState extends State<QuranScreen> {
                                 if (surah != null) {
                                   await quranController
                                       .fetchTranslationData(chapter.id);
-                                  Get.to(() => SurahDetailsScreen(
-                                        surahM: surah,
-                                        surahVerseCount: surah.ayahs.length,
-                                        surahVerseEng:
-                                            quranController.translationData,
-                                        audioPlayerUrl: audio,
-                                        surahName: surah.name,
-                                        surahNumber: surah.number,
-                                        englishVerse: surah.englishName,
-                                        verse: surah.name,
-                                        surahVerse: surah.ayahs,
-                                      ));
+                                  Get.to(
+                                    () => SurahDetailsScreen(
+                                      surahM: surah,
+                                      surahVerseCount: surah.ayahs.length,
+                                      surahVerseEng:
+                                          quranController.translationData,
+                                      audioPlayerUrl: audio,
+                                      surahName: surah.name,
+                                      surahNumber: surah.number,
+                                      englishVerse: surah.englishName,
+                                      verse: surah.name,
+                                      surahVerse: surah.ayahs,
+                                    ),
+                                  );
                                 }
                               },
                             ),
@@ -215,6 +223,22 @@ class _QuranScreenState extends State<QuranScreen> {
                 ),
               ),
             ),
+            50.heightBox,
+            // Audio Player Bar
+            Obx(() => audioController.isPlaying.value
+                ? AudioPlayerBar2(
+                    audioPlayerController: audioController,
+                    isPlaying: audioController.isPlaying.value,
+                    currentAudio: audioController.currentAudio.value,
+                    onPlayPause: () => audioController
+                        .playOrPauseAudio(audioController.currentAudio.value!),
+                    onStop: audioController.stopAudio,
+                    onNext: () => audioController
+                        .playNextAudio(quranController.audioFiles),
+                    onPrevious: () => audioController
+                        .playPreviousAudio(quranController.audioFiles),
+                  )
+                : SizedBox.shrink()),
           ],
         );
       }),

@@ -9,7 +9,7 @@ import '../constants/image_constants.dart';
 import '../controllers/home_controller.dart';
 import '../services/notification_service.dart';
 import '../model/prayer_times_static_model.dart';
-import '../views/qibla_screen.dart';
+import '../views/qibla_screen/qibla_screen.dart';
 import 'customized_card_widget.dart';
 import 'customized_prayertext_widget.dart';
 import 'customized_prayertime_widget.dart';
