@@ -1,176 +1,205 @@
-import 'dart:async';
+import 'package:app_settings/app_settings.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:community_islamic_app/views/home_screens/azanoverlay_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:timezone/timezone.dart' as tz;
-import 'package:permission_handler/permission_handler.dart';
-import 'package:workmanager/workmanager.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import '../views/home_screens/azanoverlay_screen.dart';
+import 'package:audioplayers/audioplayers.dart' as audioplayers;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class NotificationServices {
-  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationPlugin =
       FlutterLocalNotificationsPlugin();
-  final AndroidInitializationSettings _androidInitializationSettings =
-      const AndroidInitializationSettings('@mipmap/ic_launcher');
-
-  late AudioPlayer audioPlayer;
-  PlayerState? _playerState;
-  StreamSubscription<PlayerState>? _playerStateChangeSubscription;
+  final player = audioplayers.AudioPlayer();
+  final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
   NotificationServices() {
-    // Initialize the audio player
-    audioPlayer = AudioPlayer();
-    audioPlayer.setReleaseMode(ReleaseMode.stop);
+    initializeNotification();
+    requestNotificationPermission();
+    firebaseInit();
+  }
 
-    // Listen to player state changes
-    _playerStateChangeSubscription =
-        audioPlayer.onPlayerStateChanged.listen((state) {
-      _playerState = state;
-      print('PlayerState: $state');
+  Future<void> initializeNotification() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings();
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+            android: initializationSettingsAndroid,
+            iOS: initializationSettingsDarwin);
+
+    await _flutterLocalNotificationPlugin.initialize(initializationSettings,
+        onDidReceiveNotificationResponse: (NotificationResponse response) {
+      // Handle notification click here
+      print("Notification Clicked: ${response.payload}");
+      // Navigate to specific screen or perform an action
     });
   }
 
-  void initializeNotifications() async {
-    await _flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()!
-        .requestFullScreenIntentPermission();
-    InitializationSettings initializationSettings =
-        InitializationSettings(android: _androidInitializationSettings);
-    await _flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (payload) async {
-        if (payload == 'azan') {
+  void requestNotificationPermission() async {
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: true,
+      badge: true,
+      carPlay: true,
+      criticalAlert: true,
+      provisional: true,
+      sound: true,
+    );
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User Permission Granted');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      AppSettings.openAppSettings();
+    }
+  }
+
+  void firebaseInit() {
+    FirebaseMessaging.onMessage.listen((message) {
+      // Foreground notification
+      print("Received a foreground message: ${message.messageId}");
+      showNotification(message.notification?.title, message.notification?.body);
+
+      // Check for playAzan flag and trigger Azan sound
+      if (message.data['playAzan'] == 'true') {
+        playAzanSound();
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      // Handle notification when the app is opened from a terminated or background state
+      print("Notification Clicked: ${message.messageId}");
+    });
+
+    FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessageHandler);
+  }
+
+  Future<void> showNotification(String? title, String? body) async {
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails('adhan_channel', 'Adhan Channel',
+            importance: Importance.max,
+            priority: Priority.high,
+            playSound: true);
+
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+
+    await _flutterLocalNotificationPlugin.show(
+      0,
+      title ?? 'Prayer Time',
+      body ?? 'It\'s time for prayer.',
+      notificationDetails,
+      payload: 'azan',
+    );
+  }
+
+  Future<void> playAzanSound() async {
+    final player = audioplayers.AudioPlayer(); // Use audioplayers package
+    final assetPath = 'assets/azan.mp3'; // Path to your audio file in assets
+
+    // Load the audio source
+    await player.setSource(audioplayers.AssetSource(assetPath));
+
+    // Play the audio
+    await player.play(AssetSource(assetPath)); // Play with default settings
+  }
+
+  static Future<void> firebaseBackgroundMessageHandler(
+      RemoteMessage message) async {
+    // Handle background message
+    await NotificationServices().showNotification(
+        message.notification?.title, message.notification?.body);
+
+    if (message.data['playAzan'] == 'true') {
+      await NotificationServices().playAzanSound();
+    }
+  }
+
+  Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
+    try {
+      await Firebase.initializeApp();
+      final data = message.data;
+
+      if (data['playAzan'] == 'true') {
+        await NotificationServices().initializeNotification();
+        await NotificationServices().showNotification(
+          'Prayer Time',
+          'It\'s time for ${data['nextPrayer']} prayer!',
+        );
+        // Logic to navigate to AzanOverlayScreen
+        if (data['navigateTo'] == 'AzanOverlayScreen') {
+          // Code to show AzanOverlayScreen or handle the navigation
           Get.to(() => AzanoverlayScreen(
-                audioPlayer: audioPlayer,
+                audioPlayer: player,
               ));
         }
-      },
-    );
-
-    // Request notification permissions from the user
-    await requestNotificationPermissions();
-  }
-
-  Future<void> requestNotificationPermissions() async {
-    PermissionStatus status = await Permission.notification.status;
-    if (status.isDenied || status.isPermanentlyDenied) {
-      PermissionStatus result = await Permission.notification.request();
-      if (result.isGranted) {
-        print("Notification permission granted");
-      } else {
-        print("Notification permission denied");
       }
-    } else {
-      print("Notification permission already granted");
-    }
-  }
-
-  void sendNotification(String title, String body) async {
-    AndroidNotificationDetails androidNotificationDetails =
-        const AndroidNotificationDetails('adhan_channel', 'Adhan Channel',
-            importance: Importance.max,
-            priority: Priority.high,
-            playSound: true,
-            fullScreenIntent: true);
-    NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-    await _flutterLocalNotificationsPlugin
-        .show(0, title, body, notificationDetails, payload: 'azan');
-  }
-
-  void scheduleNotification(
-      String title, String body, DateTime scheduledTime) async {
-    if (scheduledTime.isBefore(DateTime.now())) {
-      print("Scheduled time must be in the future.");
-      return;
-    }
-
-    AndroidNotificationDetails androidNotificationDetails =
-        const AndroidNotificationDetails('adhan_channel', 'Adhan Channel',
-            importance: Importance.max,
-            priority: Priority.high,
-            playSound: true,
-            fullScreenIntent: true);
-    NotificationDetails notificationDetails =
-        NotificationDetails(android: androidNotificationDetails);
-
-    // Ensure timezone is initialized
-    tz.initializeTimeZones();
-    tz.TZDateTime scheduledDate = tz.TZDateTime.from(scheduledTime, tz.local);
-    print('Scheduled time: $scheduledTime');
-    print('Converted TZDateTime: $scheduledDate');
-
-    await _flutterLocalNotificationsPlugin.zonedSchedule(
-        0, title, body, scheduledDate, notificationDetails,
-        androidScheduleMode: AndroidScheduleMode.alarmClock,
-        // ignore: deprecated_member_use
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        payload: 'azan');
-  }
-
-  void playAzan() async {
-    print('Playing Azan...');
-    sendNotification('Azan', 'It\'s time for prayer');
-    await audioPlayer.play(AssetSource('azan1.wav'));
-    Get.to(() => AzanoverlayScreen(
-          audioPlayer: audioPlayer,
-        ));
-  }
-
-  Future<void> stopAzan() async {
-    try {
-      print('Stopping Azan...');
-      await audioPlayer.stop();
-      print('PlayerState: ${audioPlayer.state}');
-      print('Azan stopped successfully.');
     } catch (e) {
-      print('Failed to stop Azan: $e');
+      print("Error in background message handler: $e");
     }
   }
 
-  void showAzanOverlay() {
-    Get.to(() => AzanoverlayScreen(
-          audioPlayer: audioPlayer,
-        ));
+  Future<String> _getDeviceId() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? deviceId = prefs.getString('device_id');
+
+    if (deviceId == null) {
+      // Generate a new unique ID
+      deviceId = Uuid().v4(); // Generating a UUID v4
+      await prefs.setString('device_id', deviceId);
+      print('New device ID generated: $deviceId');
+    } else {
+      print('Existing device ID retrieved: $deviceId');
+    }
+
+    return deviceId;
   }
 
-  void scheduleBackgroundTask(DateTime scheduledTime) {
-    print('Scheduling background task...');
-    final durationUntilTask = scheduledTime.difference(DateTime.now());
-    if (durationUntilTask.isNegative) return;
+// Get and store device token in Firebase Realtime Database
+  Future<void> storeDeviceToken() async {
+    try {
+      // Get the device's unique ID
+      String deviceId = await _getDeviceId();
 
-    Workmanager().registerOneOffTask(
-      'id_unique_${scheduledTime.millisecondsSinceEpoch}',
-      'playAzanTask',
-      initialDelay: durationUntilTask,
-      inputData: <String, dynamic>{'task': 'playAzan'},
-      constraints: Constraints(
-        networkType: NetworkType.connected,
-        requiresBatteryNotLow: true,
-        requiresCharging: false,
-        requiresStorageNotLow: true,
-      ),
-    );
-    print('Background task scheduled for: $scheduledTime');
-  }
+      // Get the FCM token
+      String? token = await FirebaseMessaging.instance.getToken();
+      print('Device Token: $token');
 
-  static void callbackDispatcher() {
-    Workmanager().executeTask((task, inputData) {
-      if (inputData!['task'] == 'playAzan') {
-        // Perform the task here (e.g., play Azan sound)
-        final notificationServices = NotificationServices();
-        notificationServices.playAzan();
+      if (token != null) {
+        // Store or update the token under the unique device ID in Realtime Database
+        await FirebaseDatabase.instance.ref().child('devices/$deviceId').set({
+          'token': token,
+          'last_updated': DateTime.now().toIso8601String(),
+        });
+        print('Device token stored/updated successfully');
+      } else {
+        print('Failed to get FCM token.');
       }
-      return Future.value(true);
-    });
-  }
 
-  void dispose() {
-    _playerStateChangeSubscription?.cancel();
-    audioPlayer.dispose();
+      // Listen for token refresh and update the token
+      FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+        print('FCM Token refreshed: $newToken');
+        await FirebaseDatabase.instance
+            .ref()
+            .child('devices/$deviceId')
+            .update({
+          'token': newToken,
+          'last_updated': DateTime.now().toIso8601String(),
+        });
+        print('Device token updated successfully');
+      });
+    } catch (e) {
+      print('Error storing device token: ${e.toString()}');
+    }
   }
 }
