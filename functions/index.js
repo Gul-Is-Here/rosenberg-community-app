@@ -10,15 +10,10 @@ exports.sendAzanNotification = functions.pubsub.schedule('0 8 * * *')
         await sendAzanNotifications();
     });
 
-exports.testAzanNotification = functions.pubsub.schedule('every 1 minutes')
-    .onRun(async (context) => {
-        await sendAzanNotifications(true);
-    });
-
-async function sendAzanNotifications(isTest = false) {
+async function sendAzanNotifications() {
     try {
         // Fetch timings
-        const timings = isTest ? getDummyTimings() : await fetchTimings();
+        const timings = await fetchTimings();
 
         // Fetch device tokens from Firestore
         const tokensSnapshot = await admin.firestore().collection("devices").get();
@@ -29,7 +24,7 @@ async function sendAzanNotifications(isTest = false) {
         if (tokens.length > 0) {
             for (const token of tokens) {
                 if (token) {
-                    const message = createMessage(token, timings, isTest);
+                    const message = createMessage(token, timings);
                     try {
                         const response = await admin.messaging().send(message);
                         console.log("Successfully sent message:", response);
@@ -59,27 +54,13 @@ async function fetchTimings() {
     }
 }
 
-function getDummyTimings() {
-    const now = new Date();
-    now.setSeconds(0); // Ensure the seconds are set to 0
-
-    const timings = {
-        Fajr: new Date(now.getTime() + 1 * 60000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), // 1 minute from now
-        Dhuhr: new Date(now.getTime() + 2 * 60000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), // 2 minutes from now
-        Asr: new Date(now.getTime() + 3 * 60000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), // 3 minutes from now
-        Maghrib: new Date(now.getTime() + 4 * 60000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), // 4 minutes from now
-        Isha: new Date(now.getTime() + 5 * 60000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) // 5 minutes from now
-    };
-    return timings;
-}
-
-function createMessage(token, timings, isTest) {
+function createMessage(token, timings) {
     const nextPrayer = getNextPrayer(timings);
     return {
         token: token,
         notification: {
-            title: isTest ? "Azan Test" : "Azan",
-            body: `It's time for ${nextPrayer} prayer! ${isTest ? "(Test)" : ""}`,
+            title: "Azan",
+            body: `It's time for ${nextPrayer} prayer!`,
         },
         android: {
             priority: "high",
@@ -115,24 +96,3 @@ function getNextPrayer(timings) {
         return "Fajr"; // Default to Fajr if all prayers have passed
     }
 }
-
-// Simple test function to send a notification
-exports.simpleTestNotification = functions.https.onRequest(async (req, res) => {
-    const token = req.query.token; // Pass the device token as a query parameter
-    const message = {
-        token: token,
-        notification: {
-            title: 'Test Notification',
-            body: 'This is a test notification',
-        },
-    };
-
-    try {
-        const response = await admin.messaging().send(message);
-        console.log('Successfully sent message:', response);
-        res.status(200).send('Notification sent successfully');
-    } catch (error) {
-        console.error('Error sending message:', error);
-        res.status(500).send('Error sending notification');
-    }
-});
