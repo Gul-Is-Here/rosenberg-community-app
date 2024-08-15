@@ -26,7 +26,7 @@ void main() async {
   final notificationServices = NotificationServices();
   await notificationServices.initializeNotification();
   notificationServices.storeDeviceToken();
-
+  notificationServices.checkDeviceTokens();
   // Set up Firebase Messaging background handler
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 

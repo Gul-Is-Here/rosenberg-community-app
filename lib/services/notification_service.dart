@@ -1,12 +1,12 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:community_islamic_app/model/prayer_model.dart';
 import 'package:community_islamic_app/views/home_screens/azanoverlay_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:audioplayers/audioplayers.dart' as audioplayers;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -14,8 +14,9 @@ class NotificationServices {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationPlugin =
       FlutterLocalNotificationsPlugin();
-  final player = audioplayers.AudioPlayer();
-  final DatabaseReference _database = FirebaseDatabase.instance.ref();
+  final AudioPlayer player = AudioPlayer(); // Using audioplayers package
+  final FirebaseFirestore _firestore =
+      FirebaseFirestore.instance; // Firestore instance
 
   NotificationServices() {
     initializeNotification();
@@ -35,12 +36,13 @@ class NotificationServices {
             android: initializationSettingsAndroid,
             iOS: initializationSettingsDarwin);
 
-    await _flutterLocalNotificationPlugin.initialize(initializationSettings,
-        onDidReceiveNotificationResponse: (NotificationResponse response) {
-      // Handle notification click here
-      print("Notification Clicked: ${response.payload}");
-      // Navigate to specific screen or perform an action
-    });
+    await _flutterLocalNotificationPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        // Handle notification click
+        Get.to(() => AzanoverlayScreen(audioPlayer: player));
+      },
+    );
   }
 
   void requestNotificationPermission() async {
@@ -78,9 +80,12 @@ class NotificationServices {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       // Handle notification when the app is opened from a terminated or background state
       print("Notification Clicked: ${message.messageId}");
+      _navigateToAzanOverlayScreen();
     });
 
-    FirebaseMessaging.onBackgroundMessage(firebaseBackgroundMessageHandler);
+    FirebaseMessaging.onBackgroundMessage(
+      firebaseBackgroundMessageHandler,
+    );
   }
 
   Future<void> showNotification(String? title, String? body) async {
@@ -103,49 +108,109 @@ class NotificationServices {
   }
 
   Future<void> playAzanSound() async {
-    final player = audioplayers.AudioPlayer(); // Use audioplayers package
-    final assetPath = 'assets/azan.mp3'; // Path to your audio file in assets
+    try {
+      print("Starting audio playback...");
 
-    // Load the audio source
-    await player.setSource(audioplayers.AssetSource(assetPath));
+      // Load and play the audio file
+      await player.play(AssetSource("azan1.wav"));
+      print("Audio playback started.");
 
-    // Play the audio
-    await player.play(AssetSource(assetPath)); // Play with default settings
-  }
+      player.onPlayerStateChanged.listen((PlayerState state) {
+        print('Player state changed to: $state');
+        if (state == PlayerState.playing) {
+          print("AudioPlayer is playing.");
+        } else if (state == PlayerState.paused) {
+          print("AudioPlayer is paused.");
+        } else if (state == PlayerState.stopped) {
+          print("AudioPlayer is stopped.");
+        } else if (state == PlayerState.completed) {
+          print("AudioPlayer playback completed.");
+        } else {
+          print("AudioPlayer state: $state");
+        }
+      });
 
-  static Future<void> firebaseBackgroundMessageHandler(
-      RemoteMessage message) async {
-    // Handle background message
-    await NotificationServices().showNotification(
-        message.notification?.title, message.notification?.body);
+      // Optionally check if player is currently playing
+      if (player.state == PlayerState.playing) {
+        print("AudioPlayer is indeed playing.");
+      } else {
+        print("AudioPlayer is not playing, current state: ${player.state}");
+      }
 
-    if (message.data['playAzan'] == 'true') {
-      await NotificationServices().playAzanSound();
+      // Navigate to AzanoverlayScreen
+      Get.to(() => AzanoverlayScreen(audioPlayer: player));
+    } catch (e) {
+      print("Error playing audio: $e");
     }
   }
 
-  Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
+  static Future<void> firebaseBackgroundMessageHandler(
+    RemoteMessage message,
+  ) async {
     try {
       await Firebase.initializeApp();
-      final data = message.data;
+      await NotificationServices().showNotification(
+        message.notification?.title,
+        message.notification?.body,
+      );
 
-      if (data['playAzan'] == 'true') {
-        await NotificationServices().initializeNotification();
-        await NotificationServices().showNotification(
-          'Prayer Time',
-          'It\'s time for ${data['nextPrayer']} prayer!',
-        );
-        // Logic to navigate to AzanOverlayScreen
-        if (data['navigateTo'] == 'AzanOverlayScreen') {
-          // Code to show AzanOverlayScreen or handle the navigation
-          Get.to(() => AzanoverlayScreen(
-                audioPlayer: player,
-              ));
-        }
+      if (message.data['playAzan'] == 'true') {
+        await NotificationServices().playAzanSound();
+        NotificationServices()._navigateToAzanOverlayScreen();
       }
     } catch (e) {
       print("Error in background message handler: $e");
+    }
+  }
+
+  void _navigateToAzanOverlayScreen() {
+    Get.to(() => AzanoverlayScreen(audioPlayer: player));
+  }
+
+  Future<void> storeDeviceToken() async {
+    try {
+      String deviceId = await _getDeviceId();
+      String? token = await FirebaseMessaging.instance.getToken();
+      print('Device Token: $token');
+
+      if (token != null) {
+        await _firestore.collection('devices').doc(deviceId).set({
+          'token': token,
+        });
+        print('Device token stored/updated successfully');
+      } else {
+        print('Failed to get FCM token.');
+      }
+
+      FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+        print('FCM Token refreshed: $newToken');
+        await _firestore.collection('devices').doc(deviceId).update({
+          'token': newToken,
+        });
+        print('Device token updated successfully');
+      });
+    } catch (e) {
+      print('Error storing device token: ${e.toString()}');
+    }
+  }
+
+  Future<void> checkDeviceTokens() async {
+    try {
+      QuerySnapshot snapshot = await _firestore.collection('devices').get();
+      if (snapshot.docs.isNotEmpty) {
+        snapshot.docs.forEach((doc) {
+          Map<String, dynamic> deviceData = doc.data() as Map<String, dynamic>;
+          if (deviceData.containsKey('token')) {
+            print('Device ID: ${doc.id}, Token: ${deviceData['token']}');
+          } else {
+            print('No token found for Device ID: ${doc.id}');
+          }
+        });
+      } else {
+        print('No device tokens found.');
+      }
+    } catch (e) {
+      print('Error fetching device tokens: ${e.toString()}');
     }
   }
 
@@ -163,43 +228,5 @@ class NotificationServices {
     }
 
     return deviceId;
-  }
-
-// Get and store device token in Firebase Realtime Database
-  Future<void> storeDeviceToken() async {
-    try {
-      // Get the device's unique ID
-      String deviceId = await _getDeviceId();
-
-      // Get the FCM token
-      String? token = await FirebaseMessaging.instance.getToken();
-      print('Device Token: $token');
-
-      if (token != null) {
-        // Store or update the token under the unique device ID in Realtime Database
-        await FirebaseDatabase.instance.ref().child('devices/$deviceId').set({
-          'token': token,
-          'last_updated': DateTime.now().toIso8601String(),
-        });
-        print('Device token stored/updated successfully');
-      } else {
-        print('Failed to get FCM token.');
-      }
-
-      // Listen for token refresh and update the token
-      FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
-        print('FCM Token refreshed: $newToken');
-        await FirebaseDatabase.instance
-            .ref()
-            .child('devices/$deviceId')
-            .update({
-          'token': newToken,
-          'last_updated': DateTime.now().toIso8601String(),
-        });
-        print('Device token updated successfully');
-      });
-    } catch (e) {
-      print('Error storing device token: ${e.toString()}');
-    }
   }
 }
