@@ -22,6 +22,7 @@ class NotificationServices {
     initializeNotification();
     requestNotificationPermission();
     firebaseInit();
+    subscribeToAzanTopic(); // Subscribe to 'azan' topic
   }
 
   Future<void> initializeNotification() async {
@@ -228,5 +229,13 @@ class NotificationServices {
     }
 
     return deviceId;
+  }
+
+  void subscribeToAzanTopic() {
+    messaging.subscribeToTopic('azan').then((_) {
+      print('Subscribed to azan topic');
+    }).catchError((e) {
+      print('Error subscribing to azan topic: $e');
+    });
   }
 }
