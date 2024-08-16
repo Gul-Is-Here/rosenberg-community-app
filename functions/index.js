@@ -4,15 +4,16 @@ const fetch = require('node-fetch');
 
 admin.initializeApp();
 
+// HTTP endpoint to schedule Azan notifications
 exports.scheduleAzanNotifications = functions.https.onRequest(
     { timeoutSeconds: 1200, region: ["us-west1", "us-east1"] },
     async (req, res) => {
         try {
-            // Fetch the prayer times from the API
+            // Fetch prayer times
             const timings = await fetchTimings();
 
-            // Schedule notifications for each prayer time
-            scheduleAzanNotifications(timings);
+            // Schedule notifications for each prayer
+            await scheduleAzanNotifications(timings);
 
             res.status(200).send("Azan notifications scheduled successfully.");
         } catch (error) {
@@ -22,6 +23,7 @@ exports.scheduleAzanNotifications = functions.https.onRequest(
     }
 );
 
+// Fetch prayer timings from the API
 async function fetchTimings() {
     try {
         const response = await fetch("https://api.aladhan.com/v1/timingsByCity?city=Sugar+Land&country=USA");
@@ -33,7 +35,8 @@ async function fetchTimings() {
     }
 }
 
-function scheduleAzanNotifications(timings) {
+// Schedule Azan Notifications
+async function scheduleAzanNotifications(timings) {
     const prayerTimes = [
         { name: 'Fajr', time: timings.Fajr },
         { name: 'Dhuhr', time: timings.Dhuhr },
@@ -42,40 +45,37 @@ function scheduleAzanNotifications(timings) {
         { name: 'Isha', time: timings.Isha }
     ];
 
-    prayerTimes.forEach(prayer => {
-        const [hour, minute] = prayer.time.split(':');
-        const hourInt = parseInt(hour, 10);
-        const minuteInt = parseInt(minute, 10);
+    // Schedule notifications for each prayer time
+    for (const prayer of prayerTimes) {
+        const notificationTime = new Date(prayer.time); // Convert prayer time to Date object if necessary
 
-        // Schedule a PubSub function to run at the prayer time
-        functions.pubsub.schedule(`${minuteInt} ${hourInt} * * *`)
-            .timeZone('America/Chicago')
-            .onRun(async (context) => {
-                await sendAzanNotification(prayer.name);
-            });
-    });
+        // Implement your notification scheduling logic here
+        // Example: sending notification at prayer time
+        await sendAzanNotification(prayer.name);
+    }
 }
 
+// Send Azan Notification to all devices
 async function sendAzanNotification(prayerName) {
     try {
-        // Fetch device tokens from Firestore
+        // Get device tokens from Firestore
         const tokensSnapshot = await admin.firestore().collection("devices").get();
         const tokens = tokensSnapshot.docs.map(doc => doc.data().token);
 
         if (tokens.length > 0) {
-            for (const token of tokens) {
-                if (token) {
-                    const message = createMessage(token, prayerName);
-                    try {
-                        const response = await admin.messaging().send(message);
-                        console.log("Successfully sent message:", response);
-                    } catch (error) {
-                        console.error("Error sending message to token:", token, error);
-                    }
-                } else {
-                    console.log("Invalid token found");
-                }
-            }
+            const notifications = tokens.map(token => {
+                const message = createMessage(token, prayerName);
+                return admin.messaging().send(message)
+                    .then(response => {
+                        console.log(`Successfully sent message to ${token}:`, response);
+                    })
+                    .catch(error => {
+                        console.error(`Error sending message to ${token}:`, error);
+                    });
+            });
+
+            // Wait for all notifications to be sent
+            await Promise.all(notifications);
         } else {
             console.log("No tokens found.");
         }
@@ -84,6 +84,7 @@ async function sendAzanNotification(prayerName) {
     }
 }
 
+// Create notification message for each token
 function createMessage(token, prayerName) {
     return {
         token: token,
@@ -104,7 +105,6 @@ function createMessage(token, prayerName) {
         data: {
             playAzan: "true",
             nextPrayer: prayerName,
-            navigateTo: "AzanoverlayScreen"
         },
     };
 }
