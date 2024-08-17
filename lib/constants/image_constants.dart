@@ -21,7 +21,15 @@ const donationIcon3 = "assets/home_icon/donationIcon3.png";
 const donationIcon4 = "assets/home_icon/donationIcon4.png";
 const donationIcon5 = "assets/home_icon/donationIcon5.png";
 const kabbaIcon = 'assets/home_icon/kabba.png';
-const sunsetIcon='assets/home_icon/sunseticon.png';
+const sunsetIcon = 'assets/home_icon/sunseticon.png';
+
+///      Project sccreen dummy image
+const projectBg = 'assets/home_icon/project_bg1.png';
+// About Us Images
+const aboutUs1 = "assets/home_icon/about_us1.png";
+const aboutUs2 = "assets/home_icon/about_us2.png";
+const aboutUs3 = "assets/home_icon/about_us3.png";
+const aboutUs4 = "assets/home_icon/about_us4.png";
 
 /// Qibla Bottom Icons / images  List
 // Sample list of images for demonstration
