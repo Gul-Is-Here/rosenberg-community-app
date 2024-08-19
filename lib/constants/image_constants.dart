@@ -31,7 +31,12 @@ const aboutUs2 = "assets/home_icon/about_us2.png";
 const aboutUs3 = "assets/home_icon/about_us3.png";
 const aboutUs4 = "assets/home_icon/about_us4.png";
 
-/// Qibla Bottom Icons / images  List
+// Spash Screen Icons
+const splash = "assets/splash_icon/splash.jpg";
+const splash1 = "assets/splash_icon/splash1.png";
+const splash2 = "assets/splash_icon/splash3.png";
+const splash3 = "assets/splash_icon/splash4.png";
+const splash4 = "assets/splash_icon/splash2.png";
 // Sample list of images for demonstration
 final List<String> imageOptions = [
   qiblaIcon1,
