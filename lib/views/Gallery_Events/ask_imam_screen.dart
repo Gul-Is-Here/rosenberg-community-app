@@ -6,12 +6,8 @@ import 'package:velocity_x/velocity_x.dart';
 import '../../constants/color.dart';
 import '../../widgets/project_background.dart';
 
-class GalleryVideosScreen extends StatelessWidget {
-  final String catHash;
-  final String categoryName;
-
-  const GalleryVideosScreen(
-      {required this.catHash, required this.categoryName, super.key});
+class AskImamScreen extends StatelessWidget {
+  const AskImamScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +15,7 @@ class GalleryVideosScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Projectbackground(title: 'GALLERY'),
+          Projectbackground(title: 'ASK IMAM'),
           Container(
             height: 45,
             width: double.infinity,
@@ -28,7 +24,7 @@ class GalleryVideosScreen extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 8),
               child: Center(
                 child: Text(
-                  'VIDEOS - MEET & GREET',
+                  'COMMING SOON',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,

@@ -1,16 +1,107 @@
-import 'package:community_islamic_app/constants/color.dart';
-import 'package:community_islamic_app/widgets/project_background.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:community_islamic_app/constants/color.dart';
+import 'package:community_islamic_app/views/Gallery_Events/gallery_images_screen.dart';
+import 'package:community_islamic_app/views/Gallery_Events/gallery_videos_screen.dart';
+import 'package:community_islamic_app/widgets/project_background.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../controllers/gallery_controller.dart';
-// import '../controllers/gallery_controller.dart';
 
-class GalleryImagesScreen extends StatelessWidget {
-  const GalleryImagesScreen({super.key});
+class GalleyScreen extends StatelessWidget {
+  const GalleyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    void _showGalleryEventsDialog(BuildContext context,
+        {required String categoryName}) {
+      Get.dialog(
+        AlertDialog(
+          title: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [
+                primaryColor,
+                Color.fromARGB(255, 157, 210, 212),
+              ]),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+              border: Border.all(color: Colors.black, width: 1),
+            ),
+            padding:
+                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+            child: const Center(
+              child: Text(
+                'Gallery Events',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          content: const Text(
+            'Choose an option:',
+            style: TextStyle(
+              fontSize: 18,
+              color: CupertinoColors.black,
+            ),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                Get.back(); // Close the dialog
+                Get.to(() => GalleryImagesScreen(
+                      catHash: 'images',
+                      categoryName:
+                          categoryName, // Pass content type as 'images'
+                    )); // Navigate to Images screen with catHash and contentType parameters
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 20.0),
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  'Images',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                Get.back(); // Close the dialog
+                Get.to(() => GalleryVideosScreen(
+                      catHash: 'Video',
+                      categoryName:
+                          categoryName, // Pass content type as 'videos'
+                    )); // Navigate to Videos screen with catHash and contentType parameters
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 20.0),
+                child: Text(
+                  'Videos',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     final GalleryController controller = Get.put(GalleryController());
 
     return Scaffold(
@@ -70,7 +161,6 @@ class GalleryImagesScreen extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Stack(
                           children: [
-                            // ElevatedButton Container
                             SizedBox(
                               height: 50,
                               width: double.infinity,
@@ -83,7 +173,13 @@ class GalleryImagesScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  _showGalleryEventsDialog(
+                                    context,
+                                    categoryName:
+                                        subcategory.gallerySubcategoryHash,
+                                  );
+                                },
                                 child: Text(
                                   subcategory.gallerySubcategoryName,
                                   style: TextStyle(
@@ -94,7 +190,6 @@ class GalleryImagesScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            // Counter Container
                             Positioned(
                               left: 0,
                               bottom: 3,

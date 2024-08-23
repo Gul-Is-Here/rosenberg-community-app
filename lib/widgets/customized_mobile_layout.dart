@@ -1,3 +1,6 @@
+import 'package:community_islamic_app/views/Gallery_Events/ask_imam_screen.dart';
+import 'package:community_islamic_app/views/Gallery_Events/galler_screen.dart';
+import 'package:community_islamic_app/views/about_us/about_us.dart';
 import 'package:community_islamic_app/widgets/customized_asr_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -876,7 +879,11 @@ class HomeCardRow1 extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         CusTomizedCardWidget(
-            title: 'About Us', imageIcon: aboutUsIcon, onTap: () {}),
+            title: 'About Us',
+            imageIcon: aboutUsIcon,
+            onTap: () {
+              Get.to(() => AboutUsScreen());
+            }),
         CusTomizedCardWidget(
             title: 'Qibla Direction',
             imageIcon: qiblaIconBg,
@@ -884,7 +891,11 @@ class HomeCardRow1 extends StatelessWidget {
               Get.to(() => QiblahScreen());
             }),
         CusTomizedCardWidget(
-            title: 'Ask Imam', imageIcon: askImamIcon, onTap: () {})
+            title: 'Ask Imam',
+            imageIcon: askImamIcon,
+            onTap: () {
+              Get.to(() => AskImamScreen());
+            })
       ],
     );
   }
@@ -905,7 +916,11 @@ class HomeCardRow extends StatelessWidget {
         CusTomizedCardWidget(
             title: 'Contact Us', imageIcon: contactUsIcon, onTap: () {}),
         CusTomizedCardWidget(
-            title: 'Gallery', imageIcon: galleryIcon, onTap: () {})
+            title: 'Gallery',
+            imageIcon: galleryIcon,
+            onTap: () {
+              Get.to(() => GalleyScreen());
+            })
       ],
     );
   }
