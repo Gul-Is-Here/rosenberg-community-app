@@ -3,6 +3,8 @@ import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:community_islamic_app/views/Gallery_Events/galler_screen.dart';
 import 'package:community_islamic_app/views/Gallery_Events/gallery_videos_screen.dart';
 import 'package:community_islamic_app/views/about_us/about_us.dart';
+import 'package:community_islamic_app/views/azan_settings/azan_settings_screen.dart';
+import 'package:community_islamic_app/views/profile_screen/profile_screen.dart';
 import 'package:community_islamic_app/views/project/project_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,30 +36,23 @@ class CustomDrawer extends StatelessWidget {
           const SizedBox(height: 20),
           // List Tile for Project
           ListTile(
-            leading: Icon(Icons.work, color: primaryColor),
-            title: const Text('Projects', style: TextStyle(fontSize: 18)),
+            leading: Icon(Icons.settings, color: primaryColor),
+            title: const Text('Prayer Notification',
+                style: TextStyle(fontSize: 18)),
             onTap: () {
-              Get.to(() => const ProjectScreen());
+              Get.to(() => const AzanSettingsScreen());
             },
           ),
+          ListTile(
+            leading: Icon(Icons.verified_user, color: primaryColor),
+            title: const Text('Profile', style: TextStyle(fontSize: 18)),
+            onTap: () {
+              Get.to(() => const ProfileScreen());
+            },
+          ),
+
           // List Tile for About Us
-          ListTile(
-            leading: Icon(Icons.info, color: primaryColor),
-            title: const Text('About Us', style: TextStyle(fontSize: 18)),
-            onTap: () {
-              Get.to(() => AboutUsScreen());
-              Get.snackbar('Info', 'Welcome to the About Us screen.');
-            },
-          ),
-          // List Tile for Gallery Events
-          ListTile(
-            leading: Icon(Icons.photo_album, color: primaryColor),
-            title: const Text('Gallery Events', style: TextStyle(fontSize: 18)),
-            onTap: () {
-              Get.back(); // Close the drawer
-              // _showGalleryEventsDialog(context); // Show the dialog
-            },
-          ),
+
           const Spacer(), // Pushes items to the top
           const Divider(), // Divider line
           Padding(

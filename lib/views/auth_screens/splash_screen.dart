@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Get.offAll(() => Home());
     } else {
       // Navigate to Login screen if user is not logged in
-      Get.offAll(() => const LoginScreen());
+      Get.offAll(() => const Home());
     }
   }
 

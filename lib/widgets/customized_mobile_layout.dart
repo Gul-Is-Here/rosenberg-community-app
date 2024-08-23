@@ -1,6 +1,8 @@
 import 'package:community_islamic_app/views/Gallery_Events/ask_imam_screen.dart';
 import 'package:community_islamic_app/views/Gallery_Events/galler_screen.dart';
 import 'package:community_islamic_app/views/about_us/about_us.dart';
+import 'package:community_islamic_app/views/contact_us/contact_us_screen.dart';
+import 'package:community_islamic_app/views/project/project_screen.dart';
 import 'package:community_islamic_app/widgets/customized_asr_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -911,9 +913,17 @@ class HomeCardRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         CusTomizedCardWidget(
-            title: 'Donate', imageIcon: donationIcon, onTap: () {}),
+            title: 'Donate',
+            imageIcon: donationIcon,
+            onTap: () {
+              Get.to(() => ProjectScreen());
+            }),
         CusTomizedCardWidget(
-            title: 'Contact Us', imageIcon: contactUsIcon, onTap: () {}),
+            title: 'Contact Us',
+            imageIcon: contactUsIcon,
+            onTap: () {
+              Get.to(() => ContactUsScreen());
+            }),
         CusTomizedCardWidget(
             title: 'Gallery',
             imageIcon: galleryIcon,

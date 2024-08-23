@@ -26,6 +26,7 @@ class Home extends StatelessWidget {
     ];
 
     return Scaffold(
+      
       body: Obx(() => Stack(
             children: [
               _pages[controller.selectedIndex.value],

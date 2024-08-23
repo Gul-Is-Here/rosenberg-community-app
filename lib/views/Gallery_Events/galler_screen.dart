@@ -115,10 +115,6 @@ class GalleyScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        title: const Text(
-          'Images',
-          style: TextStyle(color: Colors.white),
-        ),
         backgroundColor: primaryColor,
       ),
       body: Column(

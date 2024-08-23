@@ -14,7 +14,6 @@ class HomeScreen extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      drawer: CustomDrawer(),
       appBar: AppBar(
         // backgroundColor: Colors.transparent,
         toolbarHeight: 35,

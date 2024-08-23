@@ -19,17 +19,17 @@ class GalleryVideosScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Projectbackground(title: 'GALLERY'),
+          const Projectbackground(title: 'GALLERY'),
           Container(
             height: 45,
             width: double.infinity,
             decoration: BoxDecoration(color: primaryColor),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Center(
                 child: Text(
-                  'VIDEOS - MEET & GREET',
-                  style: TextStyle(
+                  'VIDEOS - $categoryName',
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,

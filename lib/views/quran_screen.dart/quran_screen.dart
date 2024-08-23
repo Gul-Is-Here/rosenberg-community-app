@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/quran_controller.dart';
 import 'package:community_islamic_app/model/quran_model.dart';
 import 'package:community_islamic_app/views/quran_screen.dart/surah_details.dart';
@@ -82,14 +83,14 @@ class _QuranScreenState extends State<QuranScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
                         children: [
-                          const CircleAvatar(
+                          CircleAvatar(
                             maxRadius: 35,
                             minRadius: 10,
                             backgroundColor: Colors.white,
                             child: Icon(
-                              size: 60,
+                              size: 50,
                               Icons.person,
-                              color: Colors.amber,
+                              color: primaryColor,
                             ),
                           ),
                           20.widthBox,
