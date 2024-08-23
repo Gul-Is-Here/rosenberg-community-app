@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -12,16 +13,16 @@ class AudioPlayerBar2 extends StatelessWidget {
   final VoidCallback onStop;
   final VoidCallback onNext;
   final VoidCallback onPrevious;
-  
+
   const AudioPlayerBar2({
     super.key,
     required this.audioPlayerController,
     required this.isPlaying,
     required this.currentAudio,
     required this.onPlayPause,
-    required this.onStop, required this.onNext, required this.onPrevious,
-
-
+    required this.onStop,
+    required this.onNext,
+    required this.onPrevious,
   });
 
   @override
@@ -33,87 +34,67 @@ class AudioPlayerBar2 extends StatelessWidget {
       final playbackSpeed = audioPlayerController.playbackSpeed.value;
 
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         decoration: BoxDecoration(
-            color: const Color(0xFF006367),
-            borderRadius: BorderRadius.circular(10)),
+          color: primaryColor,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              offset: Offset(0, 10),
+              blurRadius: 20,
+            ),
+          ],
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-              
                 Container(
+                  padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF006367),
-                        borderRadius: BorderRadius.circular(50),
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(color: Colors.white.withOpacity(0.3)),
+                  ),
+                  child: Center(
+                    child: IconButton(
+                      icon: Text(
+                        '$playbackSpeed x',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600),
                       ),
-                      child: IconButton(
-                        icon: Text(
-                          '$playbackSpeed x',
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        onPressed: audioPlayerController.toggleSpeed,
-                      ),
+                      onPressed: audioPlayerController.toggleSpeed,
                     ),
                   ),
                 ),
               ],
             ),
+            const SizedBox(height: 12),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.skip_previous,
-                    color: Colors.white,
-                    size: 50,
-                  ),
-                  onPressed: onPrevious,
+                _buildIconButton(Icons.skip_previous, onPrevious),
+                _buildIconButton(
+                  isPlaying ? Icons.pause : Icons.play_arrow,
+                  onPlayPause,
+                  size: 60,
                 ),
-                IconButton(
-                  icon: Icon(
-                    isPlaying ? Icons.pause : Icons.play_arrow,
-                    color: Colors.white,
-                    size: 50,
-                  ),
-                  onPressed: onPlayPause,
-                ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.stop,
-                    color: Colors.white,
-                    size: 50,
-                  ),
-                  onPressed: onStop,
-                ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.skip_next,
-                    color: Colors.white,
-                    size: 50,
-                  ),
-                  onPressed: onNext,
-                ),
+                _buildIconButton(Icons.stop, onStop),
+                _buildIconButton(Icons.skip_next, onNext),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Container(
-              height: 4.0,
+              height: 5.0,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4.0),
-                gradient: const LinearGradient(
-                  colors: [Colors.greenAccent, Colors.green],
+                borderRadius: BorderRadius.circular(10),
+                gradient: LinearGradient(
+                  colors: [primaryColor, primaryColor],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ),
@@ -125,50 +106,53 @@ class AudioPlayerBar2 extends StatelessWidget {
                     right: (1 - (progress / duration)) *
                         MediaQuery.of(context).size.width,
                     child: Container(
-                      height: 4.0,
+                      height: 5.0,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4.0),
-                        color: Colors.grey[800],
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   formatDuration(Duration(milliseconds: progress.toInt())),
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
                 Text(
                   formatDuration(Duration(milliseconds: duration.toInt())),
-                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    isRepeating
-                        ? Icons.repeat_one_on_outlined
-                        : Icons.repeat_one,
-                    color: Colors.white,
-                  ),
-                  onPressed: audioPlayerController.toggleRepeat,
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: Icon(
+                  isRepeating ? Icons.repeat_one : Icons.repeat_one_outlined,
+                  color: Colors.white,
                 ),
-                const SizedBox(width: 8),
-              ],
+                onPressed: audioPlayerController.toggleRepeat,
+              ),
             ),
           ],
         ),
       );
     });
+  }
+
+  Widget _buildIconButton(IconData icon, VoidCallback onPressed,
+      {double size = 50}) {
+    return IconButton(
+      icon: Icon(icon, color: Colors.white, size: size),
+      onPressed: onPressed,
+    );
   }
 
   String formatDuration(Duration duration) {
