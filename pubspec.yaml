@@ -41,6 +41,7 @@ dependencies:
   uuid: ^4.4.2
   firebase_analytics: ^11.2.1
   cloud_firestore: ^5.2.1
+  photo_view: ^0.15.0
 
 dev_dependencies:
   flutter_test:

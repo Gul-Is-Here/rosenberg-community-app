@@ -15,7 +15,7 @@ class Projectbackground extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(0),
-            height: screenHeight * .25,
+            height: screenHeight * .28,
             width: double.infinity,
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(

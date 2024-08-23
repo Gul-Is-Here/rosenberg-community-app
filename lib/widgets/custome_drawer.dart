@@ -1,6 +1,6 @@
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
-import 'package:community_islamic_app/views/Gallery_Events/gallery_images_screen.dart.dart';
+import 'package:community_islamic_app/views/Gallery_Events/galler_screen.dart';
 import 'package:community_islamic_app/views/Gallery_Events/gallery_videos_screen.dart';
 import 'package:community_islamic_app/views/about_us/about_us.dart';
 import 'package:community_islamic_app/views/project/project_screen.dart';
@@ -11,86 +11,6 @@ import 'package:velocity_x/velocity_x.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
-
-  void _showGalleryEventsDialog(BuildContext context) {
-    Get.dialog(
-      AlertDialog(
-        title: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              primaryColor,
-              Color.fromARGB(255, 157, 210, 212),
-            ]),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-            border: Border.all(color: Colors.black, width: 1),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-          child: const Center(
-            child: Text(
-              'Gallery Events',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-        content: const Text(
-          'Choose an option:',
-          style: TextStyle(
-            fontSize: 18,
-            color: CupertinoColors.black,
-          ),
-        ),
-        actions: [
-          CupertinoDialogAction(
-            onPressed: () {
-              Get.back(); // Close the dialog
-              Get.to(() =>
-                  const GalleryImagesScreen()); // Navigate to Images screen
-            },
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Text(
-                'Images',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-          ),
-          CupertinoDialogAction(
-            onPressed: () {
-              Get.back(); // Close the dialog
-              Get.to(() => GalleryVideosScreen()); // Navigate to Videos screen
-            },
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              child: Text(
-                'Videos',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
-              ),
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +55,7 @@ class CustomDrawer extends StatelessWidget {
             title: const Text('Gallery Events', style: TextStyle(fontSize: 18)),
             onTap: () {
               Get.back(); // Close the drawer
-              _showGalleryEventsDialog(context); // Show the dialog
+              // _showGalleryEventsDialog(context); // Show the dialog
             },
           ),
           const Spacer(), // Pushes items to the top
