@@ -905,7 +905,6 @@ class HomeCardRow extends StatelessWidget {
   HomeCardRow({
     super.key,
   });
-
   @override
   Widget build(BuildContext context) {
     return Row(
