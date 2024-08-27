@@ -7,14 +7,16 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../app_classes/app_class.dart';
 import '../../constants/image_constants.dart';
+import '../../controllers/login_controller.dart';
 import '../../model/donation_model.dart';
 
+// ignore: must_be_immutable
 class DonationScreen extends StatelessWidget {
-  const DonationScreen({super.key});
-
+  DonationScreen({super.key});
+  var loginConrtroller = Get.put(LoginController());
+  var donationController = Get.put(DonationController());
   @override
   Widget build(BuildContext context) {
-    var donationController = Get.put(DonationController());
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: FutureBuilder<Donation>(
@@ -62,8 +64,8 @@ class DonationScreen extends StatelessWidget {
                             ),
                           ),
                           10.widthBox,
-                          const Text(
-                            'Assalamualaikum \nGul Faraz',
+                          Text(
+                            'Assalamualaikum \n${loginConrtroller.userFname.value} ${loginConrtroller.userLname.value}',
                             style: TextStyle(color: Colors.white),
                           ),
                         ],
@@ -126,7 +128,6 @@ class DonationScreen extends StatelessWidget {
                             }).toList(),
                           ),
                           10.heightBox,
-                         
                         ],
                       );
                     },

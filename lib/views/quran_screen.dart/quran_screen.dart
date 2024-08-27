@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../constants/image_constants.dart';
 import '../../controllers/audio_controller.dart';
+import '../../controllers/login_controller.dart';
 import '../../model/quran_audio_model.dart';
 import '../../widgets/audio_player_bar_quran.dart';
 import 'surah_audio_detail_screen.dart';
@@ -18,6 +19,8 @@ class QuranScreen extends StatefulWidget {
   @override
   State<QuranScreen> createState() => _QuranScreenState();
 }
+
+var loginConrtroller = Get.find<LoginController>();
 
 class _QuranScreenState extends State<QuranScreen> {
   @override
@@ -94,8 +97,8 @@ class _QuranScreenState extends State<QuranScreen> {
                             ),
                           ),
                           20.widthBox,
-                          const Text(
-                            'Assalamualaikum \nGul Faraz',
+                          Text(
+                            'Assalamualaikum \n${loginConrtroller.userFname} ${loginConrtroller.userLname}',
                             style: TextStyle(color: Colors.white),
                           ),
                         ],

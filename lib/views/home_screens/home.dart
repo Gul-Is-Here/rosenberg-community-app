@@ -22,11 +22,10 @@ class Home extends StatelessWidget {
       const HomeScreen(),
       QiblahScreen(),
       const QuranScreen(),
-      const DonationScreen()
+      DonationScreen()
     ];
 
     return Scaffold(
-      
       body: Obx(() => Stack(
             children: [
               _pages[controller.selectedIndex.value],

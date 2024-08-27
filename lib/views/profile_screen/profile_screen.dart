@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/views/profile_screen/personal_info_screen.dart';
 import 'package:community_islamic_app/views/profile_screen/update_password_screen.dart';
 import 'package:community_islamic_app/widgets/custome_drawer.dart';
 import 'package:flutter/material.dart';
@@ -129,7 +130,7 @@ class ProfileScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18),
               ),
               onTap: () {
-                // Handle Personnel Information tap
+                Get.to(() => PersonalInfoScreen());
               },
             ),
           ],
