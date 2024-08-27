@@ -179,9 +179,7 @@ class HomeController extends GetxController {
     return DateFormat("HH:mm").parse(time).toLocal();
   }
 
-  // void stopAzan() {
-  //   _notificationServices.stopAzan();
-  // }
+
 
   String getCurrentPrayer() {
     final now = DateTime.now();
