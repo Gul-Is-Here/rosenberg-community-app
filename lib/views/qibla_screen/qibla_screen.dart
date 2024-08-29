@@ -2,12 +2,11 @@ import 'dart:math';
 import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/widgets/customized_prayertext_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../constants/image_constants.dart';
+import '../../controllers/login_controller.dart';
 import '../../controllers/qibla_controller.dart';
 
 // ignore: must_be_immutable
@@ -16,6 +15,7 @@ class QiblahScreen extends StatelessWidget {
 
   final QiblahController controller = Get.put(QiblahController());
   final homeController = Get.find<HomeController>();
+  var loginConrtroller = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +76,8 @@ class QiblahScreen extends StatelessWidget {
                     ),
                   ),
                   20.widthBox,
-                  const Text(
-                    'Assalamualaikum \nGul Faraz',
+                  Text(
+                    'Assalamualaikum \n${loginConrtroller.userFname} ${loginConrtroller.userLname}',
                     style: TextStyle(color: Colors.white),
                   ),
                 ],

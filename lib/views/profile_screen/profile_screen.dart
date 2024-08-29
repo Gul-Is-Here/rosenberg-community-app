@@ -1,15 +1,22 @@
-import 'package:community_islamic_app/views/profile_screen/update_password_screen.dart';
-import 'package:community_islamic_app/widgets/custome_drawer.dart';
-import 'package:flutter/material.dart';
-import 'package:community_islamic_app/constants/color.dart';
+import 'dart:io';
+
 import 'package:community_islamic_app/constants/image_constants.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../controllers/login_controller.dart';
+import '../../widgets/custome_drawer.dart';
+import 'update_password_screen.dart';
+import 'personal_info_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final LoginController loginController = Get.find<LoginController>();
+
     return Scaffold(
       backgroundColor: Colors.white,
       endDrawer: const CustomDrawer(),
@@ -31,21 +38,23 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 10),
             Stack(
               children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage(
-                      masjidIcon), // Replace with your profile image asset
-                ),
+                Obx(() => CircleAvatar(
+                      radius: 50,
+                      backgroundImage:
+                          loginController.profileImage.value != null
+                              ? FileImage(loginController.profileImage.value!)
+                              : const AssetImage(masjidIcon) as ImageProvider,
+                    )),
                 Positioned(
                   bottom: 0,
                   right: 10,
                   child: IconButton(
                     icon: const Icon(Icons.edit, color: Colors.white),
                     onPressed: () {
-                      // Handle profile edit button press
+                      _pickImage(context);
                     },
                     iconSize: 24,
-                    color: containerConlor,
+                    color: Colors.blue, // Adjust color as needed
                     padding: EdgeInsets.all(6.0),
                     constraints: BoxConstraints(),
                   ),
@@ -53,21 +62,21 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Atta Ul Mutahir',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Obx(() => Text(
+                  '${loginController.userFname.value} ${loginController.userLname.value}',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
             const SizedBox(height: 4),
-            const Text(
-              'Profession',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-            ),
+            Obx(() => Text(
+                  '${loginController.userEmail.value}',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                )),
             const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -76,12 +85,11 @@ class ProfileScreen extends StatelessWidget {
                   elevation: 10,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Handle Update Password button press
                       Get.to(() => UpdatePasswordScreen());
                     },
                     style: ElevatedButton.styleFrom(
                       shadowColor: Colors.white, // Button background color
-                      backgroundColor: containerConlor,
+                      backgroundColor: Colors.blue,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 25, vertical: 25),
                       shape: RoundedRectangleBorder(
@@ -105,7 +113,7 @@ class ProfileScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       elevation: 10,
                       shadowColor: Colors.white, // Button background color
-                      backgroundColor: containerConlor,
+                      backgroundColor: Colors.blue,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 30, vertical: 25),
                       shape: RoundedRectangleBorder(
@@ -129,12 +137,23 @@ class ProfileScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18),
               ),
               onTap: () {
-                // Handle Personnel Information tap
+                Get.to(() => PersonalInfoScreen());
               },
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _pickImage(BuildContext context) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final LoginController loginController = Get.find<LoginController>();
+      loginController.profileImage.value = File(pickedFile.path);
+      // Here you should also upload the image to the server and update the user profile if needed.
+    }
   }
 }

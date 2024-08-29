@@ -12,7 +12,7 @@ class AzanSettingsScreen extends StatefulWidget {
 class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
   bool _notificationsEnabled = true;
   String _selectedAzan = 'Adhan - Makkah';
-  Map<String, bool> _azanTimes = {
+  final Map<String, bool> _azanTimes = {
     'Fajr': true,
     'Sunrise': false,
     'Dhuhr': true,

@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/controllers/login_controller.dart';
 import 'package:community_islamic_app/views/Gallery_Events/ask_imam_screen.dart';
 import 'package:community_islamic_app/views/Gallery_Events/galler_screen.dart';
 import 'package:community_islamic_app/views/about_us/about_us.dart';
@@ -18,6 +19,7 @@ import '../views/qibla_screen/qibla_screen.dart';
 import 'customized_card_widget.dart';
 import 'customized_prayertext_widget.dart';
 import 'customized_prayertime_widget.dart';
+import 'home_static_background.dart';
 
 // ignore: must_be_immutable
 class CustomizedMobileLayout extends StatelessWidget {
@@ -32,6 +34,7 @@ class CustomizedMobileLayout extends StatelessWidget {
   // @override
   @override
   Widget build(BuildContext context) {
+    final LoginController loginController = Get.put(LoginController());
     final screenHeight1 = MediaQuery.of(context).size.height;
     print(screenHeight1);
     return Column(
@@ -40,7 +43,11 @@ class CustomizedMobileLayout extends StatelessWidget {
         screenHeight1 > 700
             ? Stack(
                 children: [
-                  HomeStaticBackground(screenHeight: screenHeight),
+                  HomeStaticBackground(
+                    screenHeight: screenHeight,
+                    userFname: loginController.userFname.value,
+                    userLname: loginController.userLname.value,
+                  ),
                   Padding(
                     padding: EdgeInsets.only(
                         top: MediaQuery.of(context).size.height * .28),
@@ -400,7 +407,11 @@ class CustomizedMobileLayout extends StatelessWidget {
               )
             : Stack(
                 children: [
-                  HomeStaticBackground(screenHeight: screenHeight),
+                  HomeStaticBackground(
+                    screenHeight: screenHeight,
+                    userFname: loginController.userFname.value,
+                    userLname: loginController.userLname.value,
+                  ),
                   Padding(
                     padding: EdgeInsets.only(
                         top: MediaQuery.of(context).size.height * .26),
@@ -932,122 +943,5 @@ class HomeCardRow extends StatelessWidget {
             })
       ],
     );
-  }
-}
-
-class HomeStaticBackground extends StatelessWidget {
-  HomeStaticBackground({
-    super.key,
-    required this.screenHeight,
-  });
-
-  final double screenHeight;
-
-  @override
-  Widget build(BuildContext context) {
-    final screenHeight1 = MediaQuery.of(context).size.height;
-    return screenHeight1 < 700
-        ? Container(
-            height: screenHeight * 0.3,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(homeBg),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      child: CircleAvatar(
-                        maxRadius: 25,
-                        minRadius: 10,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          size: 25,
-                          Icons.person,
-                          color: Colors.amber,
-                        ),
-                      ),
-                    ),
-                    10.widthBox,
-                    const Text(
-                      'Assalamualaikum \nGul Faraz',
-                      style: TextStyle(color: Colors.white, fontSize: 11),
-                    ),
-                  ],
-                ),
-                VxSwiper.builder(
-                  autoPlayCurve: Curves.easeInCirc,
-                  autoPlay: true,
-                  viewportFraction: .8,
-                  height: 120,
-                  itemCount: 4,
-                  itemBuilder: (context, index) {
-                    return Center(
-                      child: Text(
-                        "Index $index",
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ).box.rounded.color(Vx.amber500).make().p16();
-                  },
-                ),
-              ],
-            ),
-          )
-        : Container(
-            height: screenHeight * 0.3,
-            width: double.infinity,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(homeBg),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      child: CircleAvatar(
-                        maxRadius: 35,
-                        minRadius: 10,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          size: 50,
-                          Icons.person,
-                          color: Colors.amber,
-                        ),
-                      ),
-                    ),
-                    10.widthBox,
-                    const Text(
-                      'Assalamualaikum \nGul Faraz',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
-                ),
-                VxSwiper.builder(
-                  autoPlayCurve: Curves.easeInCirc,
-                  autoPlay: true,
-                  viewportFraction: .8,
-                  height: 145,
-                  itemCount: 4,
-                  itemBuilder: (context, index) {
-                    return Center(
-                      child: Text(
-                        "Index $index",
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ).box.rounded.color(Vx.amber500).make().p16();
-                  },
-                ),
-              ],
-            ),
-          );
   }
 }
