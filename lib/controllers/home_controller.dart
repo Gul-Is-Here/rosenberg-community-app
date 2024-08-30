@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:alarm/alarm.dart';
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/prayer_model.dart';
 import '../model/jumma_model.dart';
@@ -23,12 +21,13 @@ class HomeController extends GetxController {
   var jummaTimes = Jumma().obs;
   var isLoading = true.obs;
   String? currentPrayerTime;
+  // ignore: prefer_typing_uninitialized_variables
   var currentIqamaTime;
   late NotchBottomBarController notchBottomBarController;
 
+  // ignore: prefer_typing_uninitialized_variables
   var adjustment;
 
-  final NotificationServices _notificationServices = NotificationServices();
   Timer? _timer;
 
   @override
@@ -159,80 +158,6 @@ class HomeController extends GetxController {
 //       }
 //     });
 //   }
-  Future<void> scheduleAzanNotifications(List<DateTime> azanTimings) async {
-    for (var i = 0; i < azanTimings.length; i++) {
-      final dateTime = azanTimings[i];
-
-      final alarmSettings = AlarmSettings(
-        id: i + 1, // Assign a unique ID for each alarm
-        dateTime: dateTime,
-        assetAudioPath: 'assets/alarm.mp3',
-        loopAudio: true,
-        vibrate: true,
-        volume: 0.8,
-        fadeDuration: 3.0,
-        notificationTitle: 'Azan Notification',
-        notificationBody: 'It\'s time for Azan',
-        enableNotificationOnKill: Platform.isIOS, // Enable based on platform
-      );
-
-      // Schedule the alarm with correct settings
-      Alarm.set(alarmSettings: alarmSettings);
-    }
-  }
-
-  Future<void> scheduleAzanNotification() async {
-    print('Alarm');
-
-    final dateTime = DateTime.now().add(Duration(minutes: 1));
-
-    final alarmSettings = AlarmSettings(
-      id: 1 + 1, // Assign a unique ID for each alarm
-      dateTime: dateTime,
-      assetAudioPath: 'assets/alarm.mp3',
-      loopAudio: true,
-      vibrate: true,
-      volume: 0.8,
-      fadeDuration: 3.0,
-      notificationTitle: 'Azan Notification',
-      notificationBody: 'It\'s time for Azan',
-      enableNotificationOnKill: Platform.isAndroid, // Enable based on platform
-    );
-
-    // Schedule the alarm with correct settings
-    Alarm.set(alarmSettings: alarmSettings);
-  }
-
-// Call this function after fetching and caching the Azan timings
-  Future<void> fetchAndScheduleAzanTimings() async {
-    // Simulate fetching Azan timings from an API and caching them
-    // Replace this with your actual API call and cache logic
-    List<DateTime> azanTimings = [
-      DateTime.now().add(Duration(hours: 1)), // Example timings
-      DateTime.now().add(Duration(hours: 3)),
-      DateTime.now().add(Duration(hours: 5)),
-    ];
-
-    // Save the timings to cache (e.g., SharedPreferences)
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList(
-        'azanTimings', azanTimings.map((e) => e.toIso8601String()).toList());
-
-    // Schedule notifications based on cached timings
-    await scheduleAzanNotifications(azanTimings);
-  }
-
-// Load cached Azan timings when the app is offline
-  Future<void> loadCachedAzanTimingsAndSchedule() async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? cachedTimings = prefs.getStringList('azanTimings');
-
-    if (cachedTimings != null) {
-      List<DateTime> azanTimings =
-          cachedTimings.map((e) => DateTime.parse(e)).toList();
-      await scheduleAzanNotifications(azanTimings);
-    }
-  }
 
   bool isTimeForPrayer(DateTime now, DateTime prayerTime) {
     return now.hour == prayerTime.hour &&
