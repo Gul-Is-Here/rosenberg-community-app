@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:alarm/alarm.dart';
+// import 'package:alarm/alarm.dart';
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:community_islamic_app/model/prayer_times_model.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -18,11 +19,12 @@ import 'package:timezone/data/latest.dart' as tz;
 
 class HomeController extends GetxController {
   var selectedIndex = 0.obs;
-  var prayerTimes = Prayer().obs;
+  var prayerTime = Prayer().obs;
   var timePrayer = ''.obs;
   var jummaTimes = Jumma().obs;
   var isLoading = true.obs;
   String? currentPrayerTime;
+  PrayerTimesModel? prayerTimes;
   var currentIqamaTime;
   late NotchBottomBarController notchBottomBarController;
 
@@ -38,8 +40,122 @@ class HomeController extends GetxController {
         NotchBottomBarController(index: selectedIndex.value);
     fetchJummaTimes();
     fetchPrayerTimes();
+    getPrayers();
     // scheduleAzanPlayback();
-    tz.initializeTimeZones();
+    // tz.initializeTimeZones();
+  }
+
+  Future<void> getPrayers() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    if (sharedPreferences.containsKey("prayerTimes")) {
+      String jsonString = sharedPreferences.getString("prayerTimes")!;
+      prayerTimes = prayerTimesFromJson(jsonString);
+    } else {
+      await getPrayerTimesFromNetwork();
+      await setNotifications();
+    }
+  }
+
+  Future<void> setNotifications() async {
+    if (prayerTimes != null) {
+      DateTime now = DateTime.now();
+
+      for (Datum data in prayerTimes!.data) {
+        DateTime fajrDateTime = prayerTimes!.getDateTime(
+          data.timings.fajr,
+          data.date.readable,
+        );
+
+        if (fajrDateTime.isAfter(now)) {
+          await _notificationServices.scheduleNotificationForAdhan(
+            body: "It's Fajr time now",
+            scheduleNotificationDateTime: fajrDateTime,
+            payLoad: "fajr",
+          );
+        }
+
+        DateTime dhuhrDateTime = prayerTimes!.getDateTime(
+          data.timings.dhuhr,
+          data.date.readable,
+        );
+
+        if (dhuhrDateTime.isAfter(now)) {
+          await _notificationServices.scheduleNotificationForAdhan(
+            body: "It's Dhuhr time now",
+            scheduleNotificationDateTime: dhuhrDateTime,
+            payLoad: "dhuhr",
+          );
+        }
+
+        DateTime asrDateTime = prayerTimes!.getDateTime(
+          data.timings.asr,
+          data.date.readable,
+        );
+
+        if (asrDateTime.isAfter(now)) {
+          await _notificationServices.scheduleNotificationForAdhan(
+            body: "It's Asr time now",
+            scheduleNotificationDateTime: asrDateTime,
+            payLoad: "asr",
+          );
+        }
+
+        DateTime maghribDateTime = prayerTimes!.getDateTime(
+          data.timings.maghrib,
+          data.date.readable,
+        );
+
+        if (maghribDateTime.isAfter(now)) {
+          await _notificationServices.scheduleNotificationForAdhan(
+            body: "It's Maghrib time now",
+            scheduleNotificationDateTime: maghribDateTime,
+            payLoad: "maghrib",
+          );
+        }
+
+        DateTime ishaDateTime = prayerTimes!.getDateTime(
+          data.timings.isha,
+          data.date.readable,
+        );
+
+        if (ishaDateTime.isAfter(now)) {
+          await _notificationServices.scheduleNotificationForAdhan(
+            body: "It's Isha time now",
+            scheduleNotificationDateTime: ishaDateTime,
+            payLoad: "isha",
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> getPrayerTimesFromNetwork() async {
+    DateTime dateTime = DateTime.now();
+    final url = Uri.parse(
+      "https://api.aladhan.com/v1/calendarByCity/${dateTime.year}/${dateTime.month}?city=Sugar+Land&country=USA",
+    );
+
+    http.Response response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+
+      sharedPreferences.setString(
+        "prayerTimes",
+        response.body,
+      );
+
+      sharedPreferences.setInt(
+        "prayerTimesMonth",
+        dateTime.month,
+      );
+
+      prayerTimes = prayerTimesFromJson(
+        response.body,
+      );
+    }
   }
 
   @override
@@ -50,11 +166,14 @@ class HomeController extends GetxController {
 
   Future<void> fetchPrayerTimes() async {
     try {
-      final response = await http.get(Uri.parse(
-          'https://api.aladhan.com/v1/timingsByCity?city=Sugar+Land&country=USA&adjustment=$adjustment'));
+      final response = await http.get(
+        Uri.parse(
+          'https://api.aladhan.com/v1/timingsByCity?city=Sugar+Land&country=USA&adjustment=$adjustment',
+        ),
+      );
 
       if (response.statusCode == 200) {
-        prayerTimes.value = Prayer.fromJson(json.decode(response.body));
+        prayerTime.value = Prayer.fromJson(json.decode(response.body));
       } else {
         throw HttpException(
             'Failed to load prayer times with status code: ${response.statusCode}');
@@ -69,8 +188,11 @@ class HomeController extends GetxController {
   Future<void> fetchJummaTimes() async {
     try {
       isLoading(true);
-      final response = await http.get(Uri.parse(
-          'https://rosenbergcommunitycenter.org/api/prayerconfig?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332'));
+      final response = await http.get(
+        Uri.parse(
+          'https://rosenbergcommunitycenter.org/api/prayerconfig?access=7b150e45-e0c1-43bc-9290-3c0bf6473a51332',
+        ),
+      );
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -159,80 +281,80 @@ class HomeController extends GetxController {
 //       }
 //     });
 //   }
-  Future<void> scheduleAzanNotifications(List<DateTime> azanTimings) async {
-    for (var i = 0; i < azanTimings.length; i++) {
-      final dateTime = azanTimings[i];
+  // Future<void> scheduleAzanNotifications(List<DateTime> azanTimings) async {
+  //   for (var i = 0; i < azanTimings.length; i++) {
+  //     final dateTime = azanTimings[i];
 
-      final alarmSettings = AlarmSettings(
-        id: i + 1, // Assign a unique ID for each alarm
-        dateTime: dateTime,
-        assetAudioPath: 'assets/alarm.mp3',
-        loopAudio: true,
-        vibrate: true,
-        volume: 0.8,
-        fadeDuration: 3.0,
-        notificationTitle: 'Azan Notification',
-        notificationBody: 'It\'s time for Azan',
-        enableNotificationOnKill: Platform.isIOS, // Enable based on platform
-      );
+  //     final alarmSettings = AlarmSettings(
+  //       id: i + 1, // Assign a unique ID for each alarm
+  //       dateTime: dateTime,
+  //       assetAudioPath: 'assets/alarm.mp3',
+  //       loopAudio: true,
+  //       vibrate: true,
+  //       volume: 0.8,
+  //       fadeDuration: 3.0,
+  //       notificationTitle: 'Azan Notification',
+  //       notificationBody: 'It\'s time for Azan',
+  //       enableNotificationOnKill: Platform.isIOS, // Enable based on platform
+  //     );
 
-      // Schedule the alarm with correct settings
-      Alarm.set(alarmSettings: alarmSettings);
-    }
-  }
+  //     // Schedule the alarm with correct settings
+  //     Alarm.set(alarmSettings: alarmSettings);
+  //   }
+  // }
 
-  Future<void> scheduleAzanNotification() async {
-    print('Alarm');
+  // Future<void> scheduleAzanNotification() async {
+  //   print('Alarm');
 
-    final dateTime = DateTime.now().add(Duration(minutes: 1));
+  //   final dateTime = DateTime.now().add(Duration(minutes: 1));
 
-    final alarmSettings = AlarmSettings(
-      id: 1 + 1, // Assign a unique ID for each alarm
-      dateTime: dateTime,
-      assetAudioPath: 'assets/alarm.mp3',
-      loopAudio: true,
-      vibrate: true,
-      volume: 0.8,
-      fadeDuration: 3.0,
-      notificationTitle: 'Azan Notification',
-      notificationBody: 'It\'s time for Azan',
-      enableNotificationOnKill: Platform.isAndroid, // Enable based on platform
-    );
+  //   final alarmSettings = AlarmSettings(
+  //     id: 1 + 1, // Assign a unique ID for each alarm
+  //     dateTime: dateTime,
+  //     assetAudioPath: 'assets/alarm.mp3',
+  //     loopAudio: true,
+  //     vibrate: true,
+  //     volume: 0.8,
+  //     fadeDuration: 3.0,
+  //     notificationTitle: 'Azan Notification',
+  //     notificationBody: 'It\'s time for Azan',
+  //     enableNotificationOnKill: Platform.isAndroid, // Enable based on platform
+  //   );
 
-    // Schedule the alarm with correct settings
-    Alarm.set(alarmSettings: alarmSettings);
-  }
+  //   // Schedule the alarm with correct settings
+  //   Alarm.set(alarmSettings: alarmSettings);
+  // }
 
 // Call this function after fetching and caching the Azan timings
-  Future<void> fetchAndScheduleAzanTimings() async {
-    // Simulate fetching Azan timings from an API and caching them
-    // Replace this with your actual API call and cache logic
-    List<DateTime> azanTimings = [
-      DateTime.now().add(Duration(hours: 1)), // Example timings
-      DateTime.now().add(Duration(hours: 3)),
-      DateTime.now().add(Duration(hours: 5)),
-    ];
+  // Future<void> fetchAndScheduleAzanTimings() async {
+  //   // Simulate fetching Azan timings from an API and caching them
+  //   // Replace this with your actual API call and cache logic
+  //   List<DateTime> azanTimings = [
+  //     DateTime.now().add(Duration(hours: 1)), // Example timings
+  //     DateTime.now().add(Duration(hours: 3)),
+  //     DateTime.now().add(Duration(hours: 5)),
+  //   ];
 
-    // Save the timings to cache (e.g., SharedPreferences)
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList(
-        'azanTimings', azanTimings.map((e) => e.toIso8601String()).toList());
+  //   // Save the timings to cache (e.g., SharedPreferences)
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.setStringList(
+  //       'azanTimings', azanTimings.map((e) => e.toIso8601String()).toList());
 
-    // Schedule notifications based on cached timings
-    await scheduleAzanNotifications(azanTimings);
-  }
+  //   // Schedule notifications based on cached timings
+  //   await scheduleAzanNotifications(azanTimings);
+  // }
 
 // Load cached Azan timings when the app is offline
-  Future<void> loadCachedAzanTimingsAndSchedule() async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? cachedTimings = prefs.getStringList('azanTimings');
+  // Future<void> loadCachedAzanTimingsAndSchedule() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   List<String>? cachedTimings = prefs.getStringList('azanTimings');
 
-    if (cachedTimings != null) {
-      List<DateTime> azanTimings =
-          cachedTimings.map((e) => DateTime.parse(e)).toList();
-      await scheduleAzanNotifications(azanTimings);
-    }
-  }
+  //   if (cachedTimings != null) {
+  //     List<DateTime> azanTimings =
+  //         cachedTimings.map((e) => DateTime.parse(e)).toList();
+  //     await scheduleAzanNotifications(azanTimings);
+  //   }
+  // }
 
   bool isTimeForPrayer(DateTime now, DateTime prayerTime) {
     return now.hour == prayerTime.hour &&
@@ -265,8 +387,8 @@ class HomeController extends GetxController {
     var newTime = DateFormat("HH:mm").parse(timeNow);
     print('New Time $newTime');
 
-    if (prayerTimes.value.data?.timings != null) {
-      final timings = prayerTimes.value.data!.timings;
+    if (prayerTime.value.data?.timings != null) {
+      final timings = prayerTime.value.data!.timings;
 
       final fajrTime = DateFormat("HH:mm").parse(timings.fajr);
       final dhuhrTime = DateFormat("HH:mm").parse(timings.dhuhr);
@@ -334,15 +456,15 @@ class HomeController extends GetxController {
   Object? getPrayerTimes() {
     String currentPrayer = getCurrentPrayer();
     if (currentPrayer == 'Fajr') {
-      return prayerTimes.value.data?.timings.fajr;
+      return prayerTime.value.data?.timings.fajr;
     } else if (currentPrayer == 'Dhuhr') {
-      return prayerTimes.value.data?.timings.dhuhr;
+      return prayerTime.value.data?.timings.dhuhr;
     } else if (currentPrayer == 'Asr') {
-      return prayerTimes.value.data?.timings.asr;
+      return prayerTime.value.data?.timings.asr;
     } else if (currentPrayer == 'Maghrib') {
-      return prayerTimes.value.data?.timings.maghrib;
+      return prayerTime.value.data?.timings.maghrib;
     } else {
-      return prayerTimes.value.data?.timings.isha;
+      return prayerTime.value.data?.timings.isha;
     }
   }
 

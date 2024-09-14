@@ -1,6 +1,12 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:community_islamic_app/constants/color.dart';
+import 'package:community_islamic_app/controllers/home_controller.dart';
+import 'package:community_islamic_app/services/notification_service.dart';
 import 'package:community_islamic_app/widgets/project_background.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AzanSettingsScreen extends StatefulWidget {
   const AzanSettingsScreen({super.key});
@@ -10,19 +16,50 @@ class AzanSettingsScreen extends StatefulWidget {
 }
 
 class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
-  bool _notificationsEnabled = true;
+  // bool _notificationsEnabled = true;
   String _selectedAzan = 'Adhan - Makkah';
-  final Map<String, bool> _azanTimes = {
+
+  Map<String, bool> _azanTimes = {
     'Fajr': true,
-    'Sunrise': false,
     'Dhuhr': true,
     'Asr': true,
     'Maghrib': true,
     'Isha': true,
   };
 
+  SharedPreferences? sharedPreferences;
+
+  final AudioPlayer player = AudioPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+    screenInit();
+  }
+
+  Future<void> screenInit() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+
+    if (mounted) {
+      setState(() {
+        _azanTimes = {
+          'Fajr': sharedPreferences!.getBool("fajr")!,
+          'Dhuhr': sharedPreferences!.getBool("dhuhr")!,
+          'Asr': sharedPreferences!.getBool("asr")!,
+          'Maghrib': sharedPreferences!.getBool("maghrib")!,
+          'Isha': sharedPreferences!.getBool("isha")!,
+        };
+
+        _selectedAzan = sharedPreferences!.getString("selectedSound")!;
+      });
+    }
+  }
+
+  HomeController homeController = Get.find<HomeController>();
+
   @override
   Widget build(BuildContext context) {
+    print("testing ${homeController.prayerTimes!.getTodayPrayerTimes()}");
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -98,11 +135,10 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
           const SizedBox(height: 10),
           Column(
             children: [
-              _buildAzanOption('Disable', false),
-              _buildAzanOption('Default', false),
-              _buildAzanOption('Adhan - Makkah', true),
-              _buildAzanOption('Adhan - Madina', false),
-              _buildAzanOption('Jamaat Adhan - Oriental style 1', false),
+              _buildAzanOption('Disable'),
+              _buildAzanOption('Default'),
+              _buildAzanOption('Adhan - Makkah'),
+              _buildAzanOption('Adhan - Madina'),
             ],
           ),
         ],
@@ -110,17 +146,21 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
     );
   }
 
-  Widget _buildAzanOption(String title, bool selected) {
+  Widget _buildAzanOption(String title) {
     return ListTile(
       leading: Radio<String>(
         activeColor: primaryColor,
         value: title,
         focusColor: primaryColor,
         groupValue: _selectedAzan,
-        onChanged: (String? value) {
+        onChanged: (String? value) async {
+          sharedPreferences?.setString("selectedSound", value!);
+
           setState(() {
             _selectedAzan = value!;
           });
+
+          await homeController.setNotifications();
         },
       ),
       title: Text(title),
@@ -130,8 +170,18 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                 Icons.play_arrow,
                 color: primaryColor,
               ),
-              onPressed: () {
+              onPressed: () async {
+                if (player.state == PlayerState.playing) {
+                  await player.stop();
+                  return;
+                }
+
                 // Play the selected Azan sound
+                if (title == "Adhan - Makkah") {
+                  await player.play(AssetSource("azan.mp3"));
+                } else {
+                  await player.play(AssetSource("azanMadina.mp3"));
+                }
               },
             )
           : null,
@@ -183,7 +233,11 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
           Divider(),
           Column(
             // crossAxisAlignment: CrossAxisAlignment.start,
-            children: _azanTimes.keys.map((String time) {
+            children: homeController.prayerTimes!
+                .getTodayPrayerTimes()!
+                .toJson()
+                .entries
+                .map((MapEntry<String, dynamic> time) {
               return SwitchListTile(
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -191,33 +245,42 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        time,
+                        time.key,
                         style: TextStyle(
-                          color:
-                              time == "Sunrise" ? primaryColor : Colors.black,
-                          fontWeight: time == "Sunrise"
+                          color: time.key == "Sunrise"
+                              ? primaryColor
+                              : Colors.black,
+                          fontWeight: time.key == "Sunrise"
                               ? FontWeight.bold
                               : FontWeight.normal,
                         ),
                       ),
                     ),
                     Text(
-                      _getPrayerTime(time),
+                      homeController.prayerTimes!
+                          .convertTimeFormat(time.value.toString()),
                       style: TextStyle(
-                        color: time == "Sunrise" ? primaryColor : Colors.black,
-                        fontWeight: time == "Sunrise"
+                        color:
+                            time.key == "Sunrise" ? primaryColor : Colors.black,
+                        fontWeight: time.key == "Sunrise"
                             ? FontWeight.bold
                             : FontWeight.normal,
                       ),
                     ),
                   ],
                 ),
-                value: _azanTimes[time]!,
+                value: _azanTimes[time.key]!,
                 activeColor: primaryColor,
-                onChanged: (bool? value) {
+                onChanged: (bool? value) async {
                   setState(() {
-                    _azanTimes[time] = value!;
+                    _azanTimes[time.key] = value!;
                   });
+
+                  sharedPreferences!.setBool(time.key.toLowerCase(), value!);
+
+                  await NotificationServices().cancelAll();
+
+                  await homeController.setNotifications();
                 },
               );
             }).toList(),

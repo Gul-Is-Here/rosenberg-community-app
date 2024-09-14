@@ -5,9 +5,11 @@ version: 1.0.0+1
 
 environment:
   sdk: ">=3.4.4 <4.0.0"
+  
 dependencies:
   flutter:
     sdk: flutter
+
   cupertino_icons: ^1.0.6
   get: ^4.6.6
   velocity_x: ^4.2.1
@@ -44,7 +46,7 @@ dependencies:
   photo_view: ^0.15.0
   image_picker: ^1.1.2
   connectivity_plus: ^6.0.5
-  alarm: ^3.1.7
+  # alarm: ^3.1.7
 
 dev_dependencies:
   flutter_test:
@@ -53,7 +55,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/azan1.wav
+    - assets/
     - assets/home_icon/
     - assets/social_icon/
     - assets/splash_icon/

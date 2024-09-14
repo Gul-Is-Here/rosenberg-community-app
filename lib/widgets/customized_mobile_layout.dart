@@ -27,7 +27,7 @@ class CustomizedMobileLayout extends StatelessWidget {
   CustomizedMobileLayout({super.key, required this.screenHeight});
 
   final HomeController homeController = Get.put(HomeController());
-  final NotificationServices notificationServices = NotificationServices();
+  // final NotificationServices notificationServices = NotificationServices();
 
   String? currentIqamaTime;
 
@@ -75,15 +75,15 @@ class CustomizedMobileLayout extends StatelessWidget {
                                 );
                               }
 
-                              var prayerTimes = homeController
-                                  .prayerTimes.value.data?.timings;
+                              var prayerTimes =
+                                  homeController.prayerTime.value.data?.timings;
                               if (prayerTimes == null) {
                                 return const Center(
                                     child: CircularProgressIndicator());
                               }
 
                               final currentDate =
-                                  homeController.prayerTimes.value.data?.date;
+                                  homeController.prayerTime.value.data?.date;
                               print('Current Date : $currentDate');
                               final jummaTime =
                                   homeController.jummaTimes.value.data?.jumah;
@@ -203,9 +203,11 @@ class CustomizedMobileLayout extends StatelessWidget {
                                                         children: [
                                                           CustomizedPrayerTimeWidget(
                                                               text: 'Fajr',
-                                                              time: formatPrayerTime(
-                                                                  prayerTimes
-                                                                      .fajr),
+                                                              time:
+                                                                  formatPrayerTime(
+                                                                prayerTimes
+                                                                    .fajr,
+                                                              ),
                                                               image:
                                                                   sunriseIcon,
                                                               color: currentPrayer ==
@@ -439,15 +441,15 @@ class CustomizedMobileLayout extends StatelessWidget {
                                 );
                               }
 
-                              var prayerTimes = homeController
-                                  .prayerTimes.value.data?.timings;
+                              var prayerTimes =
+                                  homeController.prayerTime.value.data?.timings;
                               if (prayerTimes == null) {
                                 return const Center(
                                     child: CircularProgressIndicator());
                               }
 
                               final currentDate =
-                                  homeController.prayerTimes.value.data?.date;
+                                  homeController.prayerTime.value.data?.date;
                               print('Current Date : $currentDate');
                               final jummaTime =
                                   homeController.jummaTimes.value.data?.jumah;
@@ -780,8 +782,8 @@ class CustomizedMobileLayout extends StatelessWidget {
     var newTime = DateFormat("HH:mm").parse(timeNow);
 
     // Check if prayer times data is available
-    if (homeController.prayerTimes.value.data?.timings != null) {
-      final timings = homeController.prayerTimes.value.data!.timings;
+    if (homeController.prayerTime.value.data?.timings != null) {
+      final timings = homeController.prayerTime.value.data!.timings;
 
       // Parse prayer times from the API data
       final fajrTime = DateFormat("HH:mm").parse(timings.fajr);
@@ -858,15 +860,15 @@ class CustomizedMobileLayout extends StatelessWidget {
 
   Object? getPrayerTimes() {
     if (homeController.currentPrayerTime == 'Fajr') {
-      return homeController.prayerTimes.value.data?.timings.fajr;
+      return homeController.prayerTime.value.data?.timings.fajr;
     } else if (homeController.currentPrayerTime == 'Dhuhr') {
-      return homeController.prayerTimes.value.data?.timings.dhuhr;
+      return homeController.prayerTime.value.data?.timings.dhuhr;
     } else if (homeController.currentPrayerTime == 'Asr') {
-      return homeController.prayerTimes.value.data?.timings.asr;
+      return homeController.prayerTime.value.data?.timings.asr;
     } else if (homeController.currentPrayerTime == 'Maghrib') {
-      return homeController.prayerTimes.value.data?.timings.maghrib;
+      return homeController.prayerTime.value.data?.timings.maghrib;
     } else {
-      return homeController.prayerTimes.value.data?.timings.isha;
+      return homeController.prayerTime.value.data?.timings.isha;
     }
   }
 
