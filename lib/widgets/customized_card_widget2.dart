@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -16,109 +17,52 @@ class CusTomizedCardWidget2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final cardSize = screenWidth * 0.33; // Standardized card size
 
-    return screenHeight > 700
-        ? GestureDetector(
-            onTap: onTap,
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: SizedBox(
+          width: cardSize, // Fixed card width
+          height: cardSize + 20, // Fixed card height
+          child: Card(
+            elevation: 10,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: BorderSide(width: 5, color: primaryColor),
+            ),
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical:
-                    screenWidth * 0.02, // Adjust padding based on screen width
-              ),
-              child: Card(
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  side: const BorderSide(width: 2, color: Color(0xFF006367)),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(
-                    screenWidth * 0.04, // Adjust padding based on screen width
+              padding: const EdgeInsets.all(16), // Consistent padding
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.network(
+                    imageIcon,
+                    fit: BoxFit.cover,
+                    width: 60, // Fixed image width
+                    height: 60, // Fixed image height
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Image.network(
-                        imageIcon,
-                        fit: BoxFit.cover,
-                        width: screenWidth *
-                            0.15, // Adjust width based on screen width
-                        height: screenHeight *
-                            0.08, // Adjust height based on screen height
-                      ),
-                      5.heightBox,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: screenWidth *
-                                0.02, // Adjust font size based on screen width
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
+                  10.heightBox, // Consistent spacing
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontFamily: popinsRegulr,
+                      overflow: TextOverflow.ellipsis,
+                      color: Colors.black,
+                      fontSize: 9, // Fixed font size
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-          )
-        : GestureDetector(
-            onTap: onTap,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: screenWidth * 0.005,
-                vertical:
-                    screenWidth * 0.005, // Adjust padding based on screen width
-              ),
-              child: Card(
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                  side: const BorderSide(width: 2, color: Color(0xFF006367)),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(
-                    screenWidth * 0.04, // Adjust padding based on screen width
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                          height: screenHeight *
-                              0.006), // Adjust height based on screen height
-                      Image.asset(
-                        imageIcon,
-                        width: screenWidth *
-                            0.10, // Adjust width based on screen width
-                        height: screenHeight *
-                            0.03, // Adjust height based on screen height
-                      ),
-                      5.heightBox,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: screenWidth *
-                                0.01, // Adjust font size based on screen width
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
+          ),
+        ),
+      ),
+    );
   }
 }

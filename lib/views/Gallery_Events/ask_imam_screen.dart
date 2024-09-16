@@ -15,7 +15,10 @@ class AskImamScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Projectbackground(title: 'ASK IMAM'),
+          // ignore: prefer_const_constructors
+          Projectbackground(
+            title: 'ASK IMAM',
+          ),
           Container(
             height: 45,
             width: double.infinity,
@@ -26,17 +29,19 @@ class AskImamScreen extends StatelessWidget {
                 child: Text(
                   'COMMING SOON',
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontFamily: popinsBold),
                 ),
               ),
             ),
           ),
           150.heightBox,
           const Center(
-            child: Text('COOMING SOON'),
+            child: Text(
+              'COOMING SOON',
+              style: TextStyle(fontFamily: popinsRegulr),
+            ),
           )
         ],
       ),

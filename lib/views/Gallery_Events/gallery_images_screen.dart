@@ -28,7 +28,7 @@ class GalleryImagesScreen extends StatelessWidget {
     return Scaffold(
         body: Column(
       children: [
-        Projectbackground(title: 'GALLERY'),
+        const Projectbackground(title: 'GALLERY'),
         Container(
           height: 45,
           width: double.infinity,
@@ -39,6 +39,7 @@ class GalleryImagesScreen extends StatelessWidget {
               child: Text(
                 'IMAGES - MEET & GREET',
                 style: TextStyle(
+                  fontFamily: popinsSemiBold,
                   color: Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,

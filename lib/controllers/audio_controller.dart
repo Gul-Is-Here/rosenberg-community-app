@@ -30,10 +30,8 @@ class AudioPlayerController extends GetxController {
 
   Future<void> _initAudioService() async {
     try {
-      // Ensure any existing audio service is stopped
       await AudioService.stop();
 
-      // Initialize AudioService
       _audioHandler = await AudioService.init(
         builder: () => AudioPlayerHandler(),
         config: const AudioServiceConfig(
@@ -45,13 +43,14 @@ class AudioPlayerController extends GetxController {
 
       isAudioHandlerInitialized.value = true;
 
-      // Set up listeners for playback state and media item changes
       _audioHandler?.playbackState.listen((playbackState) {
+        // Update the state based on the playback state
         isPlaying.value = playbackState.playing;
         progress.value = playbackState.position.inMilliseconds.toDouble();
         duration.value =
             playbackState.bufferedPosition.inMilliseconds.toDouble();
         playbackSpeed.value = playbackState.speed;
+        print('Playback State Updated: $playbackState');
       });
 
       _audioHandler?.mediaItem.listen((mediaItem) {
@@ -63,10 +62,10 @@ class AudioPlayerController extends GetxController {
             fileSize: 1122,
             format: Format.MP3,
           );
+          print('Media Item Updated: ${currentAudio.value}');
         }
       });
     } catch (e) {
-      // Handle initialization errors
       print('Error initializing audio service: $e');
     }
   }
@@ -79,25 +78,64 @@ class AudioPlayerController extends GetxController {
     }
   }
 
-  Future<void> playOrPauseAudio(AudioFile audio) async {
+  Future<void> playOrPauseAudio(AudioFile? audio) async {
+    if (audio == null) {
+      print('No audio file provided');
+      return;
+    }
+
     if (!isAudioHandlerInitialized.value) {
       print('AudioHandler is not initialized yet');
       return;
     }
 
     try {
-      if (currentAudio.value?.id == audio.id && isPlaying.value) {
-        await _audioHandler!.pause();
+      print('Current Audio: ${currentAudio.value}');
+      print('Audio to play/pause: $audio');
+
+      if (currentAudio.value?.id == audio.id) {
+        if (isPlaying.value) {
+          // Pause if currently playing
+          print('Pausing audio');
+          await _audioHandler!.pause();
+          isPlaying.value = false;
+        } else {
+          // Resume if currently paused
+          print('Resuming audio');
+          await _audioHandler!.play();
+          isPlaying.value = true;
+        }
       } else {
-        // Ensure the player is stopped and reset before playing a new file
+        // Stop current audio and play new one
+        print('Stopping current audio and playing new one');
         await _audioHandler!.stop();
         await _audioHandler!.setAudioFile(audio);
         await _audioHandler!.play();
         currentAudio.value = audio;
+        isPlaying.value = true;
       }
     } catch (e) {
-      // Handle error (e.g., show a message to the user)
       print('Error playing or pausing audio: $e');
+    }
+  }
+
+  Future<void> pauseAudio() async {
+    if (!isAudioHandlerInitialized.value) {
+      print('AudioHandler is not initialized yet');
+      return;
+    }
+
+    try {
+      if (isPlaying.value) {
+        print('Pausing audio');
+        await _audioHandler!.pause();
+        isPlaying.value = false;
+      }
+    } catch (e) {
+
+
+      
+      print('Error pausing audio: $e');
     }
   }
 
@@ -108,10 +146,13 @@ class AudioPlayerController extends GetxController {
     }
 
     try {
+      print('Stopping audio');
       await _audioHandler!.stop();
+      //
+      isPlaying.value = false;
       currentAudio.value = null;
+      // _initAudioService();
     } catch (e) {
-      // Handle error (e.g., show a message to the user)
       print('Error stopping audio: $e');
     }
   }
@@ -145,7 +186,6 @@ class AudioPlayerController extends GetxController {
         await _audioHandler!.setSpeed(speed);
       }
     } catch (e) {
-      // Handle error (e.g., show a message to the user)
       print('Error setting playback speed: $e');
     }
   }

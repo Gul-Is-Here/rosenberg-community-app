@@ -16,7 +16,6 @@ class AzanSettingsScreen extends StatefulWidget {
 }
 
 class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
-  // bool _notificationsEnabled = true;
   String _selectedAzan = 'Adhan - Makkah';
 
   Map<String, bool> _azanTimes = {
@@ -25,6 +24,12 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
     'Asr': true,
     'Maghrib': true,
     'Isha': true,
+  };
+
+  // Add a map to track the playing state for each Azan sound
+  Map<String, bool> _isPlaying = {
+    'Adhan - Makkah': false,
+    'Adhan - Madina': false,
   };
 
   SharedPreferences? sharedPreferences;
@@ -59,7 +64,6 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("testing ${homeController.prayerTimes!.getTodayPrayerTimes()}");
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -96,7 +100,7 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
               padding: EdgeInsets.symmetric(horizontal: 8),
               child: Center(
                 child: Text(
-                  'PRAVER NOTIFICATION',
+                  'PRAYER NOTIFICATION',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -151,7 +155,6 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
       leading: Radio<String>(
         activeColor: primaryColor,
         value: title,
-        focusColor: primaryColor,
         groupValue: _selectedAzan,
         onChanged: (String? value) async {
           sharedPreferences?.setString("selectedSound", value!);
@@ -166,21 +169,38 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
       title: Text(title),
       trailing: title != 'Disable' && title != 'Default'
           ? IconButton(
-              icon: Icon(
-                Icons.play_arrow,
-                color: primaryColor,
-              ),
+              icon: _isPlaying[title] == true
+                  ? Icon(
+                      Icons.pause,
+                      color: primaryColor,
+                    )
+                  : Icon(
+                      Icons.play_arrow,
+                      color: primaryColor,
+                    ),
               onPressed: () async {
-                if (player.state == PlayerState.playing) {
+                if (_isPlaying[title] == true) {
+                  // Stop the current audio if playing
                   await player.stop();
-                  return;
-                }
-
-                // Play the selected Azan sound
-                if (title == "Adhan - Makkah") {
-                  await player.play(AssetSource("azan.mp3"));
+                  setState(() {
+                    _isPlaying[title] = false;
+                  });
                 } else {
-                  await player.play(AssetSource("azanMadina.mp3"));
+                  // Stop any audio currently playing
+                  for (var key in _isPlaying.keys) {
+                    _isPlaying[key] = false;
+                  }
+
+                  // Play the selected Azan sound
+                  if (title == "Adhan - Makkah") {
+                    await player.play(AssetSource("azan.mp3"));
+                  } else if (title == "Adhan - Madina") {
+                    await player.play(AssetSource("azanMadina.mp3"));
+                  }
+
+                  setState(() {
+                    _isPlaying[title] = true;
+                  });
                 }
               },
             )
@@ -189,6 +209,7 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
   }
 
   Widget _buildAzanTimeSelection() {
+    // Your Azan time selection code (unchanged)
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -232,7 +253,6 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
           ),
           Divider(),
           Column(
-            // crossAxisAlignment: CrossAxisAlignment.start,
             children: homeController.prayerTimes!
                 .getTodayPrayerTimes()!
                 .toJson()
@@ -288,25 +308,5 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
         ],
       ),
     );
-  }
-
-  String _getPrayerTime(String prayer) {
-    // Hardcoded prayer times for demonstration
-    switch (prayer) {
-      case 'Fajr':
-        return '04:21 am';
-      case 'Sunrise':
-        return '05:49 am';
-      case 'Dhuhr':
-        return '12:38 pm';
-      case 'Asr':
-        return '04:15 pm';
-      case 'Maghrib':
-        return '07:12 pm';
-      case 'Isha':
-        return '08:45 pm';
-      default:
-        return '';
-    }
   }
 }

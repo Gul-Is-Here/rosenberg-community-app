@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
 
 class CusTomizedCardWidget extends StatelessWidget {
@@ -14,91 +15,51 @@ class CusTomizedCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    // Define fixed dimensions for the card
+    const double cardWidth = 100; // Width of the card
+    const double cardHeight = 100; // Height of the card
+    const double imageHeight = 50; // Height of the image
 
-    return screenHeight > 700
-        ? GestureDetector(
-            onTap: onTap,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: screenWidth * 0.01,
-              ), // Adjust padding based on screen width
-              child: Card(
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                child: Padding(
-                  padding: EdgeInsets.all(screenWidth *
-                      0.05), // Adjust padding based on screen width
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                          height: screenHeight *
-                              0.008), // Adjust height based on screen height
-                      Image.asset(
-                        imageIcon,
-                        width: screenWidth *
-                            0.12, // Adjust width based on screen width
-                        height: screenHeight *
-                            0.04, // Adjust height based on screen height
-                      ),
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: screenWidth *
-                              0.025, // Adjust font size based on screen width
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            vertical: 0.0), // Adjust vertical padding if needed
+        child: SizedBox(
+          width: cardWidth,
+          height: cardHeight,
+          child: Card(
+            color: Colors.white,
+            elevation: 10,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  height: 10, // Space between top of the card and image
+                ),
+                Image.asset(
+                  imageIcon,
+                  width: cardWidth *
+                      0.6, // Width of the image relative to card width
+                  height: imageHeight, // Fixed height for the image
+                ),
+                const SizedBox(height: 8), // Space between image and title
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontFamily: popinsMedium,
+                    fontSize: 11, // Fixed font size
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-              ),
+              ],
             ),
-          )
-        : GestureDetector(
-            onTap: onTap,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: screenWidth * 0.005,
-              ), // Adjust padding based on screen width
-              child: Card(
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                child: Padding(
-                  padding: EdgeInsets.all(screenWidth *
-                      0.04), // Adjust padding based on screen width
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                          height: screenHeight *
-                              0.006), // Adjust height based on screen height
-                      Image.asset(
-                        imageIcon,
-                        width: screenWidth *
-                            0.10, // Adjust width based on screen width
-                        height: screenHeight *
-                            0.03, // Adjust height based on screen height
-                      ),
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: screenWidth *
-                              0.020, // Adjust font size based on screen width
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -11,9 +11,22 @@ import 'package:velocity_x/velocity_x.dart';
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
 
+  Future<void> _handleProfileNavigation() async {
+    final loginController = Get.find<LoginController>();
+    final isLoggedIn = await loginController.isLoggedIn();
+
+    if (isLoggedIn) {
+      Get.to(() => ProfileScreen());
+    } else {
+      Get.to(() => LoginScreen());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    var loginController = Get.put(LoginController());
+    // Ensure you are using the same instance of LoginController that was used for the check
+    final loginController = Get.find<LoginController>();
+
     return Drawer(
       width: 250,
       child: Padding(
@@ -35,32 +48,32 @@ class CustomDrawer extends StatelessWidget {
               ),
             ),
 
+            // Optionally display user info if logged in
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Text(
-                '${loginController.userFname.value} ${loginController.userLname.value}', // This should be dynamic if user is logged in
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14),
-              ),
+              child: Obx(() {
+                return Text(
+                  loginController.email.value.isNotEmpty
+                      ? 'Hello, ${loginController.email.value}'
+                      : 'Guest',
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14),
+                );
+              }),
             ),
+
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: Text(
                 'View Profile',
                 style: TextStyle(color: Colors.black, fontSize: 12),
               ),
-            ).onTap(() {
-              if (loginController.userEmail.value.isEmpty ||
-                  loginController.userFname.value.isEmpty) {
-                // If the user is not logged in, navigate to the login screen
-                Get.to(() => const LoginScreen());
-              } else {
-                // If the user is logged in, navigate to the profile screen
-                Get.to(() => const ProfileScreen());
-              }
+            ).onTap(() async {
+              await _handleProfileNavigation();
             }),
+
             const Divider(
               color: Colors.black,
             ),

@@ -1,3 +1,5 @@
+import 'package:community_islamic_app/constants/color.dart';
+import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -5,12 +7,8 @@ import 'package:velocity_x/velocity_x.dart';
 import '../constants/image_constants.dart';
 
 class HomeStaticBackground extends StatelessWidget {
-  final String userFname;
-  final String userLname;
   HomeStaticBackground({
     super.key,
-    required this.userFname,
-    required this.userLname,
     required this.screenHeight,
   });
 
@@ -18,10 +16,13 @@ class HomeStaticBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the HomeController instance using Get.find to ensure we don't create multiple instances
+    final homeController = Get.find<HomeController>();
     final screenHeight1 = MediaQuery.of(context).size.height;
+
     return screenHeight1 < 700
         ? Container(
-            height: screenHeight * 0.3,
+            height: screenHeight * 0.24,
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -31,48 +32,26 @@ class HomeStaticBackground extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      child: CircleAvatar(
-                        maxRadius: 25,
-                        minRadius: 10,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          size: 25,
-                          Icons.person,
-                          color: Colors.amber,
-                        ),
-                      ),
-                    ),
-                    10.widthBox,
-                    Text(
-                      'Assalamualaikum \n$userFname $userLname',
-                      style: TextStyle(color: Colors.white, fontSize: 11),
-                    ),
-                  ],
-                ),
                 VxSwiper.builder(
                   autoPlayCurve: Curves.easeInCirc,
                   autoPlay: true,
                   viewportFraction: .8,
                   height: 120,
-                  itemCount: 4,
+                  itemCount: bannerList.length,
                   itemBuilder: (context, index) {
-                    return Center(
-                      child: Text(
-                        "Index $index",
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ).box.rounded.color(Vx.amber500).make().p16();
+                    return Image.asset(bannerList[index])
+                        .box
+                        .rounded
+                        .color(asColor)
+                        .make()
+                        .p16();
                   },
                 ),
               ],
             ),
           )
         : Container(
-            height: screenHeight * 0.3,
+            height: screenHeight * 0.24,
             width: double.infinity,
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -82,41 +61,20 @@ class HomeStaticBackground extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      child: CircleAvatar(
-                        maxRadius: 35,
-                        minRadius: 10,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          size: 50,
-                          Icons.person,
-                          color: Colors.amber,
-                        ),
-                      ),
-                    ),
-                    10.widthBox,
-                    Text(
-                      'Assalamualaikum \n$userFname $userLname',
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ],
-                ),
+                10.heightBox,
                 VxSwiper.builder(
                   autoPlayCurve: Curves.easeInCirc,
                   autoPlay: true,
                   viewportFraction: .8,
-                  height: 145,
-                  itemCount: 4,
+                  height: 160,
+                  itemCount: bannerList.length,
                   itemBuilder: (context, index) {
                     return Center(
                       child: Text(
                         "Index $index",
                         style: const TextStyle(color: Colors.white),
                       ),
-                    ).box.rounded.color(Vx.amber500).make().p16();
+                    ).box.rounded.color(asColor).make().p16();
                   },
                 ),
               ],

@@ -26,7 +26,7 @@ class RegistrationScreen extends StatelessWidget {
                   Container(
                     height: screenHeight * .35,
                     width: double.infinity,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         image: DecorationImage(
                             image: AssetImage(splash), fit: BoxFit.cover)),
                     child: SafeArea(
@@ -43,12 +43,12 @@ class RegistrationScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 250),
                     child: Card(
-                      shape: RoundedRectangleBorder(
+                      shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(10),
                               topRight: Radius.circular(10))),
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             image: DecorationImage(
                                 image: AssetImage(splash4), fit: BoxFit.cover)),
                         child: Padding(
@@ -60,15 +60,27 @@ class RegistrationScreen extends StatelessWidget {
                               const Text(
                                 'Register',
                                 style: TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.bold),
+                                    fontFamily: popinsRegulr,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold),
                               ),
                               30.heightBox,
                               // First Name
                               TextFormField(
+                                cursorColor: primaryColor,
                                 onChanged: (value) => registrationController
                                     .firstName.value = value,
                                 decoration: InputDecoration(
                                     labelText: 'First Name',
+                                    prefix: Text(
+                                      '***   ',
+                                      style: TextStyle(
+                                          fontFamily: popinsSemiBold,
+                                          color: primaryColor),
+                                    ),
+                                    labelStyle: TextStyle(
+                                        fontFamily: popinsRegulr,
+                                        color: primaryColor),
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(5),
                                       borderSide: const BorderSide(
@@ -91,9 +103,19 @@ class RegistrationScreen extends StatelessWidget {
                               20.heightBox,
                               // Last Name
                               TextFormField(
+                                cursorColor: primaryColor,
                                 onChanged: (value) => registrationController
                                     .lastName.value = value,
                                 decoration: InputDecoration(
+                                    prefix: Text(
+                                      '***   ',
+                                      style: TextStyle(
+                                          fontFamily: popinsSemiBold,
+                                          color: primaryColor),
+                                    ),
+                                    labelStyle: TextStyle(
+                                        fontFamily: popinsRegulr,
+                                        color: primaryColor),
                                     labelText: 'Last Name',
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(5),
@@ -117,10 +139,14 @@ class RegistrationScreen extends StatelessWidget {
                               20.heightBox,
                               // Email
                               TextFormField(
+                                cursorColor: primaryColor,
                                 onChanged: (value) =>
                                     registrationController.email.value = value,
                                 decoration: InputDecoration(
                                     labelText: 'Email',
+                                    labelStyle: TextStyle(
+                                        fontFamily: popinsRegulr,
+                                        color: primaryColor),
                                     prefixIcon: Icon(
                                       Icons.email,
                                       color: primaryColor,
@@ -150,6 +176,15 @@ class RegistrationScreen extends StatelessWidget {
                                 onChanged: (value) => registrationController
                                     .username.value = value,
                                 decoration: InputDecoration(
+                                    prefix: Text(
+                                      '***   ',
+                                      style: TextStyle(
+                                          fontFamily: popinsSemiBold,
+                                          color: primaryColor),
+                                    ),
+                                    labelStyle: TextStyle(
+                                        fontFamily: popinsRegulr,
+                                        color: primaryColor),
                                     labelText: 'Username',
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(5),
@@ -175,8 +210,10 @@ class RegistrationScreen extends StatelessWidget {
                               Center(
                                 child: Obx(
                                   () => registrationController.isLoading.value
-                                      ? CircularProgressIndicator()
-                                      : Container(
+                                      ? const CircularProgressIndicator(
+                                          color: Colors.white,
+                                        )
+                                      : SizedBox(
                                           height: 50,
                                           width: double.infinity,
                                           child: ElevatedButton(
@@ -204,6 +241,7 @@ class RegistrationScreen extends StatelessWidget {
                                               child: Text(
                                                 'Register',
                                                 style: TextStyle(
+                                                    fontFamily: popinsBold,
                                                     color: Colors.white),
                                               )),
                                         ),
@@ -214,7 +252,10 @@ class RegistrationScreen extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text('Already have an account?'),
+                                  Text(
+                                    'Already have an account?',
+                                    style: TextStyle(fontFamily: popinsRegulr),
+                                  ),
                                   GestureDetector(
                                       onTap: () {
                                         Get.to(() => LoginScreen());
@@ -223,6 +264,7 @@ class RegistrationScreen extends StatelessWidget {
                                         ' Sign In',
                                         style: TextStyle(
                                             color: primaryColor,
+                                            fontFamily: popinsRegulr,
                                             fontWeight: FontWeight.bold),
                                       ))
                                 ],

@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -29,7 +30,8 @@ class Projectbackground extends StatelessWidget {
             child: Center(
               child: Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
+                    fontFamily: popinsMedium,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 24),

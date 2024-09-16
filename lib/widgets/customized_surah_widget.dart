@@ -1,4 +1,5 @@
 import 'package:community_islamic_app/app_classes/app_class.dart';
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -33,12 +34,14 @@ class CustomizedSurahWidget extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Colors.green,
+              color: primaryColor,
               borderRadius: BorderRadius.circular(5),
             ),
             child: Padding(
               padding: const EdgeInsets.all(4.0),
               child: Container(
+                height: 45,
+                width: 45,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(25),
@@ -48,10 +51,10 @@ class CustomizedSurahWidget extends StatelessWidget {
                   child: Center(
                       child: Image.asset(
                     firstIcon,
-                    height: 45,
-                    width: 45,
+                    height: 35,
+                    width: 35,
                     fit: BoxFit.cover,
-                    color: Color(0xFF006367),
+                    color: primaryColor,
                   )),
                 ),
               ),
@@ -60,7 +63,7 @@ class CustomizedSurahWidget extends StatelessWidget {
           10.widthBox,
           Container(
             decoration: BoxDecoration(
-              color: Colors.green,
+              color: primaryColor,
               borderRadius: BorderRadius.circular(5),
             ),
             child: Padding(
@@ -76,7 +79,7 @@ class CustomizedSurahWidget extends StatelessWidget {
                     icon: Icon(
                       secondIcon,
                       size: 24,
-                      color: Colors.green,
+                      color: primaryColor,
                     ),
                   ),
                 ),
@@ -86,8 +89,11 @@ class CustomizedSurahWidget extends StatelessWidget {
           10.widthBox,
           Expanded(
             child: Text(
-              '$surahTxet',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              surahTxet,
+              style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: jameelNori2),
             ),
           ),
           10.widthBox,
@@ -97,10 +103,11 @@ class CustomizedSurahWidget extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           10.widthBox,
-          Text(
-            surahNumber.toString(),
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
+          Text(surahNumber.toString(),
+              style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: popinsRegulr))
         ],
       ),
     );

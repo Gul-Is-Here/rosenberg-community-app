@@ -35,41 +35,40 @@ class AboutUsScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Projectbackground(
+                const Projectbackground(
                   title: 'About Us',
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
                     'Place to Pray and Community Center to Learn',
-                    style: const TextStyle(
-                      fontSize: 24,
+                    style: TextStyle(
+                      fontFamily: popinsSemiBold,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
                     'Community that learn together and builds together',
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(
+                        fontSize: 14,
+                        // fontWeight: FontWeight.bold,
+                        fontFamily: popinsMedium),
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 10.heightBox,
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
                     'Our center serves as more than just a mosque for prayers. It is a welcoming community center for everyone. We are dedicated to preserving an Islamic identity and promoting a comprehensive way of life based on the holy Quran and the Sunnah of Prophet Muhammad (PBUH). Our mission is to nurture future leaders within our community, champion Islam, foster a moral and ethical paradigm for prosperity, strengthen families, create a sense of belonging and empowerment, and cultivate upright leaders. We aim to build a lasting legacy and have a positive impact.',
-                    style: const TextStyle(
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(fontSize: 14, fontFamily: popinsRegulr),
                     maxLines: 16,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -79,15 +78,15 @@ class AboutUsScreen extends StatelessWidget {
                   height: 45,
                   width: double.infinity,
                   decoration: BoxDecoration(color: primaryColor),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     child: Text(
                       'CORE PRINCIPLES',
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: popinsBold),
                     ),
                   ),
                 ),
@@ -159,6 +158,7 @@ class AboutUsScreen extends StatelessWidget {
                                 child: Text(
                                   titles[index],
                                   style: TextStyle(
+                                    fontFamily: popinsRegulr,
                                     color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -171,6 +171,7 @@ class AboutUsScreen extends StatelessWidget {
                                 child: Text(
                                   descriptions[index],
                                   style: TextStyle(
+                                    fontFamily: popinsRegulr,
                                     color: Colors.black,
                                     fontSize: 14,
                                   ),

@@ -16,7 +16,7 @@ class NotificationServices {
             AndroidFlutterLocalNotificationsPlugin>();
 
     List<AndroidNotificationChannel> channels = [
-      AndroidNotificationChannel(
+      const AndroidNotificationChannel(
         'makkah_channel',
         'Makkah Notifications',
         description:
@@ -25,7 +25,7 @@ class NotificationServices {
         sound: RawResourceAndroidNotificationSound("azan"),
         playSound: true,
       ),
-      AndroidNotificationChannel(
+      const AndroidNotificationChannel(
         'madina_channel',
         'Madina Notifications',
         description:
@@ -34,7 +34,7 @@ class NotificationServices {
         sound: RawResourceAndroidNotificationSound("azanmadina"),
         playSound: true,
       ),
-      AndroidNotificationChannel(
+      const AndroidNotificationChannel(
         'default_channel',
         'Default Notifications',
         description:
@@ -43,7 +43,7 @@ class NotificationServices {
         sound: RawResourceAndroidNotificationSound("beep"),
         playSound: true,
       ),
-      AndroidNotificationChannel(
+      const AndroidNotificationChannel(
         'disable_channel',
         'Disable Notifications',
         description:

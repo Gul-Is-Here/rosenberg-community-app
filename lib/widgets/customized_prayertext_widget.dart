@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/color.dart';
+
 class CustomizedPrayerTextWidget extends StatelessWidget {
   final String prayerName;
   final String title;
@@ -26,10 +28,10 @@ class CustomizedPrayerTextWidget extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
-            color: color,
-            fontSize: screenHeight * 0.014, // Adjust font size
-            fontWeight: FontWeight.bold,
-          ),
+              color: color,
+              fontSize: screenHeight * 0.014, // Adjust font size
+              fontWeight: FontWeight.bold,
+              fontFamily: popinsRegulr),
         ),
         if (icon != null)
           Icon(
@@ -40,9 +42,10 @@ class CustomizedPrayerTextWidget extends StatelessWidget {
         Text(
           prayerName,
           style: TextStyle(
-            color: color,
-            fontSize: screenHeight * 0.015, // Adjust font size
-          ),
+              color: color,
+              fontSize: screenHeight * 0.015,
+              fontFamily: popinsRegulr // Adjust font size
+              ),
         ),
       ],
     );

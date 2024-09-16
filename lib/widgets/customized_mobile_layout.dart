@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../constants/color.dart';
 import '../constants/image_constants.dart';
 import '../controllers/home_controller.dart';
 import '../services/notification_service.dart';
@@ -27,7 +28,7 @@ class CustomizedMobileLayout extends StatelessWidget {
   CustomizedMobileLayout({super.key, required this.screenHeight});
 
   final HomeController homeController = Get.put(HomeController());
-  // final NotificationServices notificationServices = NotificationServices();
+  final NotificationServices notificationServices = NotificationServices();
 
   String? currentIqamaTime;
 
@@ -40,737 +41,357 @@ class CustomizedMobileLayout extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        screenHeight1 > 700
-            ? Stack(
-                children: [
-                  HomeStaticBackground(
-                    screenHeight: screenHeight,
-                    userFname: loginController.userFname.value,
-                    userLname: loginController.userLname.value,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * .28),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Card(
-                        margin: const EdgeInsets.all(0),
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25),
-                                topRight: Radius.circular(25))),
-                        elevation: 10,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+        Stack(
+          children: [
+            HomeStaticBackground(
+              screenHeight: screenHeight,
+              // dateTime: homeController.prayerTimes.value.data!.date.readable,
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * .25),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Card(
+                  color: Colors.white,
+                  margin: const EdgeInsets.all(0),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25),
+                          topRight: Radius.circular(25))),
+                  elevation: 10,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      10.heightBox,
+                      HomeCardRow1(),
+                      HomeCardRow(),
+                      10.heightBox,
+                      Obx(() {
+                        if (homeController.isLoading.value) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        var prayerTimes =
+                            homeController.prayerTime.value.data?.timings;
+                        if (prayerTimes == null) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        final currentDate =
+                            homeController.prayerTime.value.data?.date;
+                        print('Current Date : $currentDate');
+                        final jummaTime =
+                            homeController.jummaTimes.value.data?.jumah;
+                        homeController.adjustment =
+                            homeController.jummaTimes.value.data?.adjustment;
+                        homeController.adjustment =
+                            homeController.adjustment.apiAdjustAdjustment;
+
+                        var currentPrayer = getCurrentPrayer();
+                        final azanName = getAllAzanNamesForCurrentDate();
+                        // var currentIqamaTime = getAllIqamaTimes();
+                        final iqamaTime = getAllIqamaTimes();
+                        homeController.currentPrayerTime = getCurrentPrayer();
+                        // currentIqamaTime = getAllIqamaTimes();
+                        // Update the widget every minute to ensure time is current
+                        print('Current Prayer Time : $currentPrayer');
+                        print('Adjusment : ${homeController.adjustment}');
+                        print('Current Iqama Time : $currentIqamaTime');
+
+                        return Column(
                           children: [
-                            10.heightBox,
-                            HomeCardRow1(),
-                            HomeCardRow(),
-                            10.heightBox,
-                            Obx(() {
-                              if (homeController.isLoading.value) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
+                            SizedBox(
+                              height: screenHeight * 0.30,
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.all(0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // 10.heightBox,
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 18),
+                                        child: Container(
+                                          width: double.infinity,
+                                          decoration: const BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(20),
+                                                  topRight:
+                                                      Radius.circular(20)),
+                                              image: DecorationImage(
+                                                  image: AssetImage(
+                                                    namazQiblaBg,
+                                                  ),
+                                                  fit: BoxFit.cover)),
+                                          child: Column(
+                                            children: [
+                                              10.heightBox,
+                                              // NAMAZ AND IQAMA TIME WIDGETS
+                                              //  Text(
+                                              //   'NAMAZ & IQAMA',
+                                              //   style: TextStyle(
+                                              //       color: Colors.white,
+                                              //       fontSize: 16),
+                                              // ),
 
-                              var prayerTimes =
-                                  homeController.prayerTime.value.data?.timings;
-                              if (prayerTimes == null) {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              }
+                                              // CustomizedPrayerTextWidget(
+                                              //     iconColor: Colors.white,
+                                              //     color: Colors.white,
+                                              //     title: 'PRAYER: ',
+                                              //     prayerName: currentPrayer),
 
-                              final currentDate =
-                                  homeController.prayerTime.value.data?.date;
-                              print('Current Date : $currentDate');
-                              final jummaTime =
-                                  homeController.jummaTimes.value.data?.jumah;
-                              homeController.adjustment = homeController
-                                  .jummaTimes.value.data?.adjustment;
-                              homeController.adjustment =
-                                  homeController.adjustment.apiAdjustAdjustment;
+                                              // Current Adhan
+                                              // Padding(
+                                              //   padding:
+                                              //       const EdgeInsets.symmetric(
+                                              //           horizontal: 8.0),
+                                              //   child: Row(
+                                              //     mainAxisAlignment:
+                                              //         MainAxisAlignment
+                                              //             .spaceBetween,
+                                              //     children: [
+                                              //       CustomizedPrayerTextWidget(
+                                              //         iconColor: Colors.white,
+                                              //         color: Colors.white,
+                                              //         icon: Icons.timelapse,
+                                              //         title: "NAMAZ",
+                                              //         prayerName:
+                                              //             ': ${formatPrayerTime(getPrayerTimes().toString())}',
+                                              //       ),
+                                              //       CustomizedPrayerTextWidget(
+                                              //         iconColor: Colors.white,
+                                              //         color: Colors.white,
+                                              //         icon: Icons.timelapse,
+                                              //         title: "IQAMA",
+                                              //         prayerName:
+                                              //             ': $currentIqamaTime',
+                                              //       ),
+                                              //     ],
+                                              //   ),
+                                              // ),
 
-                              var currentPrayer = getCurrentPrayer();
-                              var currentIqamaTime = getCurrentIqamaTime();
-                              homeController.currentPrayerTime =
-                                  getCurrentPrayer();
-                              currentIqamaTime = getCurrentIqamaTime();
-                              // Update the widget every minute to ensure time is current
-                              print('Current Prayer Time : $currentPrayer');
-                              print('Adjusment : ${homeController.adjustment}');
-                              print('Current Iqama Time : $currentIqamaTime');
-
-                              return Column(
-                                children: [
-                                  SizedBox(
-                                    height: screenHeight * 0.38,
-                                    width: double.infinity,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          // 10.heightBox,
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 18),
-                                              child: Container(
-                                                width: double.infinity,
-                                                decoration: const BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft: Radius
-                                                                .circular(20),
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    20)),
-                                                    image: DecorationImage(
-                                                        image: AssetImage(
-                                                          namazQiblaBg,
-                                                        ),
-                                                        fit: BoxFit.cover)),
-                                                child: Column(
+                                              // Text(
+                                              //   "${currentDate?.readable} ${currentDate?.hijri.year} ${currentDate?.hijri.weekday.ar} ${currentDate?.hijri.day} ${currentDate?.hijri.month.ar} ",
+                                              //   style:  TextStyle(
+                                              //       color: Colors.white,
+                                              //       fontSize: 9),
+                                              // ),
+                                              // End here
+                                              SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   children: [
-                                                    20.heightBox,
-                                                    // NAMAZ AND IQAMA TIME WIDGETS
-                                                    //  Text(
-                                                    //   'NAMAZ & IQAMA',
-                                                    //   style: TextStyle(
-                                                    //       color: Colors.white,
-                                                    //       fontSize: 16),
-                                                    // ),
-
-                                                    // CustomizedPrayerTextWidget(
-                                                    //     iconColor: Colors.white,
-                                                    //     color: Colors.white,
-                                                    //     title: 'PRAYER: ',
-                                                    //     prayerName: currentPrayer),
-
-                                                    // Current Adhan
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          CustomizedPrayerTextWidget(
-                                                            iconColor:
-                                                                Colors.white,
-                                                            color: Colors.white,
-                                                            icon:
-                                                                Icons.timelapse,
-                                                            title: "NAMAZ",
-                                                            prayerName:
-                                                                ': ${formatPrayerTime(getPrayerTimes().toString())}',
-                                                          ),
-                                                          CustomizedPrayerTextWidget(
-                                                            iconColor:
-                                                                Colors.white,
-                                                            color: Colors.white,
-                                                            icon:
-                                                                Icons.timelapse,
-                                                            title: "IQAMA",
-                                                            prayerName:
-                                                                ': $currentIqamaTime',
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-
-                                                    // Text(
-                                                    //   "${currentDate?.readable} ${currentDate?.hijri.year} ${currentDate?.hijri.weekday.ar} ${currentDate?.hijri.day} ${currentDate?.hijri.month.ar} ",
-                                                    //   style:  TextStyle(
-                                                    //       color: Colors.white,
-                                                    //       fontSize: 9),
-                                                    // ),
-                                                    // End here
-
-                                                    SingleChildScrollView(
-                                                      scrollDirection:
-                                                          Axis.horizontal,
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          CustomizedPrayerTimeWidget(
-                                                              text: 'Fajr',
-                                                              time:
-                                                                  formatPrayerTime(
+                                                    CustomizedPrayerTimeWidget(
+                                                        azazName:
+                                                            azanName['Fajr']!,
+                                                        text:
+                                                            iqamaTime['Fajr']!,
+                                                        time: formatPrayerTime(
+                                                            prayerTimes.fajr),
+                                                        image: sunriseIcon,
+                                                        color: currentPrayer ==
+                                                                'Fajr'
+                                                            ? Colors.yellow
+                                                            : Colors.white),
+                                                    5.widthBox,
+                                                    CustomizedPrayerTimeWidget(
+                                                        azazName:
+                                                            azanName['Dhuhr']!,
+                                                        text:
+                                                            iqamaTime['Dhuhr']!,
+                                                        time: formatPrayerTime(
+                                                            prayerTimes.dhuhr),
+                                                        image: sunriseIcon,
+                                                        color: currentPrayer ==
+                                                                'Dhuhr'
+                                                            ? Colors.yellow
+                                                            : Colors.white),
+                                                    5.widthBox,
+                                                    CustomizedPrayerTimeWidget(
+                                                        azazName:
+                                                            azanName['Asr']!,
+                                                        text: iqamaTime['Asr']!,
+                                                        time: formatPrayerTime(
+                                                            prayerTimes.asr),
+                                                        image: sunsetIcon,
+                                                        color: currentPrayer ==
+                                                                'Maghrib'
+                                                            ? Colors.yellow
+                                                            : Colors.white),
+                                                    5.widthBox,
+                                                    CustomizedPrayerTimeWidget(
+                                                        azazName: azanName[
+                                                            'Maghrib']!,
+                                                        text:
+                                                            addMinutesToPrayerTime(
                                                                 prayerTimes
-                                                                    .fajr,
-                                                              ),
-                                                              image:
-                                                                  sunriseIcon,
-                                                              color: currentPrayer ==
-                                                                      'Fajr'
-                                                                  ? Colors
-                                                                      .yellow
-                                                                  : Colors
-                                                                      .white),
-                                                          5.widthBox,
-                                                          CustomizedPrayerTimeWidget(
-                                                              text: 'Dhuhr',
-                                                              time: formatPrayerTime(
-                                                                  prayerTimes
-                                                                      .dhuhr),
-                                                              image:
-                                                                  sunriseIcon,
-                                                              color: currentPrayer ==
-                                                                      'Dhuhr'
-                                                                  ? Colors
-                                                                      .yellow
-                                                                  : Colors
-                                                                      .white),
-                                                          5.widthBox,
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                              bottom: 0,
-                                                            ),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      bottom:
-                                                                          12.0),
-                                                              child: CustomizedAsarWidget(
-                                                                  text: 'Asr',
-                                                                  time: formatPrayerTime(
-                                                                      prayerTimes
-                                                                          .asr),
-                                                                  image:
-                                                                      sunriseIcon,
-                                                                  color: currentPrayer ==
-                                                                          'Asr'
-                                                                      ? Colors
-                                                                          .yellow
-                                                                      : Colors
-                                                                          .white),
-                                                            ),
-                                                          ),
-                                                          5.widthBox,
-                                                          CustomizedPrayerTimeWidget(
-                                                              text: 'Maghrib',
-                                                              time: formatPrayerTime(
-                                                                  prayerTimes
-                                                                      .maghrib),
-                                                              image: sunsetIcon,
-                                                              color: currentPrayer ==
-                                                                      'Maghrib'
-                                                                  ? Colors
-                                                                      .yellow
-                                                                  : Colors
-                                                                      .white),
-                                                          5.widthBox,
-                                                          CustomizedPrayerTimeWidget(
-                                                              text: 'Isha',
-                                                              time: formatPrayerTime(
-                                                                  prayerTimes
-                                                                      .isha),
-                                                              image: sunsetIcon,
-                                                              color: currentPrayer ==
-                                                                      'Isha'
-                                                                  ? Colors
-                                                                      .yellow
-                                                                  : Colors
-                                                                      .white),
-                                                        ],
-                                                      ),
-                                                    ),
-
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 10.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Container(
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                border: Border.all(
-                                                                    width: 2,
-                                                                    color: Colors
-                                                                        .white)),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8),
-                                                              child: Column(
-                                                                children: [
-                                                                  const Text(
-                                                                    "JUMUAH KHUTBA",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            11),
-                                                                  ),
-                                                                  Text(
-                                                                    homeController
-                                                                        .formatTime(
-                                                                      DateFormat(
-                                                                              "HH:mm")
-                                                                          .format(
-                                                                        DateFormat("HH:mm")
-                                                                            .parse(jummaTime!.prayerTiming),
-                                                                      ),
-                                                                    ),
-                                                                    style: const TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            11),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                border: Border.all(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    width: 2)),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: Column(
-                                                                children: [
-                                                                  const Text(
-                                                                    "JUMUAH IQAMAH",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            11),
-                                                                  ),
-                                                                  Text(
-                                                                    homeController
-                                                                        .formatTime(
-                                                                      DateFormat(
-                                                                              "HH:mm")
-                                                                          .format(
-                                                                        DateFormat("HH:mm")
-                                                                            .parse(jummaTime.iqamahTiming),
-                                                                      ),
-                                                                    ),
-                                                                    style: const TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            11),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
+                                                                    .maghrib,
+                                                                5),
+                                                        time: formatPrayerTime(
+                                                            prayerTimes
+                                                                .maghrib),
+                                                        image: sunsetIcon,
+                                                        color: currentPrayer ==
+                                                                'Maghrib'
+                                                            ? Colors.yellow
+                                                            : Colors.white),
+                                                    5.widthBox,
+                                                    CustomizedPrayerTimeWidget(
+                                                        azazName:
+                                                            azanName['Isha']!,
+                                                        text:
+                                                            iqamaTime['Isha']!,
+                                                        time: formatPrayerTime(
+                                                            prayerTimes.isha),
+                                                        image: sunsetIcon,
+                                                        color: currentPrayer ==
+                                                                'Isha'
+                                                            ? Colors.yellow
+                                                            : Colors.white),
                                                   ],
                                                 ),
                                               ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              );
-                            }),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            : Stack(
-                children: [
-                  HomeStaticBackground(
-                    screenHeight: screenHeight,
-                    userFname: loginController.userFname.value,
-                    userLname: loginController.userLname.value,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * .26),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Card(
-                        margin: const EdgeInsets.all(0),
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25),
-                                topRight: Radius.circular(25))),
-                        elevation: 10,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            10.heightBox,
-                            HomeCardRow1(),
-                            HomeCardRow(),
-                            10.heightBox,
-                            Obx(() {
-                              if (homeController.isLoading.value) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-
-                              var prayerTimes =
-                                  homeController.prayerTime.value.data?.timings;
-                              if (prayerTimes == null) {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              }
-
-                              final currentDate =
-                                  homeController.prayerTime.value.data?.date;
-                              print('Current Date : $currentDate');
-                              final jummaTime =
-                                  homeController.jummaTimes.value.data?.jumah;
-                              homeController.adjustment = homeController
-                                  .jummaTimes.value.data?.adjustment;
-                              homeController.adjustment =
-                                  homeController.adjustment.apiAdjustAdjustment;
-
-                              var currentPrayer = getCurrentPrayer();
-                              var currentIqamaTime = getCurrentIqamaTime();
-                              homeController.currentPrayerTime =
-                                  getCurrentPrayer();
-                              currentIqamaTime = getCurrentIqamaTime();
-                              // Update the widget every minute to ensure time is current
-                              print('Current Prayer Time : $currentPrayer');
-                              print('Adjusment : ${homeController.adjustment}');
-                              print('Current Iqama Time : $currentIqamaTime');
-
-                              return Column(
-                                children: [
-                                  SizedBox(
-                                    height: screenHeight * 0.38,
-                                    width: double.infinity,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          // 10.heightBox,
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 18),
-                                              child: Container(
-                                                width: double.infinity,
-                                                decoration: const BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft: Radius
-                                                                .circular(20),
-                                                            topRight:
-                                                                Radius.circular(
-                                                                    20)),
-                                                    image: DecorationImage(
-                                                        image: AssetImage(
-                                                          namazQiblaBg,
-                                                        ),
-                                                        fit: BoxFit.cover)),
-                                                child: Column(
+                                              5.heightBox,
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10.0,
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                   children: [
-                                                    20.heightBox,
-                                                    // NAMAZ AND IQAMA TIME WIDGETS
-                                                    //  Text(
-                                                    //   'NAMAZ & IQAMA',
-                                                    //   style: TextStyle(
-                                                    //       color: Colors.white,
-                                                    //       fontSize: 16),
-                                                    // ),
-
-                                                    // CustomizedPrayerTextWidget(
-                                                    //     iconColor: Colors.white,
-                                                    //     color: Colors.white,
-                                                    //     title: 'PRAYER: ',
-                                                    //     prayerName: currentPrayer),
-
-                                                    // Current Adhan
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          CustomizedPrayerTextWidget(
-                                                            iconColor:
-                                                                Colors.white,
-                                                            color: Colors.white,
-                                                            icon:
-                                                                Icons.timelapse,
-                                                            title: "NAMAZ",
-                                                            prayerName:
-                                                                ': ${formatPrayerTime(getPrayerTimes().toString())}',
-                                                          ),
-                                                          CustomizedPrayerTextWidget(
-                                                            iconColor:
-                                                                Colors.white,
-                                                            color: Colors.white,
-                                                            icon:
-                                                                Icons.timelapse,
-                                                            title: "IQAMA",
-                                                            prayerName:
-                                                                ': $currentIqamaTime',
-                                                          ),
-                                                        ],
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                          border: Border.all(
+                                                              width: 2,
+                                                              color: Colors
+                                                                  .white)),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 12,
+                                                                vertical: 10),
+                                                        child: Column(
+                                                          children: [
+                                                            const Text(
+                                                              "JUMUAH KHUTBA",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 10,
+                                                                  fontFamily:
+                                                                      popinsRegulr),
+                                                            ),
+                                                            Text(
+                                                              homeController
+                                                                  .formatTime(
+                                                                DateFormat(
+                                                                        "HH:mm")
+                                                                    .format(
+                                                                  DateFormat(
+                                                                          "HH:mm")
+                                                                      .parse(jummaTime!
+                                                                          .prayerTiming),
+                                                                ),
+                                                              ),
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 11,
+                                                                  fontFamily:
+                                                                      popinsRegulr),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
-
-                                                    // Text(
-                                                    //   "${currentDate?.readable} ${currentDate?.hijri.year} ${currentDate?.hijri.weekday.ar} ${currentDate?.hijri.day} ${currentDate?.hijri.month.ar} ",
-                                                    //   style:  TextStyle(
-                                                    //       color: Colors.white,
-                                                    //       fontSize: 9),
-                                                    // ),
-                                                    // End here
-
-                                                    SingleChildScrollView(
-                                                      scrollDirection:
-                                                          Axis.horizontal,
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          CustomizedPrayerTimeWidget(
-                                                              text: 'Fajr',
-                                                              time: formatPrayerTime(
-                                                                  prayerTimes
-                                                                      .fajr),
-                                                              image:
-                                                                  sunriseIcon,
-                                                              color: currentPrayer ==
-                                                                      'Fajr'
-                                                                  ? Colors
-                                                                      .yellow
-                                                                  : Colors
-                                                                      .white),
-                                                          5.widthBox,
-                                                          CustomizedPrayerTimeWidget(
-                                                              text: 'Dhuhr',
-                                                              time: formatPrayerTime(
-                                                                  prayerTimes
-                                                                      .dhuhr),
-                                                              image:
-                                                                  sunriseIcon,
-                                                              color: currentPrayer ==
-                                                                      'Dhuhr'
-                                                                  ? Colors
-                                                                      .yellow
-                                                                  : Colors
-                                                                      .white),
-                                                          5.widthBox,
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                              bottom: 0,
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.white,
+                                                              width: 2)),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 12,
+                                                                vertical: 10),
+                                                        child: Column(
+                                                          children: [
+                                                            const Text(
+                                                              "JUMUAH IQAMAH",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 10,
+                                                                  fontFamily:
+                                                                      popinsRegulr),
                                                             ),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      bottom:
-                                                                          12.0),
-                                                              child: CustomizedAsarWidget(
-                                                                  text: 'Asr',
-                                                                  time: formatPrayerTime(
-                                                                      prayerTimes
-                                                                          .asr),
-                                                                  image:
-                                                                      sunriseIcon,
-                                                                  color: currentPrayer ==
-                                                                          'Asr'
-                                                                      ? Colors
-                                                                          .yellow
-                                                                      : Colors
-                                                                          .white),
+                                                            Text(
+                                                              homeController
+                                                                  .formatTime(
+                                                                DateFormat(
+                                                                        "HH:mm")
+                                                                    .format(
+                                                                  DateFormat(
+                                                                          "HH:mm")
+                                                                      .parse(jummaTime
+                                                                          .iqamahTiming),
+                                                                ),
+                                                              ),
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 11,
+                                                                  fontFamily:
+                                                                      popinsRegulr),
                                                             ),
-                                                          ),
-                                                          5.widthBox,
-                                                          CustomizedPrayerTimeWidget(
-                                                              text: 'Maghrib',
-                                                              time: formatPrayerTime(
-                                                                  prayerTimes
-                                                                      .maghrib),
-                                                              image: sunsetIcon,
-                                                              color: currentPrayer ==
-                                                                      'Maghrib'
-                                                                  ? Colors
-                                                                      .yellow
-                                                                  : Colors
-                                                                      .white),
-                                                          5.widthBox,
-                                                          CustomizedPrayerTimeWidget(
-                                                              text: 'Isha',
-                                                              time: formatPrayerTime(
-                                                                  prayerTimes
-                                                                      .isha),
-                                                              image: sunsetIcon,
-                                                              color: currentPrayer ==
-                                                                      'Isha'
-                                                                  ? Colors
-                                                                      .yellow
-                                                                  : Colors
-                                                                      .white),
-                                                        ],
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
-
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 10.0),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Container(
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                border: Border.all(
-                                                                    width: 2,
-                                                                    color: Colors
-                                                                        .white)),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8),
-                                                              child: Column(
-                                                                children: [
-                                                                  const Text(
-                                                                    "JUMUAH KHUTBA",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            11),
-                                                                  ),
-                                                                  Text(
-                                                                    homeController
-                                                                        .formatTime(
-                                                                      DateFormat(
-                                                                              "HH:mm")
-                                                                          .format(
-                                                                        DateFormat("HH:mm")
-                                                                            .parse(jummaTime!.prayerTiming),
-                                                                      ),
-                                                                    ),
-                                                                    style: const TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            11),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            10),
-                                                                border: Border.all(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    width: 2)),
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: Column(
-                                                                children: [
-                                                                  const Text(
-                                                                    "JUMUAH IQAMAH",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            11),
-                                                                  ),
-                                                                  Text(
-                                                                    homeController
-                                                                        .formatTime(
-                                                                      DateFormat(
-                                                                              "HH:mm")
-                                                                          .format(
-                                                                        DateFormat("HH:mm")
-                                                                            .parse(jummaTime.iqamahTiming),
-                                                                      ),
-                                                                    ),
-                                                                    style: const TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            11),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
                                                   ],
                                                 ),
-                                              ),
-                                            ),
-                                          )
-                                        ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                ],
-                              );
-                            }),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
                           ],
-                        ),
-                      ),
-                    ),
+                        );
+                      }),
+                    ],
                   ),
-                ],
+                ),
               ),
+            ),
+          ],
+        )
       ],
     );
   }
@@ -814,43 +435,70 @@ class CustomizedMobileLayout extends StatelessWidget {
   }
 
   // Function to find the current Iqama timings based on the current prayer time
-  String getCurrentIqamaTime() {
+  Map<String, String> getAllIqamaTimes() {
     DateTime now = DateTime.now();
     String currentDateStr = DateFormat('d/M').format(now);
-
     DateTime currentDate = parseDate(currentDateStr);
-
-    print('Current date: ${currentDate.toLocal()}'); // Debugging line
 
     for (var timing in iqamahTiming) {
       DateTime startDate = parseDate(timing.startDate);
       DateTime endDate = parseDate(timing.endDate);
 
-      print(
-          'Checking date range: ${startDate.toLocal()} to ${endDate.toLocal()}'); // Debugging line
+      // Ensure the date range includes the current date
+      if (currentDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
+          currentDate.isBefore(endDate.add(const Duration(days: 1)))) {
+        return {
+          'Fajr': timing.fjar,
+          'Dhuhr': timing.zuhr,
+          'Asr': timing.asr,
+          'Maghrib':
+              DateFormat("h:mm a").format(now.add(const Duration(minutes: 5))),
+          'Isha': timing.isha,
+        };
+      }
+    }
+
+    // Return default values if no timing is found
+    return {
+      'Fajr': 'Not available',
+      'Dhuhr': 'Not available',
+      'Asr': 'Not available',
+      'Maghrib': 'Not available',
+      'Isha': 'Not available',
+    };
+  }
+
+// Function to find and return Azan names for all prayers based on the date range
+  Map<String, String> getAllAzanNamesForCurrentDate() {
+    DateTime now = DateTime.now();
+    String currentDateStr = DateFormat('d/M').format(now);
+    DateTime currentDate = parseDate(currentDateStr);
+
+    for (var timing in iqamahTiming) {
+      DateTime startDate = parseDate(timing.startDate);
+      DateTime endDate = parseDate(timing.endDate);
 
       // Ensure the date range includes the current date
       if (currentDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
           currentDate.isBefore(endDate.add(const Duration(days: 1)))) {
-        switch (homeController.currentPrayerTime) {
-          case 'Fajr':
-            return timing.fjar;
-          case 'Dhuhr':
-            return timing.zuhr;
-          case 'Asr':
-            return timing.asr;
-          case 'Maghrib':
-            final maghribTime = now.add(const Duration(minutes: 5));
-            return DateFormat("h:mm a").format(maghribTime);
-          case 'Isha':
-            return timing.isha;
-          default:
-            return "Invalid prayer time";
-        }
+        return {
+          'Fajr': 'Fajr',
+          'Dhuhr': 'Dhuhr',
+          'Asr': 'Asr',
+          'Maghrib': 'Maghrib',
+          'Isha': 'Isha',
+        };
       }
     }
 
-    return "Iqama time not found";
+    // Return default values if no date range is found
+    return {
+      'Fajr': 'Fajr',
+      'Dhuhr': 'Dhuhr',
+      'Asr': 'Asr',
+      'Maghrib': 'Maghrib',
+      'Isha': 'Isha',
+    };
   }
 
 // Function to parse a date string in "d/M" format to DateTime
@@ -883,6 +531,17 @@ class CustomizedMobileLayout extends StatelessWidget {
   }
 }
 
+String addMinutesToPrayerTime(String prayerTime, int minutesToAdd) {
+  try {
+    final dateTime = DateFormat("HH:mm").parse(prayerTime);
+    DateTime updatedTime = dateTime.add(Duration(minutes: minutesToAdd));
+    return DateFormat('h:mm a').format(updatedTime);
+  } catch (e) {
+    print('Error parsing time: $e');
+    return 'Invalid time';
+  }
+}
+
 class HomeCardRow1 extends StatelessWidget {
   HomeCardRow1({
     super.key,
@@ -901,7 +560,7 @@ class HomeCardRow1 extends StatelessWidget {
             }),
         CusTomizedCardWidget(
             title: 'Qibla Direction',
-            imageIcon: qiblaIconBg,
+            imageIcon: qiblaIcon2,
             onTap: () {
               Get.to(() => QiblahScreen());
             }),
