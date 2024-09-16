@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
@@ -189,10 +190,11 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
             Get.back();
           },
         ),
-        backgroundColor: const Color(0xFF0F6467),
+        backgroundColor: primaryColor,
         title: Text(
           '${widget.surahNumber}. ${widget.surahName}',
-          style: const TextStyle(color: Colors.white, fontSize: 18),
+          style: const TextStyle(
+              color: Colors.white, fontSize: 18, fontFamily: popinsSemiBold),
         ),
         actions: [
           isDownloading
@@ -201,7 +203,8 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
                   child: Center(
                     child: CircularProgressIndicator(
                       value: downloadProgress / 100,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   ),
                 )
@@ -209,7 +212,11 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
                   ? IconButton(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Audio already downloaded')),
+                          const SnackBar(
+                              content: Text(
+                            'Audio already downloaded',
+                            style: TextStyle(fontFamily: popinsMedium),
+                          )),
                         );
                       },
                       icon: const Icon(
@@ -236,8 +243,10 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
                 children: [
                   Text(
                     '${widget.surahVerseCount} verses | ${widget.englishVerse}',
-                    style:
-                        const TextStyle(fontSize: 16, color: Color(0xFF0F6467)),
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: primaryColor,
+                        fontFamily: popinsMedium),
                   ),
                   const Divider(height: 20),
                   Expanded(
@@ -276,21 +285,27 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
                                   Text(
                                     'Ayah ${ayah.numberInSurah}',
                                     style: const TextStyle(
-                                        fontSize: 16, color: Colors.black87),
+                                        fontSize: 16,
+                                        color: Colors.black87,
+                                        fontFamily: popinsRegulr),
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
                                     ayah.text,
                                     textAlign: TextAlign.right,
                                     style: const TextStyle(
-                                        fontSize: 18, color: Colors.black),
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                        fontFamily: jameelNori2),
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
                                     translation.translation,
                                     textAlign: TextAlign.left,
                                     style: const TextStyle(
-                                        fontSize: 16, color: Colors.black54),
+                                        fontSize: 16,
+                                        color: Colors.black54,
+                                        fontFamily: popinsRegulr),
                                   ),
                                 ],
                               ),

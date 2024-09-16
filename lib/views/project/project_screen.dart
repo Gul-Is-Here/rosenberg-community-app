@@ -65,6 +65,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                             DateTime.now())
                                         .split(' ')[0],
                                     style: const TextStyle(
+                                      fontFamily: popinsRegulr,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
@@ -76,12 +77,14 @@ class _ProjectScreenState extends State<ProjectScreen> {
                               5.widthBox,
                               Expanded(
                                 child: Column(
+                                  // mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       project.projectDescription,
                                       style: const TextStyle(
                                         fontSize: 14,
+                                        fontFamily: popinsRegulr,
                                         fontWeight: FontWeight.bold,
                                       ),
                                       maxLines: 4,
@@ -90,6 +93,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                     Text(
                                       project.projectTitle,
                                       style: const TextStyle(
+                                        fontFamily: popinsRegulr,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                       ),

@@ -32,7 +32,8 @@ class _QuranScreenState extends State<QuranScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 0,
+        toolbarHeight: 20,
+        backgroundColor: primaryColor,
       ),
       body: Obx(() {
         if (quranController.isLoading.value) {
@@ -62,14 +63,14 @@ class _QuranScreenState extends State<QuranScreen> {
                       margin: EdgeInsets.zero,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(20),
-                          bottomRight: Radius.circular(20),
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10),
                         ),
                       ),
                       child: Container(
-                        height: screenHeight * 0.3,
+                        height: screenHeight * 0.28,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(0),
                           image: const DecorationImage(
                             image: AssetImage(qiblaTopBg), // Background image
                             fit: BoxFit.cover,
@@ -79,42 +80,15 @@ class _QuranScreenState extends State<QuranScreen> {
                     ),
                   ),
                   Positioned(
-                    top: screenHeight * 0.01,
-                    left: 0,
-                    right: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            maxRadius: 35,
-                            minRadius: 10,
-                            backgroundColor: Colors.white,
-                            child: Icon(
-                              size: 50,
-                              Icons.person,
-                              color: primaryColor,
-                            ),
-                          ),
-                          20.widthBox,
-                          Text(
-                            'Assalamualaikum \n${loginConrtroller.userFname} ${loginConrtroller.userLname}',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: screenHeight * 0.13,
-                    left: screenHeight * 0.18,
+                    top: screenHeight * 0.10,
+                    left: screenHeight * 0.15,
                     child: Text(
                       'Quran',
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: screenHeight * 0.04,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          color: Colors.white,
+                          fontSize: screenHeight * 0.05,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: popinsBold),
                     ),
                   ),
                 ],
@@ -229,18 +203,21 @@ class _QuranScreenState extends State<QuranScreen> {
             ),
             50.heightBox,
             // Audio Player Bar
-            Obx(() => audioController.isPlaying.value
+            Obx(() => audioController.isPlaying.value ||
+                    audioController.currentAudio.value != null
                 ? AudioPlayerBar2(
                     audioPlayerController: audioController,
                     isPlaying: audioController.isPlaying.value,
                     currentAudio: audioController.currentAudio.value,
                     onPlayPause: () => audioController
                         .playOrPauseAudio(audioController.currentAudio.value!),
-                    onStop: audioController.stopAudio,
                     onNext: () => audioController
                         .playNextAudio(quranController.audioFiles),
                     onPrevious: () => audioController
                         .playPreviousAudio(quranController.audioFiles),
+                    onStop: () =>
+                        audioController.stopAudio(), // Stop button callback
+                    totalVerseCount: '',
                   )
                 : SizedBox.shrink()),
           ],

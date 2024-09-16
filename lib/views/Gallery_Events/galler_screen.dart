@@ -21,9 +21,9 @@ class GalleyScreen extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: [
                 primaryColor,
-                Color.fromARGB(255, 157, 210, 212),
+                const Color.fromARGB(255, 157, 210, 212),
               ]),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               border: Border.all(color: Colors.black, width: 1),
             ),
             padding:
@@ -32,16 +32,17 @@ class GalleyScreen extends StatelessWidget {
               child: Text(
                 'Gallery Events',
                 style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontFamily: popinsRegulr),
               ),
             ),
           ),
           content: const Text(
             'Choose an option:',
             style: TextStyle(
+              fontFamily: popinsRegulr,
               fontSize: 18,
               color: CupertinoColors.black,
             ),
@@ -66,6 +67,7 @@ class GalleyScreen extends StatelessWidget {
                 child: const Text(
                   'Images',
                   style: TextStyle(
+                    fontFamily: popinsRegulr,
                     color: Colors.white,
                     fontSize: 18,
                   ),
@@ -87,6 +89,7 @@ class GalleyScreen extends StatelessWidget {
                 child: Text(
                   'Videos',
                   style: TextStyle(
+                    fontFamily: popinsRegulr,
                     color: Colors.white,
                     fontSize: 18,
                   ),
@@ -133,9 +136,10 @@ class GalleyScreen extends StatelessWidget {
               child: Text(
                 'IMAGES - EVENTS LIST',
                 style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold),
+                  color: Colors.white,
+                  fontFamily: popinsSemiBold,
+                  fontSize: 24,
+                ),
               ),
             ),
           ),
@@ -146,7 +150,11 @@ class GalleyScreen extends StatelessWidget {
                 if (controller.isLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (controller.gallerySubcategories.isEmpty) {
-                  return const Center(child: Text('No events found.'));
+                  return const Center(
+                      child: Text(
+                    'No events found.',
+                    style: TextStyle(fontFamily: popinsRegulr),
+                  ));
                 } else {
                   return ListView.builder(
                     itemCount: controller.gallerySubcategories.length,
@@ -180,8 +188,8 @@ class GalleyScreen extends StatelessWidget {
                                   subcategory.gallerySubcategoryName,
                                   style: TextStyle(
                                     color: primaryColor,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24, fontFamily: popinsSemiBold,
+                                    // fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),

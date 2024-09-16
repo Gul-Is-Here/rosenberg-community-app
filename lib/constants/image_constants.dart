@@ -9,6 +9,8 @@ const contactUsIcon = "assets/home_icon/callicon.png";
 const qiblaIconBg = "assets/home_icon/Qibladirectionicon.png";
 const qiblaIcon1 = 'assets/home_icon/qiblaIcon1.png';
 const qiblaIcon2 = 'assets/home_icon/qibalIocn2.png';
+const qiblaIcon4 = 'assets/home_icon/qiblaIcons2.png';
+const qiblaIcon5 = 'assets/home_icon/qiblaIcons.png';
 const qiblaTopBg = "assets/home_icon/qiblatopBg.png";
 const namazQiblaBg = "assets/home_icon/namaz&iqamahbackground.png";
 const sunriseIcon = "assets/home_icon/sunriseicon.png";
@@ -38,11 +40,14 @@ const splash2 = "assets/splash_icon/splash3.png";
 const splash3 = "assets/splash_icon/splash4.png";
 const splash4 = "assets/splash_icon/splash2.png";
 // Sample list of images for demonstration
+const banner1 = "assets/images/banner0.jpg";
+const banner2 = "assets/images/banner1.jpg";
+const banner3 = "assets/images/banner2.jpg";
 final List<String> imageOptions = [
   qiblaIcon1,
   qiblaIcon2,
-  qiblaIcon1,
-  qiblaIcon2,
-  qiblaIcon1,
-  qiblaIcon2
+  
+  qiblaIcon4,
+  qiblaIcon5,
 ];
+final List<String> bannerList = [banner1, banner2, banner3];

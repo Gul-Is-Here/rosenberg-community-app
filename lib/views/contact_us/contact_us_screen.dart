@@ -31,6 +31,7 @@ class ContactUsScreen extends StatelessWidget {
                           textAlign: TextAlign.start,
                           "+1 (281) 303-1758",
                           style: TextStyle(
+                            fontFamily: popinsRegulr,
                             color: primaryColor,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -93,6 +94,7 @@ class ContactUsScreen extends StatelessWidget {
                           textAlign: TextAlign.start,
                           "ADMIN@ROSENBERGCOMMUNITYCENTER.ORG",
                           style: TextStyle(
+                            fontFamily: popinsRegulr,
                             color: primaryColor,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -156,6 +158,7 @@ class ContactUsScreen extends StatelessWidget {
                           "6719KOEBLEN ROAD, RICHMOND, TX, 77469",
                           style: TextStyle(
                             color: primaryColor,
+                            fontFamily: popinsRegulr,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                           ),

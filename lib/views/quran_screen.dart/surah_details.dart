@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/quran_controller.dart';
@@ -60,7 +61,7 @@ class _OnlySurahDetailsScreenState extends State<OnlySurahDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
@@ -68,10 +69,11 @@ class _OnlySurahDetailsScreenState extends State<OnlySurahDetailsScreen> {
             Get.back();
           },
         ),
-        backgroundColor: const Color(0xFF0F6467),
+        backgroundColor: primaryColor,
         title: Text(
           '${widget.surahNumber}. ${widget.surahName}',
-          style: const TextStyle(color: Colors.white, fontSize: 18),
+          style: const TextStyle(
+              color: Colors.white, fontSize: 18, fontFamily: popinsSemiBold),
         ),
       ),
       body: Padding(
@@ -81,7 +83,8 @@ class _OnlySurahDetailsScreenState extends State<OnlySurahDetailsScreen> {
           children: [
             Text(
               '${widget.surahVerseCount} verses | ${widget.englishVerse}',
-              style: const TextStyle(fontSize: 16, color: Color(0xFF0F6467)),
+              style: TextStyle(
+                  fontSize: 16, color: primaryColor, fontFamily: popinsMedium),
             ),
             const Divider(height: 20),
             Expanded(
@@ -120,21 +123,27 @@ class _OnlySurahDetailsScreenState extends State<OnlySurahDetailsScreen> {
                             Text(
                               'Ayah ${ayah.numberInSurah}',
                               style: const TextStyle(
-                                  fontSize: 16, color: Colors.black87),
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                  fontFamily: popinsRegulr),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               ayah.text,
                               textAlign: TextAlign.right,
                               style: const TextStyle(
-                                  fontSize: 18, color: Colors.black),
+                                  fontSize: 18,
+                                  color: Colors.black,
+                                  fontFamily: jameelNori1),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               translation.translation,
                               textAlign: TextAlign.left,
                               style: const TextStyle(
-                                  fontSize: 16, color: Colors.black54),
+                                  fontSize: 16,
+                                  color: Colors.black54,
+                                  fontFamily: popinsRegulr),
                             ),
                           ],
                         ),

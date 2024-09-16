@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
+import '../../constants/color.dart';
 import '../../constants/image_constants.dart';
 import '../../controllers/login_controller.dart';
 import '../../controllers/qibla_controller.dart';
@@ -27,6 +28,11 @@ class QiblahScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        toolbarHeight: 20,
+        backgroundColor: primaryColor,
+      ),
       body: Stack(
         children: [
           Positioned(
@@ -58,42 +64,15 @@ class QiblahScreen extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: screenHeight * 0.01,
-            left: 0,
-            right: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    maxRadius: 35,
-                    minRadius: 10,
-                    backgroundColor: Colors.white,
-                    child: Icon(
-                      size: 60,
-                      Icons.person,
-                      color: Colors.amber,
-                    ),
-                  ),
-                  20.widthBox,
-                  Text(
-                    'Assalamualaikum \n${loginConrtroller.userFname} ${loginConrtroller.userLname}',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: screenHeight * 0.13,
-            left: screenWidth * 0.3,
+            top: screenHeight * 0.12,
+            left: screenWidth * 0.19,
             child: Text(
               'Qiblah Direction',
               style: TextStyle(
-                color: Colors.white,
-                fontSize: screenHeight * 0.03,
-                fontWeight: FontWeight.bold,
-              ),
+                  color: Colors.white,
+                  fontSize: screenHeight * 0.035,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: popinsBold),
             ),
           ),
           StreamBuilder(
@@ -127,13 +106,14 @@ class QiblahScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(height: screenHeight * 0.10),
+                      SizedBox(height: screenHeight * 0.12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 8),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,6 +156,7 @@ class QiblahScreen extends StatelessWidget {
                                         () => Text(
                                           '${controller.locationCountry}, ${controller.locationCity}',
                                           style: TextStyle(
+                                            fontFamily: popinsRegulr,
                                             color: Colors.grey,
                                             fontSize: screenHeight * 0.015,
                                           ),
@@ -184,13 +165,13 @@ class QiblahScreen extends StatelessWidget {
                                       5.widthBox,
                                       "|"
                                           .text
-                                          .color(Color(0xFF006367))
+                                          .color(primaryColor)
                                           .size(20)
                                           .make(),
                                       5.widthBox,
-                                      const Icon(
+                                      Icon(
                                         Icons.location_on,
-                                        color: Color(0xFF006367),
+                                        color: primaryColor,
                                       ),
                                     ],
                                   ),
@@ -216,7 +197,7 @@ class QiblahScreen extends StatelessWidget {
                       Container(
                         width: double.infinity,
                         height: 40,
-                        color: Color(0xFF006367),
+                        color: primaryColor,
                         child: const Padding(
                           padding: EdgeInsets.all(4.0),
                           child: Text(
@@ -224,7 +205,8 @@ class QiblahScreen extends StatelessWidget {
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
-                                fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.bold,
+                                fontFamily: popinsBold),
                           ),
                         ),
                       ),

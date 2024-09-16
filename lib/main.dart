@@ -57,38 +57,9 @@ void main() async {
     sharedPreferences.setString("selectedSound", "Adhan - Makkah");
   }
 
-  // Initialize Notification Services
-  // final notificationServices = NotificationServices();
-  // await notificationServices.initializeNotification();
-  // notificationServices.storeDeviceToken();
-  // notificationServices.checkDeviceTokens();
-
-  // Set up Firebase Messaging background handler
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // Schedule and play Azan notification immediately on app start
-  // HomeController().scheduleAzanNotification();
-
-  // await Alarm.setNotificationOnAppKillContent(
-  //   'Azan Alarm',
-  //   'Your scheduled Azan is active',
-  // );
-
   runApp(const MyApp());
 }
 
-// Background message handler
-// @pragma('vm:entry-point')
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   try {
-//     await Firebase.initializeApp();
-//     final notificationServices = NotificationServices();
-//     await notificationServices.initializeNotification();
-//     await notificationServices.showNotification('Prayer', 'It\'s Prayer Time');
-//   } catch (e) {
-//     print("Error in background message handler: $e");
-//   }
-// }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

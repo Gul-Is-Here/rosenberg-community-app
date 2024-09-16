@@ -32,6 +32,7 @@ class GalleryVideosScreen extends StatelessWidget {
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
+                    fontFamily: popinsRegulr,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -40,7 +41,10 @@ class GalleryVideosScreen extends StatelessWidget {
           ),
           150.heightBox,
           const Center(
-            child: Text('COOMING SOON'),
+            child: Text(
+              'COOMING SOON',
+              style: TextStyle(fontFamily: popinsRegulr),
+            ),
           )
         ],
       ),

@@ -1,5 +1,5 @@
+import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/controllers/donation_controller.dart';
-import 'package:community_islamic_app/views/home_screens/azanoverlay_screen.dart';
 import 'package:community_islamic_app/widgets/customized_card_widget2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,13 +19,17 @@ class DonationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 20,
+        backgroundColor: primaryColor,
+      ),
       body: FutureBuilder<Donation>(
         future: donationController.fetchDonationData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
+            return Center(
                 child: CircularProgressIndicator(
-              color: Color(0xFF006367),
+              color: primaryColor,
             ));
           } else if (snapshot.hasError) {
             return Center(child: Text("${snapshot.error}"));
@@ -45,40 +49,15 @@ class DonationScreen extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
-                            child: CircleAvatar(
-                              maxRadius: 35,
-                              minRadius: 10,
-                              backgroundColor: Colors.white,
-                              child: Icon(
-                                size: 50,
-                                Icons.person,
-                                color: Colors.amber,
-                              ),
-                            ),
-                          ),
-                          10.widthBox,
-                          Text(
-                            'Assalamualaikum \n${loginConrtroller.userFname.value} ${loginConrtroller.userLname.value}',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      10.heightBox,
-                      const Text(
-                        'DONATION',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold),
-                      )
-                    ],
+                  child: const Center(
+                    child: Text(
+                      'DONATION',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 32,
+                          fontFamily: popinsBold,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 10.heightBox,
@@ -95,16 +74,16 @@ class DonationScreen extends StatelessWidget {
                           Container(
                             height: 40,
                             width: double.infinity,
-                            color: Color(0xFF006367),
+                            color: primaryColor,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 donate.donationcategoryName,
                                 style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontFamily: popinsBold),
                               ),
                             ),
                           ),
@@ -136,7 +115,11 @@ class DonationScreen extends StatelessWidget {
               ],
             );
           } else {
-            return const Center(child: Text("No data found"));
+            return const Center(
+                child: Text(
+              "No data found",
+              style: TextStyle(fontFamily: popinsRegulr),
+            ));
           }
         },
       ),
