@@ -24,6 +24,7 @@ const donationIcon4 = "assets/home_icon/donationIcon4.png";
 const donationIcon5 = "assets/home_icon/donationIcon5.png";
 const kabbaIcon = 'assets/home_icon/kabba.png';
 const sunsetIcon = 'assets/home_icon/sunseticon.png';
+const compass = 'assets/home_icon/compass.png';
 
 ///      Project sccreen dummy image
 const projectBg = 'assets/home_icon/project_bg1.png';
@@ -46,7 +47,6 @@ const banner3 = "assets/images/banner2.jpg";
 final List<String> imageOptions = [
   qiblaIcon1,
   qiblaIcon2,
-  
   qiblaIcon4,
   qiblaIcon5,
 ];

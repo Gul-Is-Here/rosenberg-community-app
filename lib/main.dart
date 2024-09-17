@@ -13,13 +13,11 @@ void main() async {
 
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  // await Alarm.init();
 
   tz.initializeTimeZones();
 
   await NotificationServices().initializeNotification();
 
-  // await NotificationServices().test();
 
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
