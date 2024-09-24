@@ -81,7 +81,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
       album: 'Quran',
       title: audioFile.format.name,
       artist: 'Quran Recitation',
-      duration: await _getDuration(audioFile.audioUrl),
+      duration: await getDuration(audioFile.audioUrl),
       artUri: Uri.parse(
           'https://example.com/cover.jpg'), // Replace with actual cover image
     );
@@ -94,7 +94,7 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
     ));
   }
 
-  Future<Duration?> _getDuration(String url) async {
+  Future<Duration?> getDuration(String url) async {
     try {
       return await _audioPlayer.setUrl(url);
     } catch (e) {

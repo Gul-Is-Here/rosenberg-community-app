@@ -30,6 +30,7 @@ class AudioPlayerBar2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final progress = audioPlayerController.progress.value;
+      final bufferreDuration = audioPlayerController.buffereDuration.value;
       final duration = audioPlayerController.duration.value;
       final playbackSpeed = audioPlayerController.playbackSpeed.value;
 
@@ -92,10 +93,14 @@ class AudioPlayerBar2 extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              LinearProgressIndicator(
-                value: duration > 0 ? progress / duration : 0,
-                backgroundColor: Colors.white.withOpacity(0.3),
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              SizedBox(
+                width: double.maxFinite,
+                height: 5,
+                child: LinearProgressIndicator(
+                  value: duration > 0 ? progress / duration : 0,
+                  backgroundColor: Colors.white.withOpacity(0.3),
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
               ),
               const SizedBox(height: 8),
               // Add any other UI elements if needed

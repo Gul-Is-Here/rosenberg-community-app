@@ -32,7 +32,7 @@ class AudioPlayerBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       final progress = audioPlayerController.progress.value;
-      final duration = audioPlayerController.duration.value;
+      final duration = audioPlayerController.buffereDuration.value;
       final isRepeating = audioPlayerController.isRepeating.value;
       final playbackSpeed = audioPlayerController.playbackSpeed.value;
 

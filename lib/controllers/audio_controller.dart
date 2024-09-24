@@ -6,7 +6,9 @@ import '../views/audio_screen/audio_handler.dart';
 
 class AudioPlayerController extends GetxController {
   var isPlaying = false.obs;
+  var isLoading = false.obs;
   var progress = 0.0.obs;
+  var buffereDuration = 1.0.obs;
   var duration = 1.0.obs;
   var playbackSpeed = 1.0.obs;
   var isRepeating = false.obs;
@@ -47,7 +49,7 @@ class AudioPlayerController extends GetxController {
         // Update the state based on the playback state
         isPlaying.value = playbackState.playing;
         progress.value = playbackState.position.inMilliseconds.toDouble();
-        duration.value =
+        buffereDuration.value =
             playbackState.bufferedPosition.inMilliseconds.toDouble();
         playbackSpeed.value = playbackState.speed;
         print('Playback State Updated: $playbackState');
@@ -108,10 +110,18 @@ class AudioPlayerController extends GetxController {
       } else {
         // Stop current audio and play new one
         print('Stopping current audio and playing new one');
-        await _audioHandler!.stop();
-        await _audioHandler!.setAudioFile(audio);
-        await _audioHandler!.play();
         currentAudio.value = audio;
+        progress.value = 0.0;
+        buffereDuration.value = 1.0;
+        await _audioHandler!.stop();
+        isLoading.value = !isLoading.value;
+        await _audioHandler!.setAudioFile(audio);
+        duration.value = (await _audioHandler?.getDuration(audio.audioUrl))
+                ?.inMilliseconds
+                .toDouble() ??
+            1.0;
+        isLoading.value = !isLoading.value;
+        await _audioHandler!.play();
         isPlaying.value = true;
       }
     } catch (e) {
@@ -132,9 +142,6 @@ class AudioPlayerController extends GetxController {
         isPlaying.value = false;
       }
     } catch (e) {
-
-
-      
       print('Error pausing audio: $e');
     }
   }
