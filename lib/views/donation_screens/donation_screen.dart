@@ -100,7 +100,7 @@ class DonationScreen extends StatelessWidget {
                                         .launchURL(hasDonation.donationLink);
                                   } catch (e) {
                                     print(
-                                        'Could not launch ${hasDonation.donationLink}');
+                                        'Could not launch ${hasDonation.donationLink}: $e');
                                   }
                                 },
                               );

@@ -25,7 +25,8 @@ const donationIcon5 = "assets/home_icon/donationIcon5.png";
 const kabbaIcon = 'assets/home_icon/kabba.png';
 const sunsetIcon = 'assets/home_icon/sunseticon.png';
 const compass = 'assets/home_icon/compass.png';
-
+const eventBg = 'assets/home_icon/event_bg.png';
+const splashBg = "assets/home_icon/splashBg.png";
 ///      Project sccreen dummy image
 const projectBg = 'assets/home_icon/project_bg1.png';
 // About Us Images
