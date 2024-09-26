@@ -34,20 +34,6 @@ class _QuranScreenState extends State<QuranScreen> {
     super.initState();
   }
 
-  // List<AudioPlayer> players = [];
-
-  // int i = -1;
-
-  // bool isPlaying = false;
-
-  // AudioFile audioFile = AudioFile(
-  //   id: 0,
-  //   chapterId: 0,
-  //   fileSize: 0,
-  //   format: Format.MP3,
-  //   audioUrl: '',
-  // );
-
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
@@ -147,6 +133,7 @@ class _QuranScreenState extends State<QuranScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: CustomizedSurahWidget(
+                            surahNameEng: surah!.englishName,
                             audioFile: audioFile,
                             onTap1: () async {
                               print('----Surah-------');
@@ -166,42 +153,7 @@ class _QuranScreenState extends State<QuranScreen> {
                                 ),
                               );
                             },
-                            // audioPlayer: players[index],
-                            // audioPlayerUrl: audio.audioUrl,
-                            // onTap2: () async {
-                            //   setState(() {
-                            //     i = index;
-                            //     audioFile = audio;
-                            //     audioController.playOrPauseAudio(audio);
-                            //   });
-                            // },
-                            // surahOnTap: () async {
-                            //   if (surah != null) {
-                            //     await quranController
-                            //         .fetchTranslationData(chapter.id);
-                            //     Get.to(
-                            //       () => SurahDetailsScreen(
-                            //         surahM: surah,
-                            //         surahVerseCount: surah.ayahs.length,
-                            //         surahVerseEng:
-                            //             quranController.translationData,
-                            //         audioPlayerUrl: audioFile,
-                            //         surahName: surah.name,
-                            //         surahNumber: surah.number,
-                            //         englishVerse: surah.englishName,
-                            //         verse: surah.name,
-                            //         surahVerse: surah.ayahs,
-                            //       ),
-                            //     );
-                            //   }
-                            // },
                             firstIcon: quranIcon,
-                            // secondIcon: audioController.isPlaying.value &&
-                            //         audioController.currentAudio.value?.id ==
-                            //             audio.id
-                            // secondIcon: players[index].playerState.playing
-                            //     ? Icons.pause
-                            //     : Icons.play_arrow,
                             surahTxet: surah?.name ?? 'Surah not found',
                             thirdIcon: chapter.revelationPlace ==
                                     RevelationPlace.MAKKAH

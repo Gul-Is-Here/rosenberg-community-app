@@ -119,11 +119,12 @@ class QiblahScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CustomizedPrayerTextWidget(
-                                    iconColor: Colors.white,
-                                    color: Colors.black,
-                                    title: 'PRAYER: ',
-                                    prayerName:
-                                        homeController.currentPrayerTime!),
+                                  iconColor: Colors.white,
+                                  color: Colors.black,
+                                  title: 'PRAYER: ',
+                                  prayerName: homeController
+                                      .getCurrentPrayer(), // Provide a fallback value when null
+                                ),
                                 CustomizedPrayerTextWidget(
                                     iconColor: Colors.white,
                                     color: Colors.black,

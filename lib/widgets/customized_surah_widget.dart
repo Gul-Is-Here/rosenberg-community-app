@@ -9,34 +9,25 @@ import 'package:velocity_x/velocity_x.dart';
 import '../controllers/audio_controller.dart';
 
 class CustomizedSurahWidget extends StatefulWidget {
-  const CustomizedSurahWidget({
-    super.key,
-    required this.onTap1,
-    required this.audioFile,
-    required this.onTapNavigation,
-    // required this.audioPlayer,
-    // required this.audioPlayerUrl,
-    // required this.onTap2,
-    // required this.surahOnTap,
-    required this.firstIcon,
-    // required this.secondIcon,
-    required this.surahTxet,
-    required this.thirdIcon,
-    required this.surahNumber,
-  });
+  const CustomizedSurahWidget(
+      {super.key,
+      required this.onTap1,
+      required this.audioFile,
+      required this.onTapNavigation,
+      required this.firstIcon,
+      required this.surahTxet,
+      required this.thirdIcon,
+      required this.surahNumber,
+      required this.surahNameEng});
 
   final void Function() onTapNavigation;
   final void Function() onTap1;
-  // final AudioPlayer audioPlayer;
-  // final String audioPlayerUrl;
   final AudioFile audioFile;
-  // final Future<void> Function() onTap2;
-  // final void Function() surahOnTap;
   final String firstIcon;
-  // final IconData secondIcon;
   final String surahTxet;
   final String thirdIcon;
   final int surahNumber;
+  final String surahNameEng;
 
   @override
   State<CustomizedSurahWidget> createState() => _CustomizedSurahWidgetState();
@@ -48,31 +39,15 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
   @override
   void initState() {
     super.initState();
-    // icon = widget.secondIcon;
   }
-
-  // @override
-  // void didUpdateWidget(covariant CustomizedSurahWidget oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-
-  //   if (oldWidget.secondIcon != widget.secondIcon) {
-  //     setState(() {
-  //       icon = widget.secondIcon;
-  //     });
-  //   }
-  // }
 
   final AudioPlayerController audioController =
       Get.put(AudioPlayerController());
-
-  // bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        // await audioController.stopAudio();
-
         widget.onTapNavigation();
 
         if (widget.audioFile.audioUrl.isNotEmpty) {
@@ -137,21 +112,6 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
                         : IconButton(
                             onPressed: () async {
                               if (widget.audioFile.audioUrl.isNotEmpty) {
-                                //   if (widget.audioPlayer.playerState.playing) {
-                                //     await widget.audioPlayer.pause();
-                                //   } else {
-                                //     setState(() {
-                                //       isLoading = true;
-                                //     });
-                                //     await widget.audioPlayer
-                                //         .setUrl(widget.audioPlayerUrl);
-                                //     setState(() {
-                                //       isLoading = false;
-                                //     });
-                                //     await widget.audioPlayer.play();
-                                //   }
-
-                                //   setState(() {});
                                 await audioController
                                     .playOrPauseAudio(widget.audioFile);
                               } else {
@@ -179,29 +139,48 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
           ),
           10.widthBox,
           Expanded(
-            child: Text(
-              widget.surahTxet,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                fontFamily: jameelNori2,
-              ),
+            child: Column(
+              children: [
+                Text(
+                  widget.surahTxet,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: jameelNori2,
+                  ),
+                ),
+                Text(
+                  widget.surahNameEng,
+                  style: const TextStyle(
+                    // fontSize: 18,
+                    fontFamily: popinsMedium,
+                  ),
+                ),
+              ],
             ),
           ),
           10.widthBox,
-          Image.asset(
-            widget.thirdIcon,
-            height: 24,
-            fit: BoxFit.cover,
-          ),
+          Container(
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Container(
+                    height: 45,
+                    width: 45,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Image.asset(
+                      widget.thirdIcon,
+                      height: 24,
+                      fit: BoxFit.cover,
+                    ),
+                  ))),
           10.widthBox,
-          Text(
-            widget.surahNumber.toString(),
-            style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                fontFamily: popinsRegulr),
-          ),
         ],
       ),
     );
