@@ -29,6 +29,11 @@ class _QuranScreenState extends State<QuranScreen> {
   final AudioPlayerController audioController =
       Get.put(AudioPlayerController());
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   // List<AudioPlayer> players = [];
 
   // int i = -1;
@@ -143,8 +148,10 @@ class _QuranScreenState extends State<QuranScreen> {
                           padding: const EdgeInsets.all(4.0),
                           child: CustomizedSurahWidget(
                             audioFile: audioFile,
-                            onTap1: () {
+                            onTap1: () async {
                               print('----Surah-------');
+                              await quranController
+                                  .fetchTranslationData(chapter.id);
                               Get.to(
                                 () => OnlySurahDetailsScreen(
                                   surahM: surah!,
@@ -168,24 +175,26 @@ class _QuranScreenState extends State<QuranScreen> {
                             //     audioController.playOrPauseAudio(audio);
                             //   });
                             // },
-                            surahOnTap: () async {
-                              if (surah != null) {
-                                await quranController
-                                    .fetchTranslationData(chapter.id);
-                                Get.to(() => SurahDetailsScreen(
-                                      surahM: surah,
-                                      surahVerseCount: surah.ayahs.length,
-                                      surahVerseEng:
-                                          quranController.translationData,
-                                      audioPlayerUrl: audioFile,
-                                      surahName: surah.name,
-                                      surahNumber: surah.number,
-                                      englishVerse: surah.englishName,
-                                      verse: surah.name,
-                                      surahVerse: surah.ayahs,
-                                    ));
-                              }
-                            },
+                            // surahOnTap: () async {
+                            //   if (surah != null) {
+                            //     await quranController
+                            //         .fetchTranslationData(chapter.id);
+                            //     Get.to(
+                            //       () => SurahDetailsScreen(
+                            //         surahM: surah,
+                            //         surahVerseCount: surah.ayahs.length,
+                            //         surahVerseEng:
+                            //             quranController.translationData,
+                            //         audioPlayerUrl: audioFile,
+                            //         surahName: surah.name,
+                            //         surahNumber: surah.number,
+                            //         englishVerse: surah.englishName,
+                            //         verse: surah.name,
+                            //         surahVerse: surah.ayahs,
+                            //       ),
+                            //     );
+                            //   }
+                            // },
                             firstIcon: quranIcon,
                             // secondIcon: audioController.isPlaying.value &&
                             //         audioController.currentAudio.value?.id ==

@@ -17,21 +17,21 @@ class CustomizedSurahWidget extends StatefulWidget {
     // required this.audioPlayer,
     // required this.audioPlayerUrl,
     // required this.onTap2,
-    required this.surahOnTap,
+    // required this.surahOnTap,
     required this.firstIcon,
     // required this.secondIcon,
     required this.surahTxet,
     required this.thirdIcon,
     required this.surahNumber,
   });
-  
+
   final void Function() onTapNavigation;
   final void Function() onTap1;
   // final AudioPlayer audioPlayer;
   // final String audioPlayerUrl;
   final AudioFile audioFile;
   // final Future<void> Function() onTap2;
-  final void Function() surahOnTap;
+  // final void Function() surahOnTap;
   final String firstIcon;
   // final IconData secondIcon;
   final String surahTxet;
@@ -70,7 +70,19 @@ class _CustomizedSurahWidgetState extends State<CustomizedSurahWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onTapNavigation,
+      onTap: () async {
+        // await audioController.stopAudio();
+
+        widget.onTapNavigation();
+
+        if (widget.audioFile.audioUrl.isNotEmpty) {
+          await audioController.playOrPauseAudio(widget.audioFile);
+        } else {
+          print(
+            'Audio file not found for chapter',
+          );
+        }
+      },
       child: Row(
         children: [
           Container(

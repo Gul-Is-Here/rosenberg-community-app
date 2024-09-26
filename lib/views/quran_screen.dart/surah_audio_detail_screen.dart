@@ -58,7 +58,7 @@ class _SurahDetailsScreenState extends State<SurahDetailsScreen> {
     quranController = Get.find();
     scrollController = ScrollController();
     checkIfAudioDownloaded();
-    playCurrentAyahAudio();
+    // playCurrentAyahAudio();
     scrollToCurrentAyah();
   }
 

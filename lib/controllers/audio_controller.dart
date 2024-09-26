@@ -1,3 +1,4 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import '../model/quran_audio_model.dart';
@@ -18,10 +19,13 @@ class AudioPlayerController extends GetxController {
   final List<double> speedOptions = [0.5, 1.0, 1.5, 2.0];
   var isAudioHandlerInitialized = false.obs;
 
+  AudioPlayer bismillahAudioPlayer = AudioPlayer();
+
   @override
   void onInit() {
     super.onInit();
     _initAudioService();
+    bismillahAudioPlayer.setAsset("assets/bismillah.mp3");
   }
 
   @override
@@ -114,13 +118,40 @@ class AudioPlayerController extends GetxController {
         progress.value = 0.0;
         buffereDuration.value = 1.0;
         await _audioHandler!.stop();
-        isLoading.value = !isLoading.value;
+        // isLoading.value = !isLoading.value;
+        EasyLoading.show(status: "Loading...");
         await _audioHandler!.setAudioFile(audio);
         duration.value = (await _audioHandler?.getDuration(audio.audioUrl))
                 ?.inMilliseconds
                 .toDouble() ??
             1.0;
-        isLoading.value = !isLoading.value;
+        EasyLoading.dismiss();
+        // isLoading.value = !isLoading.value;
+        // if (bismillahAudioPlayer != null) {
+        //   bismillahAudioPlayer!.stop();
+        //   bismillahAudioPlayer!.dispose();
+        // }
+
+        // bismillahAudioPlayer = AudioPlayer();
+
+        if (bismillahAudioPlayer.playing ||
+            bismillahAudioPlayer.playerState.processingState ==
+                ProcessingState.completed) {
+          await bismillahAudioPlayer.seek(Duration(
+            seconds: 1,
+          ));
+          await bismillahAudioPlayer.stop();
+        }
+
+        if (audio.chapterId != 1) {
+          await bismillahAudioPlayer.play();
+          // .whenComplete(() async {
+          //   await bismillahAudioPlayer.stop();
+          // });
+        }
+
+        // await bismillahAudioPlayer.dispose();
+
         await _audioHandler!.play();
         isPlaying.value = true;
       }
