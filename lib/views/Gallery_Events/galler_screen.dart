@@ -23,14 +23,15 @@ class GalleyScreen extends StatelessWidget {
                 primaryColor,
                 const Color.fromARGB(255, 157, 210, 212),
               ]),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
               border: Border.all(color: Colors.black, width: 1),
             ),
             padding:
                 const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
             child: const Center(
               child: Text(
-                'Gallery Events',
+                'Gallery',
                 style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -122,7 +123,7 @@ class GalleyScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const Projectbackground(title: 'GALLERY EVENTS'),
+          const Projectbackground(title: 'GALLERY'),
           10.heightBox,
           Container(
             alignment: Alignment.centerLeft,
@@ -134,7 +135,7 @@ class GalleyScreen extends StatelessWidget {
             child: const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: Text(
-                'IMAGES - EVENTS LIST',
+                'EVENTS LIST',
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: popinsSemiBold,

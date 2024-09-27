@@ -16,7 +16,7 @@ class CustomDrawer extends StatelessWidget {
     final isLoggedIn = await loginController.isLoggedIn();
 
     if (isLoggedIn) {
-      Get.to(() => ProfileScreen());
+      Get.to(() => const ProfileScreen());
     } else {
       Get.to(() => LoginScreen());
     }
@@ -41,7 +41,7 @@ class CustomDrawer extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Image.asset(
-                  masjidIcon, // Path to your logo image
+                  aboutUsIcon, // Path to your logo image
                   width: 80,
                   height: 80,
                 ),
@@ -77,15 +77,77 @@ class CustomDrawer extends StatelessWidget {
             const Divider(
               color: Colors.black,
             ),
+            //Prayer Notification
             ListTile(
               leading: Icon(Icons.timelapse, color: primaryColor),
               title: const Text('Prayer Notification',
-                  style: TextStyle(fontSize: 14)),
+                  style: TextStyle(fontSize: 14, fontFamily: popinsRegulr)),
               onTap: () {
                 Get.to(() => const AzanSettingsScreen());
               },
             ),
-
+            // Home
+            ListTile(
+              leading: Icon(Icons.home, color: primaryColor),
+              title: const Text('Home',
+                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+              onTap: () {
+                Get.to(() => const AzanSettingsScreen());
+              },
+            ),
+            // Hijiri Calendar
+            ListTile(
+              leading: Icon(Icons.calendar_month, color: primaryColor),
+              title: const Text('Hijri Calender',
+                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+              onTap: () {
+                Get.to(() => const AzanSettingsScreen());
+              },
+            ),
+            const Divider(), // Divider lin
+            //Settings
+            ListTile(
+              leading: Icon(Icons.timelapse, color: primaryColor),
+              title: const Text('Settings',
+                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+              onTap: () {
+                Get.to(() => const AzanSettingsScreen());
+              },
+            ),
+            // Login
+            ListTile(
+              leading: Icon(Icons.login, color: primaryColor),
+              title: const Text('Login',
+                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+              onTap: () {
+                Get.to(() => const AzanSettingsScreen());
+              },
+            ),
+            const Divider(), // Divider lin
+            ListTile(
+              leading: Icon(Icons.share, color: primaryColor),
+              title: const Text('Share the App',
+                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+              onTap: () {
+                Get.to(() => const AzanSettingsScreen());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.handshake_outlined, color: primaryColor),
+              title: const Text('Our Promise',
+                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+              onTap: () {
+                Get.to(() => const AzanSettingsScreen());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.contact_page, color: primaryColor),
+              title: const Text('Contact Us',
+                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+              onTap: () {
+                Get.to(() => const AzanSettingsScreen());
+              },
+            ),
             const Spacer(), // Pushes items to the top
             const Divider(), // Divider line
             Padding(

@@ -34,16 +34,14 @@ class GalleryImagesScreen extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(color: primaryColor),
           child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: Center(
-              child: Text(
-                'IMAGES - MEET & GREET',
-                style: TextStyle(
-                  fontFamily: popinsSemiBold,
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Text(
+              'MEET & GREET',
+              style: TextStyle(
+                fontFamily: popinsSemiBold,
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -87,7 +85,7 @@ class GalleryImagesScreen extends StatelessWidget {
                           return Center(child: CircularProgressIndicator());
                         },
                         errorBuilder: (context, error, stackTrace) {
-                          return Center(child: Icon(Icons.error));
+                          return const Center(child: Icon(Icons.error));
                         },
                       ),
                     ),

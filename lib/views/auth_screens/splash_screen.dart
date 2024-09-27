@@ -50,15 +50,18 @@ class _SplashScreenState extends State<SplashScreen> {
           // Center the text on the screen
           Padding(
             padding: EdgeInsets.only(bottom: screenHeight * .4),
-            child: Center(
-              child: Text(
-                'First Islamic Dawa Center in Texas',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24.0, // Adjust font size as per your design
-                  fontFamily: popinsSemiBold,
-                  color: Color(0xFF6CA3A6), // Text color
-                  fontWeight: FontWeight.bold, // Bold text
+            child: const Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  'First Islamic Dawa Center In Rosenberg Texas',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 24.0, // Adjust font size as per your design
+                    fontFamily: popinsMedium,
+                    color: Color(0xFF6CA3A6), // Text color
+                    // Bold text
+                  ),
                 ),
               ),
             ),

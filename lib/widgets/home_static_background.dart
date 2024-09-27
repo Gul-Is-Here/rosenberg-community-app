@@ -153,7 +153,7 @@ class HomeStaticBackground extends StatelessWidget {
                     text: 'View Times',
                     style: TextStyle(
                       color: asColor,
-                      fontFamily: popinsRegulr,
+                      fontFamily: popinsSemiBold,
                       decoration: TextDecoration.underline,
                       decorationColor: asColor,
                       // Optionally set decorationThickness
