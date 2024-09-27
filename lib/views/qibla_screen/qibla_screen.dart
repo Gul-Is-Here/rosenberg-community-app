@@ -112,70 +112,36 @@ class QiblahScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 8),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CustomizedPrayerTextWidget(
-                                  iconColor: Colors.white,
-                                  color: Colors.black,
-                                  title: 'PRAYER: ',
-                                  prayerName: homeController
-                                      .getCurrentPrayer(), // Provide a fallback value when null
-                                ),
-                                CustomizedPrayerTextWidget(
-                                    iconColor: Colors.white,
-                                    color: Colors.black,
-                                    icon: Icons.timelapse,
-                                    title: "NAMAZ",
-                                    prayerName: homeController.formatPrayerTime(
-                                        homeController
-                                            .getPrayerTimes()
-                                            .toString())),
-                                CustomizedPrayerTextWidget(
-                                    iconColor: Colors.white,
-                                    color: Colors.black,
-                                    icon: Icons.timelapse,
-                                    title: "IQAMA",
-                                    prayerName: currentIqamaTime)
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Card(
-                                elevation: 2,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Obx(
-                                        () => Text(
-                                          '${controller.locationCountry}, ${controller.locationCity}',
-                                          style: TextStyle(
-                                            fontFamily: popinsRegulr,
-                                            color: Colors.grey,
-                                            fontSize: screenHeight * 0.015,
-                                          ),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Card(
+                              elevation: 2,
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Obx(
+                                      () => Text(
+                                        '${controller.locationCountry}, ${controller.locationCity}',
+                                        style: TextStyle(
+                                          fontFamily: popinsRegulr,
+                                          color: Colors.grey,
+                                          fontSize: screenHeight * 0.015,
                                         ),
                                       ),
-                                      5.widthBox,
-                                      "|"
-                                          .text
-                                          .color(primaryColor)
-                                          .size(20)
-                                          .make(),
-                                      5.widthBox,
-                                      Icon(
-                                        Icons.location_on,
-                                        color: primaryColor,
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    5.widthBox,
+                                    "|"
+                                        .text
+                                        .color(primaryColor)
+                                        .size(20)
+                                        .make(),
+                                    5.widthBox,
+                                    Icon(
+                                      Icons.location_on,
+                                      color: primaryColor,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),

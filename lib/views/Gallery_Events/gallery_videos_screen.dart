@@ -21,20 +21,20 @@ class GalleryVideosScreen extends StatelessWidget {
         children: [
           const Projectbackground(title: 'GALLERY'),
           Container(
+            alignment: Alignment.centerLeft,
             height: 45,
             width: double.infinity,
             decoration: BoxDecoration(color: primaryColor),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Center(
-                child: Text(
-                  'VIDEOS - $categoryName',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontFamily: popinsRegulr,
-                    fontWeight: FontWeight.bold,
-                  ),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                textAlign: TextAlign.left,
+                categoryName,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontFamily: popinsRegulr,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
