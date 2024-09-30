@@ -32,26 +32,13 @@ class _SocialMediaFloatingButtonState extends State<SocialMediaFloatingButton> {
                 child: Column(
                   children: [
                     FloatingActionButton(
-                      heroTag: 'facebook', // Unique heroTag
+                      heroTag: 'askImam', // Unique heroTag
                       onPressed: () {
-                        // Action for Facebook
+                        // Action for email/contact
                       },
                       backgroundColor: Colors.white,
                       mini: true,
-                      child: const Icon(
-                        Icons.facebook,
-                        color: Colors.blueAccent,
-                      ), // Make the button smaller for compact layout
-                    ),
-                    const SizedBox(height: 10),
-                    FloatingActionButton(
-                      heroTag: 'instagram', // Unique heroTag
-                      onPressed: () {
-                        // Action for Instagram
-                      },
-                      backgroundColor: Colors.white,
-                      mini: true,
-                      child: Image.asset(icInstagram),
+                      child: Image.asset(askImamIcon),
                     ),
                     const SizedBox(height: 10),
                     FloatingActionButton(
@@ -68,13 +55,39 @@ class _SocialMediaFloatingButtonState extends State<SocialMediaFloatingButton> {
                     ),
                     const SizedBox(height: 10),
                     FloatingActionButton(
-                      heroTag: 'askImam', // Unique heroTag
+                      heroTag: 'call', // Unique heroTag
                       onPressed: () {
                         // Action for email/contact
                       },
                       backgroundColor: Colors.white,
                       mini: true,
-                      child: Image.asset(askImamIcon),
+                      child: const Icon(Icons.call, color: Colors.greenAccent),
+                    ),
+                    const SizedBox(height: 10),
+                    FloatingActionButton(
+                      heroTag: 'whatsapp', // Unique heroTag
+                      onPressed: () {
+                        // Action for email/contact
+                      },
+                      backgroundColor: Colors.white,
+                      mini: true,
+                      child: Image.asset(
+                        icWhatsapp,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    FloatingActionButton(
+                      heroTag: 'facebook', // Unique heroTag
+                      onPressed: () {
+                        // Action for Facebook
+                      },
+                      backgroundColor: Colors.white,
+                      mini: true,
+                      child: const Icon(
+                        Icons.facebook,
+                        color: Colors.blueAccent,
+                      ), // Make the button smaller for compact layout
                     ),
                     const SizedBox(height: 10),
                     FloatingActionButton(
@@ -91,6 +104,16 @@ class _SocialMediaFloatingButtonState extends State<SocialMediaFloatingButton> {
                     ),
                     const SizedBox(height: 10),
                     FloatingActionButton(
+                      heroTag: 'instagram', // Unique heroTag
+                      onPressed: () {
+                        // Action for Instagram
+                      },
+                      backgroundColor: Colors.white,
+                      mini: true,
+                      child: Image.asset(icInstagram),
+                    ),
+                    const SizedBox(height: 10),
+                    FloatingActionButton(
                       heroTag: 'connectus', // Unique heroTag
                       onPressed: () {
                         // Action for email/contact
@@ -98,16 +121,6 @@ class _SocialMediaFloatingButtonState extends State<SocialMediaFloatingButton> {
                       backgroundColor: Colors.white,
                       mini: true,
                       child: const Icon(Icons.connect_without_contact),
-                    ),
-                    const SizedBox(height: 10),
-                    FloatingActionButton(
-                      heroTag: 'call', // Unique heroTag
-                      onPressed: () {
-                        // Action for email/contact
-                      },
-                      backgroundColor: Colors.white,
-                      mini: true,
-                      child: const Icon(Icons.call, color: Colors.greenAccent),
                     ),
                     const SizedBox(height: 10),
                     FloatingActionButton(

@@ -3,10 +3,15 @@ import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:community_islamic_app/controllers/login_controller.dart';
 import 'package:community_islamic_app/views/auth_screens/login_screen.dart';
 import 'package:community_islamic_app/views/azan_settings/azan_settings_screen.dart';
+import 'package:community_islamic_app/views/contact_us/contact_us_screen.dart';
+import 'package:community_islamic_app/views/home_screens/home_screen.dart';
 import 'package:community_islamic_app/views/profile_screen/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import '../hijri_calendar.dart';
+import '../views/home_screens/home.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -92,7 +97,7 @@ class CustomDrawer extends StatelessWidget {
               title: const Text('Home',
                   style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
               onTap: () {
-                Get.to(() => const AzanSettingsScreen());
+                Get.to(() => const Home());
               },
             ),
             // Hijiri Calendar
@@ -101,7 +106,7 @@ class CustomDrawer extends StatelessWidget {
               title: const Text('Hijri Calender',
                   style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
               onTap: () {
-                Get.to(() => const AzanSettingsScreen());
+                Get.to(() => const HijriCalendarExample());
               },
             ),
             const Divider(), // Divider lin
@@ -120,7 +125,7 @@ class CustomDrawer extends StatelessWidget {
               title: const Text('Login',
                   style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
               onTap: () {
-                Get.to(() => const AzanSettingsScreen());
+                Get.to(() => LoginScreen());
               },
             ),
             const Divider(), // Divider lin
@@ -145,7 +150,7 @@ class CustomDrawer extends StatelessWidget {
               title: const Text('Contact Us',
                   style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
               onTap: () {
-                Get.to(() => const AzanSettingsScreen());
+                Get.to(() => const ContactUsScreen());
               },
             ),
             const Spacer(), // Pushes items to the top

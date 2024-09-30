@@ -48,7 +48,7 @@ class _MapSplashScreenState extends State<MapSplashScreen> {
             padding: EdgeInsets.only(bottom: screenHeight * .4),
             child: Center(
               child: Text(
-                'Welcome to Rosenberg Community Center',
+                'Welcome to\n Rosenberg Community Center',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24.0, // Adjust font size as per your design

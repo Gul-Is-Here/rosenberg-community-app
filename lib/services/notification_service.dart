@@ -112,11 +112,9 @@ class NotificationServices {
         await _flutterLocalNotificationPlugin.pendingNotificationRequests();
 
     if (pending.isNotEmpty) {
-      debugPrint("Pending Not ${pending[0].body}");
-      debugPrint("Pending Not ${pending[1].body}");
-      debugPrint("Pending Not ${pending[2].body}");
-      debugPrint("Pending Not ${pending[3].body}");
-      debugPrint("Pending Not ${pending[4].body}");
+      for (int i = 0; i < pending.length; i++) {
+        debugPrint("Pending Not ${pending[i].body}");
+      }
     }
   }
 
