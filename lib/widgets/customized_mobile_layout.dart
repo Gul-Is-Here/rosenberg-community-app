@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:community_islamic_app/controllers/login_controller.dart';
 import 'package:community_islamic_app/views/Gallery_Events/ask_imam_screen.dart';
 import 'package:community_islamic_app/views/Gallery_Events/galler_screen.dart';
@@ -15,12 +16,10 @@ import 'package:velocity_x/velocity_x.dart';
 import '../constants/color.dart';
 import '../constants/image_constants.dart';
 import '../controllers/home_controller.dart';
+import '../controllers/home_events_controller.dart';
 import '../services/notification_service.dart';
 import '../model/prayer_times_static_model.dart';
-import '../views/qibla_screen/qibla_screen.dart';
-import 'customized_card_widget.dart';
-import 'customized_prayertext_widget.dart';
-import 'customized_prayertime_widget.dart';
+
 import 'home_static_background.dart';
 
 // ignore: must_be_immutable
@@ -30,6 +29,7 @@ class CustomizedMobileLayout extends StatelessWidget {
 
   final HomeController homeController = Get.put(HomeController());
   final NotificationServices notificationServices = NotificationServices();
+  var eventsController = Get.put(HomeEventsController());
 
   String? currentIqamaTime;
 
@@ -391,188 +391,211 @@ class CustomizedMobileLayout extends StatelessWidget {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  height: 100,
-                                  child: ListView.builder(
-                                    itemCount: 4,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12),
-                                        child: Container(
-                                          width: 320,
-                                          height: 50,
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(20),
-                                              topRight: Radius.circular(20),
-                                            ),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Card(
-                                                margin: const EdgeInsets.all(0),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(40),
-                                                ),
-                                                elevation: 10,
+                            child: Obx(() => Obx(
+                                  () => Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      if (eventsController.isLoading.value)
+                                        const Center(
+                                            child: CircularProgressIndicator())
+                                      else if (eventsController.events.value ==
+                                              null ||
+                                          eventsController.events.value!.data
+                                              .events.isEmpty)
+                                        const Center(
+                                            child: Text('No events found')),
+                                      if (eventsController.events.value !=
+                                              null &&
+                                          eventsController.events.value!.data
+                                              .events.isNotEmpty)
+                                        SizedBox(
+                                          height: 100,
+                                          child: ListView.builder(
+                                            itemCount: eventsController.events
+                                                .value!.data.events.length,
+                                            scrollDirection: Axis.horizontal,
+                                            itemBuilder: (context, index) {
+                                              var eventData = eventsController
+                                                  .events.value!.data;
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 12),
                                                 child: Container(
-                                                  height: 100,
-                                                  width: double.infinity,
-                                                  decoration: BoxDecoration(
+                                                  width: 320,
+                                                  height:
+                                                      100, // Set the height for the event card
+                                                  decoration:
+                                                      const BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            40),
-                                                    color: primaryColor,
-                                                    image:
-                                                        const DecorationImage(
-                                                      fit: BoxFit.cover,
-                                                      image:
-                                                          AssetImage(eventBg),
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(20),
+                                                      topRight:
+                                                          Radius.circular(20),
                                                     ),
                                                   ),
-                                                  child: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                            horizontal: 16,
-                                                            vertical: 8,
-                                                          ),
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              const Text(
-                                                                'Events & Activities',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontFamily:
-                                                                      popinsSemiBold,
-                                                                ),
+                                                  child: Card(
+                                                    margin:
+                                                        const EdgeInsets.all(0),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              40),
+                                                    ),
+                                                    elevation: 10,
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(40),
+                                                        color: primaryColor,
+                                                        image:
+                                                            const DecorationImage(
+                                                          fit: BoxFit.cover,
+                                                          image: AssetImage(
+                                                              eventBg),
+                                                        ),
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                horizontal: 16,
+                                                                vertical: 8,
                                                               ),
-                                                              Obx(() {
-                                                                if (homeController
-                                                                        .prayerTime
-                                                                        .value
-                                                                        .data !=
-                                                                    null) {
-                                                                  final gregorian =
-                                                                      homeController
-                                                                          .prayerTime
-                                                                          .value
-                                                                          .data!
-                                                                          .date
-                                                                          .gregorian;
-                                                                  final hijri =
-                                                                      homeController
-                                                                          .prayerTime
-                                                                          .value
-                                                                          .data!
-                                                                          .date
-                                                                          .hijri;
-
-                                                                  return Text(
-                                                                    '${gregorian.month.en} ${gregorian.day}, ${gregorian.year}',
+                                                              child: Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    eventData
+                                                                        .events[
+                                                                            index]
+                                                                        .eventDetail,
                                                                     style:
-                                                                        const TextStyle(
-                                                                      fontSize:
-                                                                          14,
+                                                                        TextStyle(
                                                                       color: Colors
                                                                           .white,
                                                                       fontFamily:
                                                                           popinsSemiBold,
                                                                     ),
-                                                                  );
-                                                                } else {
-                                                                  return const Text(
-                                                                      '');
-                                                                }
-                                                              }),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 100,
-                                                        width: 60,
-                                                        child: Card(
-                                                          margin:
-                                                              const EdgeInsets
-                                                                  .all(0),
-                                                          shape:
-                                                              const RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .only(
-                                                              topRight: Radius
-                                                                  .circular(40),
-                                                              bottomRight:
-                                                                  Radius
-                                                                      .circular(
-                                                                          40),
-                                                              topLeft: Radius
-                                                                  .circular(40),
-                                                              bottomLeft: Radius
-                                                                  .circular(40),
+                                                                  ),
+                                                                  Obx(() {
+                                                                    if (homeController
+                                                                            .prayerTime
+                                                                            .value
+                                                                            .data !=
+                                                                        null) {
+                                                                      final formattedDate = eventsController.formatDateString(eventData
+                                                                          .mytime
+                                                                          .toString());
+                                                                      return Text(
+                                                                        formattedDate,
+                                                                        style:
+                                                                            const TextStyle(
+                                                                          fontSize:
+                                                                              14,
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontFamily:
+                                                                              popinsSemiBold,
+                                                                        ),
+                                                                      );
+                                                                    } else {
+                                                                      return const Text(
+                                                                          '');
+                                                                    }
+                                                                  }),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
-                                                          color: primaryColor,
-                                                          child: const Center(
-                                                            child: Icon(
-                                                              Icons
-                                                                  .location_city_rounded,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
+                                                          SizedBox(
+                                                            height: 100,
+                                                            width: 60,
+                                                            child: Card(
+                                                                margin:
+                                                                    const EdgeInsets
+                                                                        .all(0),
+                                                                shape:
+                                                                    const RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .only(
+                                                                    topRight: Radius
+                                                                        .circular(
+                                                                            40),
+                                                                    bottomRight:
+                                                                        Radius.circular(
+                                                                            40),
+                                                                    topLeft: Radius
+                                                                        .circular(
+                                                                            40),
+                                                                    bottomLeft:
+                                                                        Radius.circular(
+                                                                            40),
+                                                                  ),
+                                                                ),
+                                                                color:
+                                                                    primaryColor,
+                                                                child:
+                                                                    IconButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          AppClass().launchURL(eventData
+                                                                              .events[index]
+                                                                              .eventLink);
+                                                                        },
+                                                                        icon:
+                                                                            Icon(
+                                                                          Icons
+                                                                              .location_city_rounded,
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ))),
                                                           ),
-                                                        ),
+                                                        ],
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              );
+                                            },
                                           ),
                                         ),
-                                      );
-                                    },
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            'View Events & Activities',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontFamily: popinsSemiBold,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () {},
+                                            icon: Icon(
+                                              Icons.arrow_forward,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      'View Events & Activities',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontFamily: popinsSemiBold,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        Icons.arrow_forward,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                )),
                           ),
                         ],
                       )

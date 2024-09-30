@@ -1,5 +1,4 @@
 import 'package:community_islamic_app/constants/color.dart';
-import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/widgets/custome_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:community_islamic_app/widgets/customized_mobile_layout.dart';
@@ -12,7 +11,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
-
     return Scaffold(
       backgroundColor: Colors.white,
       drawer: const CustomDrawer(),
@@ -23,7 +21,7 @@ class HomeScreen extends StatelessWidget {
           ),
           title: const AutoScrollText(
             intervalSpaces: 15,
-            'Rosenberg Community Center - First Islamic Dawah center in Rosenberg Texas.',
+            'Rosenberg Community Center - First Islamic Dawah center in Rosenberg Texas',
             style: TextStyle(
                 color: Colors.white, fontFamily: popinsMedium, fontSize: 18),
           )),
