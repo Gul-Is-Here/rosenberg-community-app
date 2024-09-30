@@ -80,7 +80,7 @@ class CustomDrawer extends StatelessWidget {
             //Prayer Notification
             ListTile(
               leading: Icon(Icons.timelapse, color: primaryColor),
-              title: const Text('Prayer Notification',
+              title: const Text('Notification',
                   style: TextStyle(fontSize: 14, fontFamily: popinsRegulr)),
               onTap: () {
                 Get.to(() => const AzanSettingsScreen());

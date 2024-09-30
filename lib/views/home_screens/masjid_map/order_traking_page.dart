@@ -137,13 +137,13 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
               Get.back();
             },
             icon: const Icon(
-              Icons.arrow_back,
+              Icons.arrow_back_ios,
               color: Colors.white,
             )),
         backgroundColor: primaryColor,
         elevation: 0,
         title: const Text(
-          "Way to Masjid",
+          "Direction to RCC",
           style: TextStyle(
             color: Colors.white,
             fontFamily: popinsSemiBold,
