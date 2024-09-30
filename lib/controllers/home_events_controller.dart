@@ -1,6 +1,7 @@
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import '../model/home_events_model.dart';
 
 class HomeEventsController extends GetxController {
@@ -36,4 +37,14 @@ class HomeEventsController extends GetxController {
       isLoading(false); // Set loading to false after data is fetched
     }
   }
+
+  String formatDateString(String dateString) {
+  // Parse the input date string
+  DateTime dateTime = DateTime.parse(dateString);
+  
+  // Define the desired format
+  String formattedDate = DateFormat('MMMM d, y').format(dateTime);
+  
+  return formattedDate; // e.g., "September 10, 2024"
+}
 }

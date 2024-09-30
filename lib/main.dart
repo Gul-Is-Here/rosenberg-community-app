@@ -15,11 +15,8 @@ void main() async {
 
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
   tz.initializeTimeZones();
-
   await NotificationServices().initializeNotification();
-
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   DateTime today = DateTime.now();
 
