@@ -9,6 +9,7 @@ class QiblahController extends GetxController
     with GetSingleTickerProviderStateMixin {
   var locationCountry = "".obs;
   var locationCity = "".obs;
+  var isLoading = true.obs;  // Add a loading state
   late Animation<double> animation;
   late AnimationController animationController;
   double begin = 0.0;
@@ -28,26 +29,33 @@ class QiblahController extends GetxController
   }
 
   Future<void> _getLocation() async {
-    LocationPermission permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      // Show a message to the user if permission is denied
-      Get.snackbar('Location Permission', 'Please grant location permission.');
-      return;
-    }
+    try {
+      LocationPermission permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        // Show a message to the user if permission is denied
+        Get.snackbar('Location Permission', 'Please grant location permission.');
+        isLoading.value = false;
+        return;
+      }
 
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.best,
-    );
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+      );
 
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
 
-    if (placemarks.isNotEmpty) {
-      locationCountry.value = placemarks[0].country ?? "";
-      locationCity.value = placemarks[0].locality ?? "";
+      if (placemarks.isNotEmpty) {
+        locationCountry.value = placemarks[0].country ?? "";
+        locationCity.value = placemarks[0].locality ?? "";
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to get location.');
+    } finally {
+      isLoading.value = false;  // End loading state
     }
   }
 }

@@ -26,74 +26,102 @@ class _SocialMediaFloatingButtonState extends State<SocialMediaFloatingButton> {
           Positioned(
             bottom: 80.0, // Adjust position based on your design
             right: 16.0,
-            child: Column(
-              children: [
-                FloatingActionButton(
-                  heroTag: 'facebook', // Unique heroTag
-                  onPressed: () {
-                    // Action for Facebook
-                  },
-                  backgroundColor: Colors.blueAccent,
-                  mini: true,
-                  child: const Icon(Icons
-                      .facebook), // Make the button smaller for compact layout
+            child: SizedBox(
+              height: 300, // Limit the height for the scrollable area
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    FloatingActionButton(
+                      heroTag: 'facebook', // Unique heroTag
+                      onPressed: () {
+                        // Action for Facebook
+                      },
+                      backgroundColor: Colors.white,
+                      mini: true,
+                      child: const Icon(
+                        Icons.facebook,
+                        color: Colors.blueAccent,
+                      ), // Make the button smaller for compact layout
+                    ),
+                    const SizedBox(height: 10),
+                    FloatingActionButton(
+                      heroTag: 'instagram', // Unique heroTag
+                      onPressed: () {
+                        // Action for Instagram
+                      },
+                      backgroundColor: Colors.white,
+                      mini: true,
+                      child: Image.asset(icInstagram),
+                    ),
+                    const SizedBox(height: 10),
+                    FloatingActionButton(
+                      heroTag: 'email', // Unique heroTag
+                      onPressed: () {
+                        // Action for email/contact
+                      },
+                      backgroundColor: Colors.white,
+                      mini: true,
+                      child: Icon(
+                        Icons.email,
+                        color: primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    FloatingActionButton(
+                      heroTag: 'askImam', // Unique heroTag
+                      onPressed: () {
+                        // Action for email/contact
+                      },
+                      backgroundColor: Colors.white,
+                      mini: true,
+                      child: Image.asset(askImamIcon),
+                    ),
+                    const SizedBox(height: 10),
+                    FloatingActionButton(
+                      heroTag: 'youtube', // Unique heroTag
+                      onPressed: () {
+                        // Action for email/contact
+                      },
+                      backgroundColor: Colors.white,
+                      mini: true,
+                      child: Image.asset(
+                        icyoutube,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    FloatingActionButton(
+                      heroTag: 'connectus', // Unique heroTag
+                      onPressed: () {
+                        // Action for email/contact
+                      },
+                      backgroundColor: Colors.white,
+                      mini: true,
+                      child: const Icon(Icons.connect_without_contact),
+                    ),
+                    const SizedBox(height: 10),
+                    FloatingActionButton(
+                      heroTag: 'call', // Unique heroTag
+                      onPressed: () {
+                        // Action for email/contact
+                      },
+                      backgroundColor: Colors.white,
+                      mini: true,
+                      child: const Icon(Icons.call, color: Colors.greenAccent),
+                    ),
+                    const SizedBox(height: 10),
+                    FloatingActionButton(
+                      heroTag: 'RccChat', // Unique heroTag
+                      onPressed: () {
+                        // Action for email/contact
+                      },
+                      backgroundColor: Colors.white,
+                      mini: true,
+                      child: const Icon(Icons.chat),
+                    ),
+                  ],
                 ),
-                const SizedBox(
-                    height:
-                        10), // Spacing between buttons (was width, changed to height for vertical layout)
-                FloatingActionButton(
-                  heroTag: 'instagram', // Unique heroTag
-                  onPressed: () {
-                    // Action for Instagram
-                  },
-                  backgroundColor: Colors.pinkAccent,
-                  mini: true,
-                  child: const Icon(Icons.photo_camera),
-                ),
-                const SizedBox(height: 10),
-                FloatingActionButton(
-                  heroTag: 'email', // Unique heroTag
-                  onPressed: () {
-                    // Action for email/contact
-                  },
-                  backgroundColor: Colors.orangeAccent,
-                  mini: true,
-                  child: const Icon(Icons.email),
-                ),
-                const SizedBox(height: 10),
-                FloatingActionButton(
-                  heroTag: 'askImam', // Unique heroTag
-                  onPressed: () {
-                    // Action for email/contact
-                  },
-                  backgroundColor: Colors.white,
-                  mini: true,
-                  child: Image.asset(askImamIcon),
-                ),
-                const SizedBox(height: 10),
-                FloatingActionButton(
-                  heroTag: 'youtube', // Unique heroTag
-                  onPressed: () {
-                    // Action for email/contact
-                  },
-                  backgroundColor: Colors.white,
-                  mini: true,
-                  child: Image.asset(
-                    icyoutube,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                FloatingActionButton(
-                  heroTag: 'connectus', // Unique heroTag
-                  onPressed: () {
-                    // Action for email/contact
-                  },
-                  backgroundColor: Colors.white,
-                  mini: true,
-                  child: const Icon(Icons.connect_without_contact),
-                ),
-              ],
+              ),
             ),
           ),
 
