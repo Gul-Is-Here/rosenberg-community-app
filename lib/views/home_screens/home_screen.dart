@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
           ),
           title: const AutoScrollText(
             intervalSpaces: 15,
-            'Rosenberg Community Center - First Islamic Dawah center in Rosenberg Texas',
+            'Rosenberg Community Center - First Islamic "Dawah" center in Rosenberg Texas',
             style: TextStyle(
                 color: Colors.white, fontFamily: popinsMedium, fontSize: 18),
           )),

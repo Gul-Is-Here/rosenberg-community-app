@@ -29,6 +29,7 @@ const eventBg = 'assets/home_icon/event_bg.png';
 const splashBg = "assets/home_icon/splashBg.png";
 const icyoutube = "assets/home_icon/youtube.png";
 const icInstagram = "assets/home_icon/instagram.png";
+const icWhatsapp="assets/home_icon/icwhatsapp.png";
 
 ///      Project sccreen dummy image
 const projectBg = 'assets/home_icon/project_bg1.png';

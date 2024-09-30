@@ -111,13 +111,6 @@ class ServiceCard extends StatelessWidget {
             TextButton(
               onPressed: () {
                 // Handle button press for service
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('${service.title} clicked!',
-                        style: const TextStyle(
-                            fontSize: 20, fontFamily: popinsRegulr)),
-                  ),
-                );
               },
               child: const Text('Details',
                   style: TextStyle(fontFamily: popinsMedium)),
