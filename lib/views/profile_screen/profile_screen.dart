@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:community_islamic_app/constants/globals.dart';
+import 'package:community_islamic_app/views/auth_screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final LoginController loginController = Get.find<LoginController>();
-    print(loginController.authToken.value);
+    print(globals.accessToken.value);
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -96,7 +98,7 @@ class ProfileScreen extends StatelessWidget {
                       elevation: 10,
                       child: ElevatedButton(
                         onPressed: () {
-                          Get.to(() => const UpdatePasswordScreen());
+                          Get.to(() => UpdatePasswordScreen());
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: buttonColorP,
@@ -154,6 +156,18 @@ class ProfileScreen extends StatelessWidget {
                   Get.to(() => PersonalInfoScreen());
                 },
               ),
+              const Divider(),
+              // ListTile(
+              //   leading: const Icon(Icons.person),
+              //   title: Text(
+              //     'Logout',
+              //     style: TextStyle(fontSize: screenWidth * 0.045),
+              //   ),
+              //   onTap: () async {
+              //     await loginController.logoutUser();
+              //     Get.to(() => LoginScreen());
+              //   },
+              // ),
             ],
           ),
         ),

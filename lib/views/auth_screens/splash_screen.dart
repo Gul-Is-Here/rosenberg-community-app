@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  'First Islamic Dawa Center In Rosenberg Texas',
+                  'First Islamic Dawah Center In Rosenberg Texas',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24.0, // Adjust font size as per your design

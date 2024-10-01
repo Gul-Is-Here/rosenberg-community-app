@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:community_islamic_app/constants/globals.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,14 +12,14 @@ class LoginController extends GetxController {
   var email = ''.obs;
   var password = ''.obs;
   var isLoading = false.obs;
-  var userId = ''.obs;
-  var authToken = ''.obs;
-  var profileImage = Rx<File?>(null);
 
+  var profileImage = Rx<File?>(null);
+  var relationAvatar = 'male.png'.obs;
   @override
   void onInit() {
     super.onInit();
     _loadAuthToken();
+    _loadaId();
   }
 
   Future<void> loginUser() async {
@@ -47,13 +48,14 @@ class LoginController extends GetxController {
 
         final userDetails = jsonResponse["user_details"];
         if (userDetails != null) {
-          userId.value = userDetails["id"]?.toString() ?? '';
-          authToken.value = jsonResponse["access_token"] ?? '';
+          globals.userId.value = userDetails["id"]?.toString() ?? '';
+          globals.accessToken.value = jsonResponse["access_token"] ?? '';
 
           // Store login status and access token in SharedPreferences
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setBool('isLoggedIn', true);
-          await prefs.setString('accessToken', authToken.value);
+          await prefs.setString('accessToken', globals.accessToken.value);
+          await prefs.setString('userid', globals.userId.value);
 
           Get.snackbar("Success", "Login successful.");
           Get.offAll(() => const Home()); // Navigate to Home screen
@@ -76,8 +78,9 @@ class LoginController extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('isLoggedIn');
     await prefs.remove('accessToken');
-    userId.value = '';
-    authToken.value = '';
+    await prefs.remove('userid');
+    globals.userId.value = '';
+    globals.accessToken.value = '';
 
     Get.snackbar("Success", "Logged out successfully.");
     Get.offAll(() => LoginScreen()); // Navigate back to login screen
@@ -93,8 +96,54 @@ class LoginController extends GetxController {
     // Retrieve the access token from SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final storedToken = prefs.getString('accessToken');
+
     if (storedToken != null) {
-      authToken.value = storedToken;
+      globals.accessToken.value = storedToken;
+    }
+  }
+
+  Future<void> _loadaId() async {
+    // Retrieve the access token from SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final storedId = prefs.getString('userid');
+
+    if (storedId != null) {
+      globals.userId.value = storedId;
+    }
+  }
+
+  // Upload image
+  Future<void> uploadImage(File imageFile, String relationAvatar) async {
+    if (globals.userId.value.isEmpty || globals.accessToken.value.isEmpty) {
+      Get.snackbar("Error", "User not logged in.");
+      return;
+    }
+
+    final uri =
+        Uri.parse('https://rosenbergcommunitycenter.org/api/ImageUploadApi');
+    final request = http.MultipartRequest('POST', uri);
+
+    request.headers['Authorization'] = 'Bearer ${globals.accessToken.value}';
+
+    // Add form data
+    request.fields['id'] = globals.userId.value;
+    request.fields['relation_avatar'] = relationAvatar;
+
+    // Add image file
+    final image = await http.MultipartFile.fromPath('image', imageFile.path);
+    request.files.add(image);
+
+    try {
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        Get.snackbar("Success", "Image uploaded successfully.");
+      } else {
+        Get.snackbar("Error",
+            "Failed to upload image. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      Get.snackbar("Error", "An error occurred: $e");
     }
   }
 }

@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:get/get.dart';
+import '../../controllers/updatePasswordController.dart';
+
 
 class UpdatePasswordScreen extends StatelessWidget {
-  const UpdatePasswordScreen({super.key});
+  final UpdatePasswordController controller = Get.put(UpdatePasswordController());
+
+  UpdatePasswordScreen({super.key});
+
+  final TextEditingController currentPassController = TextEditingController();
+  final TextEditingController newPassController = TextEditingController();
+  final TextEditingController confirmPassController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +42,7 @@ class UpdatePasswordScreen extends StatelessWidget {
                   backgroundColor: Colors.grey.shade300,
                   child: const CircleAvatar(
                     radius: 55,
-                    backgroundImage: AssetImage(
-                        masjidIcon), // Replace with your profile image asset
+                    backgroundImage: AssetImage(masjidIcon),
                   ),
                 ),
                 Positioned(
@@ -45,11 +52,8 @@ class UpdatePasswordScreen extends StatelessWidget {
                     radius: 16,
                     backgroundColor: Colors.white,
                     child: IconButton(
-                      icon:
-                          const Icon(Icons.edit, color: Colors.black, size: 16),
-                      onPressed: () {
-                        // Handle profile edit button press
-                      },
+                      icon: const Icon(Icons.edit, color: Colors.black, size: 16),
+                      onPressed: () {},
                     ),
                   ),
                 ),
@@ -95,41 +99,59 @@ class UpdatePasswordScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const _PasswordTextField(
+            _PasswordTextField(
               label: 'Current Password',
+              controller: currentPassController,
             ),
             const SizedBox(height: 20),
-            const _PasswordTextField(
+            _PasswordTextField(
               label: 'New Password',
+              controller: newPassController,
             ),
             const SizedBox(height: 20),
-            const _PasswordTextField(
+            _PasswordTextField(
               label: 'Confirm Password',
+              controller: confirmPassController,
             ),
             const SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: () {
-                // Handle Update Password button press
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 80, vertical: 10),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
+            Obx(() {
+              return ElevatedButton(
+                onPressed: controller.isLoading.value
+                    ? null
+                    : () {
+                        String oldPass = currentPassController.text;
+                        String newPass = newPassController.text;
+                        String confirmPass = confirmPassController.text;
+                        if (newPass != confirmPass) {
+                          Get.snackbar('Error', 'Passwords do not match');
+                        } else {
+                          controller.updatePassword(oldPass, newPass, confirmPass);
+                        }
+                      },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 10),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
                       topLeft: Radius.elliptical(30, 30),
                       bottomLeft: Radius.circular(5),
                       bottomRight: Radius.elliptical(30, 30),
-                      topRight: Radius.circular(5)),
+                      topRight: Radius.circular(5),
+                    ),
+                  ),
+                  shadowColor: Colors.tealAccent.shade200,
+                  elevation: 10,
                 ),
-                shadowColor: Colors.tealAccent.shade200,
-                elevation: 10,
-              ),
-              child: const Text(
-                'UPDATE PASSWORD',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ),
+                child: controller.isLoading.value
+                    ? const CircularProgressIndicator(
+                        color: Colors.white,
+                      )
+                    : const Text(
+                        'UPDATE PASSWORD',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+              );
+            }),
           ],
         ),
       ),
@@ -139,8 +161,12 @@ class UpdatePasswordScreen extends StatelessWidget {
 
 class _PasswordTextField extends StatelessWidget {
   final String label;
+  final TextEditingController controller;
 
-  const _PasswordTextField({required this.label});
+  const _PasswordTextField({
+    required this.label,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -154,6 +180,7 @@ class _PasswordTextField extends StatelessWidget {
         color: Colors.white,
         shadowColor: Colors.grey.shade300,
         child: TextFormField(
+          controller: controller,
           obscureText: true,
           decoration: InputDecoration(
             labelText: label,
