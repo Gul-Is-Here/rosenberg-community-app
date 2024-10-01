@@ -49,8 +49,7 @@ class PersonalInfoScreen extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage:
-                              NetworkImage(userData['profile_image']),
+                          child: Image.network((userData['profile_image'])),
                           // Replace with your image path or use userData['profile_image']
                         ),
                         const SizedBox(height: 10),

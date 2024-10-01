@@ -21,7 +21,7 @@ class CustomDrawer extends StatelessWidget {
     final isLoggedIn = await loginController.isLoggedIn();
 
     if (isLoggedIn) {
-      Get.to(() => const ProfileScreen());
+      Get.to(() => ProfileScreen());
     } else {
       Get.to(() => LoginScreen());
     }
@@ -151,6 +151,15 @@ class CustomDrawer extends StatelessWidget {
                   style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
               onTap: () {
                 Get.to(() => const ContactUsScreen());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout, color: primaryColor),
+              title: const Text('Logout',
+                  style: TextStyle(fontFamily: popinsRegulr, fontSize: 14)),
+              onTap: () async {
+                await loginController.logoutUser();
+                Get.to(() => LoginScreen());
               },
             ),
             const Spacer(), // Pushes items to the top
