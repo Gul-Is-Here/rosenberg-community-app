@@ -48,6 +48,8 @@ dependencies:
   flutter_easyloading: ^3.0.5
   auto_scroll_text: ^0.0.7
   islamic_hijri_calendar: ^0.0.4
+  share_plus: ^10.0.0
+  smooth_page_indicator: ^1.2.0+3
 
 dev_dependencies:
   flutter_test:

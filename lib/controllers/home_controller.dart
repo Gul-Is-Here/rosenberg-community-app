@@ -15,7 +15,6 @@ import '../model/jumma_model.dart';
 import '../model/prayer_times_static_model.dart';
 
 import '../services/notification_service.dart';
-import 'package:timezone/data/latest.dart' as tz;
 
 class HomeController extends GetxController {
   var selectedIndex = 0.obs;
@@ -23,6 +22,8 @@ class HomeController extends GetxController {
   var timePrayer = ''.obs;
   var jummaTimes = Jumma().obs;
   var isLoading = true.obs;
+  int storeMonthPrayerTimes = 0;
+  var prayerTimess;
   String? currentPrayerTime;
   PrayerTimesModel? prayerTimes;
   var currentIqamaTime;
@@ -42,6 +43,7 @@ class HomeController extends GetxController {
     fetchJummaTimes();
     fetchPrayerTimes();
     getPrayers();
+    getPrayerTimesFromStorage();
     startNextPrayerTimer(); // Start the countdown timer
   }
 
@@ -52,7 +54,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> startNextPrayerTimer() async {
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       updateTimeUntilNextPrayer(); // Update the countdown every second
     });
   }
@@ -235,6 +237,29 @@ class HomeController extends GetxController {
       prayerTimes = prayerTimesFromJson(
         response.body,
       );
+    }
+  }
+
+  // get STored Prayer Times
+  Future<void> getPrayerTimesFromStorage() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    // Check if prayer times exist in SharedPreferences
+    String? storedPrayerTimes = sharedPreferences.getString("prayerTimes");
+    int? storedMonth = sharedPreferences.getInt("prayerTimesMonth");
+
+    if (storedPrayerTimes != null && storedMonth != null) {
+      // Prayer times and month are available in storage
+      prayerTimess = prayerTimesFromJson(storedPrayerTimes);
+
+      storeMonthPrayerTimes = storedMonth;
+
+      print(
+          "Prayer times loaded from SharedPreferences for month: $storeMonthPrayerTimes");
+    } else {
+      // No prayer times found in storage
+      print("No stored prayer times found. Fetching from network...");
+      await getPrayerTimesFromNetwork(); // Fetch from network if not found locally
     }
   }
 

@@ -42,36 +42,11 @@ class ProfileScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: screenHeight * 0.02),
-              Stack(
-                children: [
-                  CircleAvatar(
-                    radius:
-                        screenWidth * 0.16, // Adjust size based on screen width
-                    backgroundImage: loginController.profileImage.value != null
-                        ? FileImage(loginController.profileImage.value!)
-                        : const AssetImage('') as ImageProvider,
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 10,
-                    child: GestureDetector(
-                      onTap: () => _pickImage(context),
-                      child: Container(
-                        height: screenWidth * 0.08,
-                        width: screenWidth * 0.08,
-                        decoration: BoxDecoration(
-                          color: primaryColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.edit,
-                          size: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              CircleAvatar(
+                radius: screenWidth * 0.16, // Adjust size based on screen width
+                backgroundImage: loginController.profileImage.value != null
+                    ? FileImage(loginController.profileImage.value!)
+                    : const AssetImage(icyoutube) as ImageProvider,
               ),
               SizedBox(height: screenHeight * 0.02),
               Text(
@@ -173,16 +148,5 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _pickImage(BuildContext context) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      final LoginController loginController = Get.find<LoginController>();
-      loginController.profileImage.value = File(pickedFile.path);
-      // Optionally, upload the image to the server and update user profile
-    }
   }
 }
