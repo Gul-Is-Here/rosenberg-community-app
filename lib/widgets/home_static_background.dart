@@ -9,7 +9,7 @@ import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../views/home_screens/namaztimmings.dart';
+import '../views/namaz_timmings/namaztimmings.dart';
 
 class HomeStaticBackground extends StatelessWidget {
   HomeStaticBackground({super.key, required this.screenHeight});
@@ -74,14 +74,14 @@ class HomeStaticBackground extends StatelessWidget {
                         5.widthBox,
                         Expanded(
                           child: Text(
-                            '${gregorian.month.en} ${gregorian.day}, ${gregorian.year}\n'
-                            '${hijri.weekday.en} ${hijri.day} ${hijri.month.en} ${hijri.year}',
+                            ' ${gregorian.day} ${gregorian.month.en}\n'
+                            '${hijri.day} ${hijri.month.en} ${hijri.year}H',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                              fontSize: 9,
+                              fontSize: 11,
                               color: Colors.white,
-                              fontFamily: popinsRegulr,
+                              // fontFamily: popinsRegulr,
                             ),
                           ),
                         ),

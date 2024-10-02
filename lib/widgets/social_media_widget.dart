@@ -1,143 +1,16 @@
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
+import 'package:community_islamic_app/views/namaz_timmings/namaztimmings.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class SocialMediaFloatingButton extends StatefulWidget {
-  @override
-  _SocialMediaFloatingButtonState createState() =>
-      _SocialMediaFloatingButtonState();
-}
-
-class _SocialMediaFloatingButtonState extends State<SocialMediaFloatingButton> {
-  bool _showIcons = false;
-
-  void _toggleIcons() {
-    setState(() {
-      _showIcons = !_showIcons;
-    });
-  }
+class SocialMediaFloatingButton extends StatelessWidget {
+  const SocialMediaFloatingButton({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Conditionally showing social media icons when the button is clicked
-        if (_showIcons)
-          Positioned(
-            bottom: 80.0, // Adjust position based on your design
-            right: 16.0,
-            child: SizedBox(
-              height: 300, // Limit the height for the scrollable area
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    FloatingActionButton(
-                      heroTag: 'askImam', // Unique heroTag
-                      onPressed: () {
-                        // Action for email/contact
-                      },
-                      backgroundColor: Colors.white,
-                      mini: true,
-                      child: Image.asset(askImamIcon),
-                    ),
-                    const SizedBox(height: 10),
-                    FloatingActionButton(
-                      heroTag: 'email', // Unique heroTag
-                      onPressed: () {
-                        // Action for email/contact
-                      },
-                      backgroundColor: Colors.white,
-                      mini: true,
-                      child: Icon(
-                        Icons.email,
-                        color: primaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    FloatingActionButton(
-                      heroTag: 'call', // Unique heroTag
-                      onPressed: () {
-                        // Action for email/contact
-                      },
-                      backgroundColor: Colors.white,
-                      mini: true,
-                      child: const Icon(Icons.call, color: Colors.greenAccent),
-                    ),
-                    const SizedBox(height: 10),
-                    FloatingActionButton(
-                      heroTag: 'whatsapp', // Unique heroTag
-                      onPressed: () {
-                        // Action for email/contact
-                      },
-                      backgroundColor: Colors.white,
-                      mini: true,
-                      child: Image.asset(
-                        icWhatsapp,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    FloatingActionButton(
-                      heroTag: 'facebook', // Unique heroTag
-                      onPressed: () {
-                        // Action for Facebook
-                      },
-                      backgroundColor: Colors.white,
-                      mini: true,
-                      child: const Icon(
-                        Icons.facebook,
-                        color: Colors.blueAccent,
-                      ), // Make the button smaller for compact layout
-                    ),
-                    const SizedBox(height: 10),
-                    FloatingActionButton(
-                      heroTag: 'youtube', // Unique heroTag
-                      onPressed: () {
-                        // Action for email/contact
-                      },
-                      backgroundColor: Colors.white,
-                      mini: true,
-                      child: Image.asset(
-                        icyoutube,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    FloatingActionButton(
-                      heroTag: 'instagram', // Unique heroTag
-                      onPressed: () {
-                        // Action for Instagram
-                      },
-                      backgroundColor: Colors.white,
-                      mini: true,
-                      child: Image.asset(icInstagram),
-                    ),
-                    const SizedBox(height: 10),
-                    FloatingActionButton(
-                      heroTag: 'connectus', // Unique heroTag
-                      onPressed: () {
-                        // Action for email/contact
-                      },
-                      backgroundColor: Colors.white,
-                      mini: true,
-                      child: const Icon(Icons.connect_without_contact),
-                    ),
-                    const SizedBox(height: 10),
-                    FloatingActionButton(
-                      heroTag: 'RccChat', // Unique heroTag
-                      onPressed: () {
-                        // Action for email/contact
-                      },
-                      backgroundColor: Colors.white,
-                      mini: true,
-                      child: const Icon(Icons.chat),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
         // Main FloatingActionButton
         Positioned(
           bottom: 16.0,
@@ -148,14 +21,174 @@ class _SocialMediaFloatingButtonState extends State<SocialMediaFloatingButton> {
             splashColor: primaryColor,
             backgroundColor: primaryColor,
             mini: true,
-            onPressed: _toggleIcons, // Toggle social media icons
-            child: Icon(
-              _showIcons ? Icons.close : Icons.add,
+            onPressed: () =>
+                _showSocialMediaDialog(context), // Show dialog on press
+            child: const Icon(
+              Icons.add,
               color: Colors.white,
-            ), // Change icon based on state
+            ),
           ),
         ),
       ],
+    );
+  }
+
+  // Method to show the social media icons dialog
+  void _showSocialMediaDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            'Connect with RCC',
+            style: TextStyle(
+              fontFamily: popinsSemiBold,
+              fontSize: 18,
+              color: primaryColor,
+            ),
+          ),
+          content: SingleChildScrollView(
+            // Wrap in SingleChildScrollView
+            child: SizedBox(
+              width: double.maxFinite,
+              child: GridView.count(
+                shrinkWrap: true, // Prevent overflow
+                physics:
+                    const NeverScrollableScrollPhysics(), // Disable GridView scrolling
+                crossAxisCount: 3, // Number of icons per row
+                crossAxisSpacing: 15.0, // Spacing between columns
+                mainAxisSpacing: 15.0, // Spacing between rows
+                children: [
+                  _buildSocialMediaButton(
+                    icon: Image.asset(askImamIcon),
+                    label: 'Ask Imam',
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close dialog after action
+                    },
+                  ),
+                  _buildSocialMediaButton(
+                    icon: Icon(Icons.email, color: primaryColor),
+                    label: 'Email Us',
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  _buildSocialMediaButton(
+                    icon: const Icon(Icons.call, color: Colors.greenAccent),
+                    label: 'Call Us',
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  _buildSocialMediaButton(
+                    icon: Image.asset(icWhatsapp),
+                    label: 'WhatsApp',
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  _buildSocialMediaButton(
+                    icon: const Icon(Icons.facebook, color: Colors.blueAccent),
+                    label: 'Facebook',
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  _buildSocialMediaButton(
+                    icon: Image.asset(
+                      fit: BoxFit.cover,
+                      icyoutube,
+                    ),
+                    label: 'YouTube',
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  _buildSocialMediaButton(
+                    icon: Image.asset(icInstagram),
+                    label: 'Instagram',
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close dialog first
+                      Get.to(() =>
+                          const NamazTimingsScreen()); // Navigate after closing
+                    },
+                  ),
+                  _buildSocialMediaButton(
+                    icon: Icon(
+                      Icons.connect_without_contact,
+                      color: primaryColor,
+                    ),
+                    label: 'Contact',
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  _buildSocialMediaButton(
+                    icon: Icon(
+                      Icons.chat,
+                      color: primaryColor,
+                    ),
+                    label: 'RCC Chat',
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // Helper method to build each social media button with equal icon size
+  Widget _buildSocialMediaButton({
+    required Widget icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 6,
+                  spreadRadius: 2,
+                ),
+              ],
+            ),
+            child: SizedBox(
+              width: 30, // Set a fixed width
+              height: 30, // Set a fixed height
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: icon, // The icon will fit inside this box
+              ),
+            ),
+          ),
+          const SizedBox(height: 8), // Space between icon and label
+          Text(
+            label,
+            style: TextStyle(
+              color: primaryColor,
+              fontWeight: FontWeight.w500,
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
