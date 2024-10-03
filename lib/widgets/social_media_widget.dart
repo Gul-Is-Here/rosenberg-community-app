@@ -1,5 +1,7 @@
 import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
+import 'package:community_islamic_app/views/Gallery_Events/ask_imam_screen.dart';
+import 'package:community_islamic_app/views/Gallery_Events/chat_with_Rcc.dart';
 import 'package:community_islamic_app/views/namaz_timmings/namaztimmings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -65,6 +67,7 @@ class SocialMediaFloatingButton extends StatelessWidget {
                     label: 'Ask Imam',
                     onPressed: () {
                       Navigator.of(context).pop();
+                      Get.to(() => AskImamScreen());
                     },
                   ),
                   _buildSocialMediaButton(
@@ -136,10 +139,10 @@ class SocialMediaFloatingButton extends StatelessWidget {
                   ),
                   _buildSocialMediaButton(
                     icon: Icon(
-                      Icons.connect_without_contact,
+                      Icons.newspaper,
                       color: primaryColor,
                     ),
-                    label: 'Connect',
+                    label: 'Newsletters',
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -152,6 +155,7 @@ class SocialMediaFloatingButton extends StatelessWidget {
                     label: 'RCC Chat',
                     onPressed: () {
                       Navigator.of(context).pop();
+                      Get.to(() => const ChatWithRCCScreen());
                     },
                   ),
                 ],

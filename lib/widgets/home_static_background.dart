@@ -74,7 +74,7 @@ class HomeStaticBackground extends StatelessWidget {
                         5.widthBox,
                         Expanded(
                           child: Text(
-                            ' ${gregorian.day} ${gregorian.month.en}\n'
+                            ' ${gregorian.day} ${gregorian.month.en} ${gregorian.year}\n'
                             '${hijri.day} ${hijri.month.en} ${hijri.year}H',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
