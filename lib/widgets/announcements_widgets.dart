@@ -100,9 +100,9 @@ class AnnouncementWidget extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(40),
                                     color: primaryColor,
-                                    image: const DecorationImage(
+                                    image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: AssetImage(eventBg),
+                                      image: AssetImage(bannerList[index]),
                                     ),
                                   ),
                                   child: Row(

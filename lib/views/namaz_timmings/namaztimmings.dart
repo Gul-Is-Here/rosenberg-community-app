@@ -50,7 +50,7 @@ class NamazTimingsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           children: [
             Text(
-              'Today Prayer Timings',
+              "Today's Prayer Timings",
               style: TextStyle(fontFamily: popinsSemiBold),
             ),
             5.heightBox,

@@ -29,7 +29,7 @@ const eventBg = 'assets/home_icon/event_bg.png';
 const splashBg = "assets/home_icon/splashBg.png";
 const icyoutube = "assets/home_icon/youtube.png";
 const icInstagram = "assets/home_icon/instagram.png";
-const icWhatsapp="assets/home_icon/icwhatsapp.png";
+const icWhatsapp = "assets/home_icon/icwhatsapp.png";
 
 ///      Project sccreen dummy image
 const projectBg = 'assets/home_icon/project_bg1.png';
@@ -46,13 +46,32 @@ const splash2 = "assets/splash_icon/splash3.png";
 const splash3 = "assets/splash_icon/splash4.png";
 const splash4 = "assets/splash_icon/splash2.png";
 // Sample list of images for demonstration
-const banner1 = "assets/images/banner0.jpg";
-const banner2 = "assets/images/banner1.jpg";
-const banner3 = "assets/images/banner2.jpg";
+const banner1 = "assets/images/bg1.png";
+const banner2 = "assets/images/bg2.png";
+const banner3 = "assets/images/bg3.png";
+const banner4 = "assets/images/bg4.png";
 final List<String> imageOptions = [
   qiblaIcon1,
   qiblaIcon2,
   qiblaIcon4,
   qiblaIcon5,
 ];
-final List<String> bannerList = [banner1, banner2, banner3];
+final List<String> bannerList = [
+  banner1,
+  banner2,
+  banner3,
+  banner4,
+  banner1,
+  banner2,
+  banner3,
+  banner4
+];
+
+// Avatar List
+const icGirl = "assets/images/girl.png";
+const icMen = "assets/images/men.png";
+const icWomen = "assets/images/women.png";
+const icBoy = "assets/images/boy.png";
+
+final List<String> avatarList = [icBoy, icGirl, icMen, icWomen];
+final avatarName = ['Boy', 'Girl', 'Men', 'Women'];

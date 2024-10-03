@@ -13,6 +13,18 @@ class AskImamScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // You can use catHash to fetch or display specific videos
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: primaryColor,
+      ),
       body: Column(
         children: [
           // ignore: prefer_const_constructors
@@ -39,7 +51,7 @@ class AskImamScreen extends StatelessWidget {
           150.heightBox,
           const Center(
             child: Text(
-              'COOMING SOON',
+              'COMMING SOON',
               style: TextStyle(fontFamily: popinsRegulr),
             ),
           )
