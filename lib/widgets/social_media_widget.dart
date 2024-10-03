@@ -3,6 +3,7 @@ import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:community_islamic_app/views/namaz_timmings/namaztimmings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SocialMediaFloatingButton extends StatelessWidget {
   const SocialMediaFloatingButton({super.key});
@@ -33,7 +34,6 @@ class SocialMediaFloatingButton extends StatelessWidget {
     );
   }
 
-  // Method to show the social media icons dialog
   void _showSocialMediaDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -51,50 +51,66 @@ class SocialMediaFloatingButton extends StatelessWidget {
             ),
           ),
           content: SingleChildScrollView(
-            // Wrap in SingleChildScrollView
             child: SizedBox(
               width: double.maxFinite,
               child: GridView.count(
-                shrinkWrap: true, // Prevent overflow
-                physics:
-                    const NeverScrollableScrollPhysics(), // Disable GridView scrolling
-                crossAxisCount: 3, // Number of icons per row
-                crossAxisSpacing: 15.0, // Spacing between columns
-                mainAxisSpacing: 15.0, // Spacing between rows
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 3,
+                crossAxisSpacing: 15.0,
+                mainAxisSpacing: 15.0,
                 children: [
                   _buildSocialMediaButton(
                     icon: Image.asset(askImamIcon),
                     label: 'Ask Imam',
                     onPressed: () {
-                      Navigator.of(context).pop(); // Close dialog after action
+                      Navigator.of(context).pop();
                     },
                   ),
                   _buildSocialMediaButton(
                     icon: Icon(Icons.email, color: primaryColor),
                     label: 'Email Us',
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.of(context).pop();
+                      final Uri emailLaunchUri = Uri(
+                        scheme: 'mailto',
+                        path: 'admin@rosenbergcommunitycenter.org',
+                      );
+                      await launchUrl(emailLaunchUri);
                     },
                   ),
                   _buildSocialMediaButton(
                     icon: const Icon(Icons.call, color: Colors.greenAccent),
                     label: 'Call Us',
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.of(context).pop();
+                      final Uri phoneUri = Uri(
+                        scheme: 'tel',
+                        path: '+1 (281) 303-1758',
+                      );
+                      await launchUrl(phoneUri);
                     },
                   ),
                   _buildSocialMediaButton(
                     icon: Image.asset(icWhatsapp),
                     label: 'WhatsApp',
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.of(context).pop();
+                      final Uri whatsappUri = Uri(
+                        scheme: 'https',
+                        path: 'api.whatsapp.com/send',
+                        query: 'phone=+1 (281) 303-1758',
+                      );
+                      await launchUrl(whatsappUri);
                     },
                   ),
                   _buildSocialMediaButton(
                     icon: const Icon(Icons.facebook, color: Colors.blueAccent),
                     label: 'Facebook',
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.of(context).pop();
+                      await launchUrl(Uri.parse(
+                          'https://www.facebook.com/rosenbergcommunitycenter/'));
                     },
                   ),
                   _buildSocialMediaButton(
@@ -103,17 +119,19 @@ class SocialMediaFloatingButton extends StatelessWidget {
                       icyoutube,
                     ),
                     label: 'YouTube',
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.of(context).pop();
+                      await launchUrl(Uri.parse(
+                          'https://www.youtube.com/channel/UCBvcBiS7SvA7NDn6oI1Qu5Q'));
                     },
                   ),
                   _buildSocialMediaButton(
                     icon: Image.asset(icInstagram),
                     label: 'Instagram',
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Close dialog first
-                      Get.to(() =>
-                          const NamazTimingsScreen()); // Navigate after closing
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await launchUrl(Uri.parse(
+                          'https://www.instagram.com/rosenbergcommunitycenter/?igshid=MmIzYWVlNDQ5Yg%3D%3D'));
                     },
                   ),
                   _buildSocialMediaButton(
@@ -121,7 +139,7 @@ class SocialMediaFloatingButton extends StatelessWidget {
                       Icons.connect_without_contact,
                       color: primaryColor,
                     ),
-                    label: 'Contact',
+                    label: 'Connect',
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -170,15 +188,15 @@ class SocialMediaFloatingButton extends StatelessWidget {
               ],
             ),
             child: SizedBox(
-              width: 30, // Set a fixed width
-              height: 30, // Set a fixed height
+              width: 30,
+              height: 30,
               child: FittedBox(
                 fit: BoxFit.cover,
-                child: icon, // The icon will fit inside this box
+                child: icon,
               ),
             ),
           ),
-          const SizedBox(height: 8), // Space between icon and label
+          const SizedBox(height: 8),
           Text(
             label,
             style: TextStyle(

@@ -94,7 +94,7 @@ class HomeStaticBackground extends StatelessWidget {
 
                 // Next Prayer and Current Prayer Time
                 Text(
-                  'Next Prayer Time',
+                  'Next Athan Time',
                   style: TextStyle(color: asColor, fontFamily: popinsSemiBold),
                 ),
                 Obx(
