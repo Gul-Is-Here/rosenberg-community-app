@@ -67,7 +67,7 @@ class QiblahScreen extends StatelessWidget {
             top: screenHeight * 0.12,
             left: screenWidth * 0.19,
             child: Text(
-              'Qiblah Direction',
+              'Qiblah Locator',
               style: TextStyle(
                   color: Colors.white,
                   fontSize: screenHeight * 0.035,
@@ -121,14 +121,20 @@ class QiblahScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Obx(
-                                      () => Text(
-                                        '${controller.locationCountry}, ${controller.locationCity}',
-                                        style: TextStyle(
-                                          fontFamily: popinsRegulr,
-                                          color: Colors.grey,
-                                          fontSize: screenHeight * 0.015,
-                                        ),
-                                      ),
+                                      () => controller.locationCountry == null
+                                          ? Center(
+                                              child: CircularProgressIndicator(
+                                                color: primaryColor,
+                                              ),
+                                            )
+                                          : Text(
+                                              '${controller.locationCountry}, ${controller.locationCity}',
+                                              style: TextStyle(
+                                                fontFamily: popinsRegulr,
+                                                color: Colors.grey,
+                                                fontSize: screenHeight * 0.015,
+                                              ),
+                                            ),
                                     ),
                                     5.widthBox,
                                     "|"
