@@ -34,7 +34,6 @@ class SocialMediaFloatingButton extends StatelessWidget {
     );
   }
 
-  // Method to show the social media icons dialog
   void _showSocialMediaDialog(BuildContext context) {
     showDialog(
       context: context,
