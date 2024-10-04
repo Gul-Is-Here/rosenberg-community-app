@@ -1,11 +1,10 @@
-import 'package:community_islamic_app/constants/color.dart';
-import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../constants/color.dart';
+import '../../model/prayer_times_static_model.dart';
 
-class MonthlyNamazTimeScreen extends StatelessWidget {
-  MonthlyNamazTimeScreen({super.key});
-  final homeController = Get.find<HomeController>();
+class IqamaChangeTimeTable extends StatelessWidget {
+  const IqamaChangeTimeTable({super.key});
 
   // Helper method to get the number of days in the current month
   int getDaysInMonth(int year, int month) {
@@ -16,7 +15,6 @@ class MonthlyNamazTimeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get current year and month
     DateTime now = DateTime.now();
     int daysInMonth = getDaysInMonth(now.year, now.month);
 
@@ -31,11 +29,17 @@ class MonthlyNamazTimeScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        backgroundColor: primaryColor,
         title: const Text(
-          'Monthly Prayer Times',
-          style: TextStyle(fontFamily: popinsSemiBold, color: Colors.white),
+          "Iqama Change Times",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Colors.white,
+          ),
         ),
+        centerTitle: true,
+        backgroundColor: primaryColor,
+        elevation: 4,
       ),
       body: Column(
         children: [
@@ -60,13 +64,13 @@ class MonthlyNamazTimeScreen extends StatelessWidget {
               ],
             ),
           ),
-          // List of prayer times
+          // List of iqama change times
           Expanded(
             child: ListView.builder(
-              itemCount:
-                  daysInMonth, // Use dynamic itemCount based on the days in the current month
+              itemCount: iqamahTiming.length, // Dynamically set itemCount
               padding: const EdgeInsets.all(8),
               itemBuilder: (context, index) {
+                final timing = iqamahTiming[index];
                 return Card(
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(vertical: 8),
@@ -79,25 +83,14 @@ class MonthlyNamazTimeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _buildPrayerTimeText(
-                          homeController.prayerTimes!.data[index].date.readable,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                        _buildPrayerTimeText(homeController.formatPrayerTime(
-                            homeController
-                                .prayerTimes!.data[index].timings.fajr)),
-                        _buildPrayerTimeText(homeController.formatPrayerTime(
-                            homeController
-                                .prayerTimes!.data[index].timings.dhuhr)),
-                        _buildPrayerTimeText(homeController.formatPrayerTime(
-                            homeController
-                                .prayerTimes!.data[index].timings.asr)),
-                        _buildPrayerTimeText(homeController.formatPrayerTime(
-                            homeController
-                                .prayerTimes!.data[index].timings.maghrib)),
-                        _buildPrayerTimeText(homeController.formatPrayerTime(
-                            homeController
-                                .prayerTimes!.data[index].timings.isha)),
+                            "${formatDate(timing.startDate)} - ${formatDate(timing.endDate)}",
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold),
+                        _buildPrayerTimeText(timing.fjar),
+                        _buildPrayerTimeText(timing.zuhr),
+                        _buildPrayerTimeText(timing.asr),
+                        _buildPrayerTimeText(timing.magrib),
+                        _buildPrayerTimeText(timing.isha),
                       ],
                     ),
                   ),
@@ -135,5 +128,30 @@ class MonthlyNamazTimeScreen extends StatelessWidget {
         color: Colors.black87,
       ),
     );
+  }
+
+  String formatDate(String date) {
+    final parts = date.split('/');
+    final day = int.parse(parts[0]);
+    final month = int.parse(parts[1]);
+    return "${day} ${getMonthName(month)}";
+  }
+
+  String getMonthName(int month) {
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+    return monthNames[month - 1];
   }
 }

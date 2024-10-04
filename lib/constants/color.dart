@@ -4,6 +4,7 @@ Color primaryColor = Color(0xFF006367);
 Color containerConlor = Color(0xFF061F32);
 Color asColor = Color(0xFFEDAE33);
 const buttonColorP = Color(0XFF123443);
+Color whiteColor = Colors.white;
 
 /// Arabic Fonts
 const jameelNori1 = 'JameelNori1';

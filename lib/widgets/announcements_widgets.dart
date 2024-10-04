@@ -58,7 +58,7 @@ class AnnouncementWidget extends StatelessWidget {
               Column(
                 children: [
                   SizedBox(
-                    height: 100,
+                    height: 90,
                     child: PageView.builder(
                       controller: pageController, // Assign the PageController
                       itemCount: eventsController.feedsList.length,
@@ -115,9 +115,9 @@ class AnnouncementWidget extends StatelessWidget {
                                           ),
                                           child: Column(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.start,
+                                                MainAxisAlignment.center,
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                CrossAxisAlignment.center,
                                             children: [
                                               Text(
                                                 feedsData.feedTitle,

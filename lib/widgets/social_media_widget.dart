@@ -2,7 +2,6 @@ import 'package:community_islamic_app/constants/color.dart';
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:community_islamic_app/views/Gallery_Events/ask_imam_screen.dart';
 import 'package:community_islamic_app/views/Gallery_Events/chat_with_Rcc.dart';
-import 'package:community_islamic_app/views/namaz_timmings/namaztimmings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -97,14 +96,10 @@ class SocialMediaFloatingButton extends StatelessWidget {
                   _buildSocialMediaButton(
                     icon: Image.asset(icWhatsapp),
                     label: 'WhatsApp',
-                    onPressed: () async {
+                    onPressed: () {
                       Navigator.of(context).pop();
-                      final Uri whatsappUri = Uri(
-                        scheme: 'https',
-                        path: 'api.whatsapp.com/send',
-                        query: 'phone=+1 (281) 303-1758',
-                      );
-                      await launchUrl(whatsappUri);
+                      _showWhatsAppDialog(
+                          context); // New dialog for WhatsApp options
                     },
                   ),
                   _buildSocialMediaButton(
@@ -167,7 +162,57 @@ class SocialMediaFloatingButton extends StatelessWidget {
     );
   }
 
-  // Helper method to build each social media button with equal icon size
+  void _showWhatsAppDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            'Join WhatsApp Group',
+            style: TextStyle(
+              fontFamily: popinsSemiBold,
+              fontSize: 18,
+              color: primaryColor,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Image.asset(icWhatsapp),
+                title: Text(
+                  'RCC Brothers',
+                  style: TextStyle(fontFamily: popinsRegulr),
+                ),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  await launchUrl(Uri.parse(
+                      'https://chat.whatsapp.com/C558smdW2bc2asAJIeoS6t'));
+                },
+              ),
+              const Divider(),
+              ListTile(
+                leading: Image.asset(icWhatsapp),
+                title: const Text(
+                  'RCC Sisters',
+                  style: TextStyle(fontFamily: popinsRegulr),
+                ),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  await launchUrl(Uri.parse(
+                      'https://chat.whatsapp.com/JwNn9RLPj4kFcrOLW4ANgW'));
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildSocialMediaButton({
     required Widget icon,
     required String label,

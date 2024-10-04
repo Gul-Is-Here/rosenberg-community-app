@@ -2,6 +2,8 @@ import 'package:community_islamic_app/constants/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../widgets/project_background.dart';
+
 class ServicesScreen extends StatelessWidget {
   // Sample data for services
   final List<Service> services = [
@@ -62,17 +64,26 @@ class ServicesScreen extends StatelessWidget {
               color: Colors.white,
             )),
         backgroundColor: primaryColor,
-        title: const Text(
-          'Services',
-          style: TextStyle(fontFamily: popinsSemiBold, color: Colors.white),
-        ),
+        // title: const Text(
+        //   'Services',
+        //   style: TextStyle(fontFamily: popinsSemiBold, color: Colors.white),
+        // ),
       ),
-      body: ListView.builder(
-        itemCount: services.length,
-        itemBuilder: (context, index) {
-          final service = services[index];
-          return ServiceCard(service: service);
-        },
+      body: Column(
+        children: [
+          Projectbackground(
+            title: 'Services',
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: services.length,
+              itemBuilder: (context, index) {
+                final service = services[index];
+                return ServiceCard(service: service);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -112,8 +123,9 @@ class ServiceCard extends StatelessWidget {
               onPressed: () {
                 // Handle button press for service
               },
-              child: const Text('Details',
-                  style: TextStyle(fontFamily: popinsMedium)),
+              child: Text('Details',
+                  style:
+                      TextStyle(fontFamily: popinsMedium, color: primaryColor)),
             ),
           ],
         ),

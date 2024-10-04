@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/events_details_screen.dart';
 import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/events_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -55,8 +56,9 @@ class EventsWidget extends StatelessWidget {
                 eventsController.events.value!.data.events.isNotEmpty)
               Column(
                 children: [
-                  SizedBox(
-                    height: 100,
+                  Container(
+                    color: Colors.white,
+                    height: 90,
                     child: PageView.builder(
                       controller: _pageController,
                       itemCount:
@@ -64,106 +66,120 @@ class EventsWidget extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         var eventData = eventsController.events.value!.data;
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Container(
-                            width: 320,
-                            height: 100,
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(20),
-                                topRight: Radius.circular(20),
-                              ),
-                            ),
-                            child: Card(
-                              margin: const EdgeInsets.all(0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(40),
-                              ),
-                              elevation: 10,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(40),
-                                  color: primaryColor,
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage(bannerList[index]),
-                                  ),
+                        return GestureDetector(
+                          onTap: () {
+                            Get.to(() => EventsDetailsScreen(
+                                eventDate: eventData.events[index].eventDate
+                                    .toString(),
+                                eventDetails:
+                                    eventData.events[index].eventDetail,
+                                eventLink: eventData.events[index].eventLink));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Container(
+                              width: 320,
+                              height: 90,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
                                 ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 16,
-                                          vertical: 8,
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              eventData
-                                                  .events[index].eventDetail,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: popinsSemiBold,
-                                              ),
-                                            ),
-                                            Obx(() {
-                                              if (homeController
-                                                      .prayerTime.value.data !=
-                                                  null) {
-                                                final formattedDate =
-                                                    eventsController
-                                                        .formatDateString(
-                                                            eventData
-                                                                .events[index]
-                                                                .eventDate
-                                                                .toString());
-                                                return Text(
-                                                  formattedDate,
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
+                              ),
+                              child: Card(
+                                margin: const EdgeInsets.all(0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(40),
+                                ),
+                                elevation: 10,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(40),
+                                    color: primaryColor,
+                                    image: DecorationImage(
+                                      fit: BoxFit.contain,
+                                      image: AssetImage(bannerList[index]),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 8,
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Center(
+                                                child: Text(
+                                                  eventData.events[index]
+                                                      .eventDetail,
+                                                  style: TextStyle(
                                                     color: Colors.white,
                                                     fontFamily: popinsSemiBold,
                                                   ),
-                                                );
-                                              } else {
-                                                return const Text('');
-                                              }
-                                            }),
-                                          ],
+                                                ),
+                                              ),
+                                              Obx(() {
+                                                if (homeController.prayerTime
+                                                        .value.data !=
+                                                    null) {
+                                                  final formattedDate =
+                                                      eventsController
+                                                          .formatDateString(
+                                                              eventData
+                                                                  .events[index]
+                                                                  .eventDate
+                                                                  .toString());
+                                                  return Text(
+                                                    formattedDate,
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.white,
+                                                      fontFamily:
+                                                          popinsSemiBold,
+                                                    ),
+                                                  );
+                                                } else {
+                                                  return const Text('');
+                                                }
+                                              }),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 100,
-                                      width: 60,
-                                      child: Card(
-                                          margin: const EdgeInsets.all(0),
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(40),
-                                              bottomRight: Radius.circular(40),
-                                              topLeft: Radius.circular(40),
-                                              bottomLeft: Radius.circular(40),
+                                      SizedBox(
+                                        height: 100,
+                                        width: 60,
+                                        child: Card(
+                                            margin: const EdgeInsets.all(0),
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(40),
+                                                bottomRight:
+                                                    Radius.circular(40),
+                                                topLeft: Radius.circular(40),
+                                                bottomLeft: Radius.circular(40),
+                                              ),
                                             ),
-                                          ),
-                                          color: primaryColor,
-                                          child: IconButton(
-                                              onPressed: () {
-                                                AppClass().launchURL(eventData
-                                                    .events[index].eventLink);
-                                              },
-                                              icon: const Icon(
-                                                Icons.location_city_rounded,
-                                                color: Colors.white,
-                                              ))),
-                                    ),
-                                  ],
+                                            color: primaryColor,
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  AppClass().launchURL(eventData
+                                                      .events[index].eventLink);
+                                                },
+                                                icon: const Icon(
+                                                  Icons.location_city_rounded,
+                                                  color: Colors.white,
+                                                ))),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -195,7 +211,7 @@ class EventsWidget extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text(
+                  const Text(
                     'View Events & Activities',
                     style: TextStyle(
                       color: Colors.black,
@@ -204,7 +220,7 @@ class EventsWidget extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {},
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.arrow_forward,
                       color: Colors.black,
                     ),

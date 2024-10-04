@@ -50,6 +50,10 @@ const banner1 = "assets/images/bg1.png";
 const banner2 = "assets/images/bg2.png";
 const banner3 = "assets/images/bg3.png";
 const banner4 = "assets/images/bg4.png";
+const banner5 = "assets/images/bg5.png";
+const banner6 = "assets/images/bg6.png";
+const banner7 = "assets/images/bg7.png";
+const banner8 = "assets/images/bg8.png";
 final List<String> imageOptions = [
   qiblaIcon1,
   qiblaIcon2,
@@ -65,6 +69,16 @@ final List<String> bannerList = [
   banner2,
   banner3,
   banner4
+];
+final List<String> bannerList2 = [
+  banner5,
+  banner6,
+  banner7,
+  banner8,
+  banner5,
+  banner6,
+  banner7,
+  banner8
 ];
 
 // Avatar List
