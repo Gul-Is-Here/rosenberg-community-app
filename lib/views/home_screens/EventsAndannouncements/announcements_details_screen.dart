@@ -25,136 +25,141 @@ class AnnouncementsDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Get.back();
-            },
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            )),
         backgroundColor: primaryColor,
-        title: Text(
-          "Announcement Details",
-          style: TextStyle(fontFamily: popinsSemiBold, color: Colors.white),
-        ),
+        elevation: 0,
         centerTitle: true,
-        elevation: 0.0,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.grey[100]!],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+        title: Text(
+          title,
+          style: TextStyle(
+            fontFamily: popinsSemiBold,
+            fontSize: 18,
+            color: Colors.white,
           ),
         ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Announcement Image with animation
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20.0),
-                child: Hero(
-                  tag: title, // for shared element transitions
-                  child: Image.network(
-                    image,
-                    width: double.infinity,
-                    height: 250.0,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        height: 250.0,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.broken_image,
-                            size: 100,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      );
-                    },
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Get.back(),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.share, color: Colors.white),
+            onPressed: () {
+              // Share functionality
+            },
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Image Section
+            Container(
+              height: 250.0,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(image),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withOpacity(0.6),
+                      Colors.transparent,
+                    ],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
                   ),
                 ),
               ),
-              SizedBox(height: 20.0),
+            ),
 
-              // Announcement Title with a modern font style
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 26.0,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.black87,
-                  letterSpacing: 1.2,
-                ),
-              ),
-              SizedBox(height: 10.0),
-
-              // Posted and Created Dates with flexible layout to avoid overflow
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // Announcement Details Section
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(width: 10.0), // Adds a small gap between the rows
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Icon(Icons.date_range, color: Colors.grey, size: 18),
-                        SizedBox(width: 8),
-                        Flexible(
-                          child: Text(
-                            'Posted: ${controller.formatDateString(postedDate)}',
-                            style: TextStyle(
-                              color: Colors.grey[700],
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.w500,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
+                  // Posted Date
+                  Row(
+                    children: [
+                      Icon(Icons.calendar_today, color: Colors.grey, size: 18),
+                      SizedBox(width: 8),
+                      Text(
+                        'Posted: ${controller.formatDateString(postedDate)}',
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8.0),
+
+                  // Created Date
+                  Row(
+                    children: [
+                      Icon(Icons.date_range, color: Colors.grey, size: 18),
+                      SizedBox(width: 8),
+                      Text(
+                        'Created: ${controller.formatDateString(createdDate)}',
+                        style: TextStyle(
+                          color: Colors.grey[700],
+                          fontSize: 14.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.0),
+
+                  // Title
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+
+                  // Description with Card-like appearance
+                  Container(
+                    padding: EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 8.0,
+                          offset: Offset(0, 4),
                         ),
                       ],
+                    ),
+                    child: Text(
+                      description,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        height: 1.6,
+                        color: Colors.black87,
+                      ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 20.0), // Additional spacing for better layout
-
-              Divider(height: 30.0, thickness: 1.0),
-
-              // Announcement Description with card layout
-              Container(
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8.0,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Text(
-                  description,
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    height: 1.6,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-
-              // Modern Action Button (Share)
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Share functionality or any other action
+        },
+        backgroundColor: primaryColor,
+        child: Icon(Icons.share, color: Colors.white),
       ),
     );
   }

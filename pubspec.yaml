@@ -49,6 +49,7 @@ dependencies:
   auto_scroll_text: ^0.0.7
   islamic_hijri_calendar: ^0.0.4
   smooth_page_indicator: ^1.2.0+3
+  table_calendar: ^3.1.2
 
 dev_dependencies:
   flutter_test:

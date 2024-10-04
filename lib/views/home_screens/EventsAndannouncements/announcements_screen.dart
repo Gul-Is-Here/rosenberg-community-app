@@ -23,7 +23,7 @@ class AnnouncementsScreen extends StatelessWidget {
               color: Colors.white,
             )),
         backgroundColor: primaryColor,
-        title: Text(
+        title: const Text(
           'Announcements',
           style: TextStyle(fontFamily: popinsSemiBold, color: Colors.white),
         ),

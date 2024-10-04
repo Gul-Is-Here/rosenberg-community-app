@@ -71,7 +71,7 @@ class _AzanSettingsScreenState extends State<AzanSettingsScreen> {
             Get.back();
           },
           icon: const Icon(
-            Icons.arrow_back_ios,
+            Icons.arrow_back,
             color: Colors.white,
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:community_islamic_app/views/namaz_timmings/iqama_chnage_timetbale.dart';
 import 'package:community_islamic_app/views/namaz_timmings/montly_prayer_times.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class NamazTimingsScreen extends StatelessWidget {
             Get.back();
           },
           icon: const Icon(
-            Icons.arrow_back_ios,
+            Icons.arrow_back,
             color: Colors.white,
           ),
         ),
@@ -83,6 +84,20 @@ class NamazTimingsScreen extends StatelessWidget {
                 },
                 child: Text(
                   'View Monthly Prayer Timings',
+                  style: TextStyle(
+                      fontFamily: popinsSemiBold, color: primaryColor),
+                )),
+            10.heightBox,
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10))),
+                onPressed: () {
+                  Get.to(() => IqamaChangeTimeTable());
+                },
+                child: Text(
+                  'View Iqama Change Time Table',
                   style: TextStyle(
                       fontFamily: popinsSemiBold, color: primaryColor),
                 ))
