@@ -30,6 +30,7 @@ const splashBg = "assets/home_icon/splashBg.png";
 const icyoutube = "assets/home_icon/youtube.png";
 const icInstagram = "assets/home_icon/instagram.png";
 const icWhatsapp = "assets/home_icon/icwhatsapp.png";
+const updatedCompase = "assets/home_icon/compassIcon.jpg";
 
 ///      Project sccreen dummy image
 const projectBg = 'assets/home_icon/project_bg1.png';
@@ -55,7 +56,7 @@ const banner6 = "assets/images/bg6.png";
 const banner7 = "assets/images/bg7.png";
 const banner8 = "assets/images/bg8.png";
 final List<String> imageOptions = [
-  qiblaIcon1,
+  updatedCompase,
   qiblaIcon2,
   qiblaIcon4,
   qiblaIcon5,
@@ -83,9 +84,10 @@ final List<String> bannerList2 = [
 
 // Avatar List
 const icGirl = "assets/images/girl.png";
-const icMen = "assets/images/men.png";
+const icMen = "assets/images/male.png";
 const icWomen = "assets/images/women.png";
 const icBoy = "assets/images/boy.png";
+const icEditIcon = "assets/images/editicon.png";
 
 final List<String> avatarList = [icBoy, icGirl, icMen, icWomen];
-final avatarName = ['Boy', 'Girl', 'Men', 'Women'];
+final avatarName = ['Boy', 'Girl', 'Male', 'Women'];

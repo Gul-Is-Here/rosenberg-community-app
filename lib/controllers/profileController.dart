@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:community_islamic_app/views/quran_screen.dart/quran_screen.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import '../constants/globals.dart';
 import 'login_controller.dart';
 import '../model/userModel.dart';
@@ -17,6 +20,14 @@ class ProfileController extends GetxController {
   // URL for profile update API
   final String profileUpdateApiUrl =
       "https://rosenbergcommunitycenter.org/api/ProfileUpdateApi?token=${globals.accessToken.value}&userid=${globals.userId.value}";
+
+  // This will hold the selected avatar path
+  String? selectedAvatarPath;
+  @override
+  void onInit() {
+    fetchUserData();
+    super.onInit();
+  }
 
   /// Fetch user data from the API
   Future<Map<String, dynamic>> fetchUserData() async {
@@ -37,6 +48,7 @@ class ProfileController extends GetxController {
     }
   }
 
+// globals.userId.value = jsonData['user']['id'].toString(); // Store user ID
   /// Update user profile data
   Future<void> postUserProfileData({
     required String firstName,
@@ -156,6 +168,24 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Update Password  Method
-  
+  /// Pick an avatar image from assets and upload it
+  Future<void> pickAssetImage(String assetPath, String relationAvatar) async {
+    // Load the asset image as a file
+    try {
+      ByteData byteData = await rootBundle.load(assetPath);
+      List<int> imageData = byteData.buffer.asUint8List();
+
+      // Create a temporary file to upload
+      final tempFile =
+          File('${(await getTemporaryDirectory()).path}/avatar.png');
+      await tempFile.writeAsBytes(imageData);
+
+      // Upload the image
+      await uploadImage(tempFile, relationAvatar);
+    } catch (e) {
+      print('Error loading asset image: $e');
+    }
+  }
+
+  // Update Password Method
 }
