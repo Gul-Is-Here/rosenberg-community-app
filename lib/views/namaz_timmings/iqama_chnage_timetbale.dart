@@ -1,5 +1,7 @@
+import 'package:community_islamic_app/views/qibla_screen/qibla_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:velocity_x/velocity_x.dart';
 import '../../constants/color.dart';
 import '../../model/prayer_times_static_model.dart';
 
@@ -57,9 +59,9 @@ class IqamaChangeTimeTable extends StatelessWidget {
               children: [
                 _buildHeaderText('Date'),
                 _buildHeaderText('Fajr'),
-                _buildHeaderText('Dhuhr'),
+                // _buildHeaderText('Dhuhr'),
                 _buildHeaderText('Asr'),
-                _buildHeaderText('Maghrib'),
+                // _buildHeaderText('Maghrib'),
                 _buildHeaderText('Isha'),
               ],
             ),
@@ -67,10 +69,10 @@ class IqamaChangeTimeTable extends StatelessWidget {
           // List of iqama change times
           Expanded(
             child: ListView.builder(
-              itemCount: iqamahTiming.length, // Dynamically set itemCount
+              itemCount: iqamahTimings.length, // Dynamically set itemCount
               padding: const EdgeInsets.all(8),
               itemBuilder: (context, index) {
-                final timing = iqamahTiming[index];
+                final timing = iqamahTimings[index];
                 return Card(
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(vertical: 8),
@@ -82,14 +84,12 @@ class IqamaChangeTimeTable extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        _buildPrayerTimeText(
-                            "${formatDate(timing.startDate)} - ${formatDate(timing.endDate)}",
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold),
+                        _buildPrayerTimeText(formatDate(timing.startDate),
+                            fontSize: 11, fontWeight: FontWeight.bold),
                         _buildPrayerTimeText(timing.fjar),
-                        _buildPrayerTimeText(timing.zuhr),
+                        // _buildPrayerTimeText(timing.zuhr),
                         _buildPrayerTimeText(timing.asr),
-                        _buildPrayerTimeText(timing.magrib),
+                        // _buildPrayerTimeText(timing.magrib),
                         _buildPrayerTimeText(timing.isha),
                       ],
                     ),
@@ -98,6 +98,51 @@ class IqamaChangeTimeTable extends StatelessWidget {
               },
             ),
           ),
+          10.heightBox,
+          Card(
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Dhuhr',
+                          style: TextStyle(fontFamily: popinsSemiBold),
+                        ),
+                        Text(
+                          'Iqama Time Always 2:00 PM',
+                          style: TextStyle(fontFamily: popinsSemiBold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Magrib',
+                          style: TextStyle(fontFamily: popinsSemiBold),
+                        ),
+                        Text(
+                          'Sunset + 5 min',
+                          style: TextStyle(fontFamily: popinsSemiBold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
         ],
       ),
     );

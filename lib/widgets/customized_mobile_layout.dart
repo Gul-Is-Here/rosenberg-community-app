@@ -1,12 +1,7 @@
-import 'package:community_islamic_app/app_classes/app_class.dart';
 import 'package:community_islamic_app/controllers/login_controller.dart';
-import 'package:community_islamic_app/views/Gallery_Events/ask_imam_screen.dart';
 import 'package:community_islamic_app/views/Gallery_Events/galler_screen.dart';
 import 'package:community_islamic_app/views/about_us/about_us.dart';
-import 'package:community_islamic_app/views/contact_us/contact_us_screen.dart';
-import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/announcements_details_screen.dart';
 import 'package:community_islamic_app/views/project/project_screen.dart';
-import 'package:community_islamic_app/widgets/customized_asr_widget.dart';
 import 'package:community_islamic_app/widgets/social_media_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -21,12 +16,10 @@ import '../controllers/home_events_controller.dart';
 import '../services/notification_service.dart';
 import '../model/prayer_times_static_model.dart';
 
-import '../views/home_screens/EventsAndannouncements/announcements_screen.dart';
 import '../views/services_screen/services_screen.dart';
 import 'announcements_widgets.dart';
 import 'eventsWidgets.dart';
 import 'home_static_background.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 // ignore: must_be_immutable
 class CustomizedMobileLayout extends StatelessWidget {

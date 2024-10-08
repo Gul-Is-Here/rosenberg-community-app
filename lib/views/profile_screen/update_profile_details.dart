@@ -1,15 +1,16 @@
-import 'dart:io';
+import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-
+import 'package:overlay_loader_with_app_icon/overlay_loader_with_app_icon.dart';
 import '../../constants/color.dart';
-import '../../constants/image_constants.dart';
 import '../../controllers/profileController.dart';
 import '../../widgets/custome_drawer.dart';
 
 class UpdateProfileDetails extends StatefulWidget {
-  const UpdateProfileDetails({super.key});
+  final Map<String, dynamic> userData;
+
+  const UpdateProfileDetails({Key? key, required this.userData})
+      : super(key: key);
 
   @override
   _UpdateProfileDetailsState createState() => _UpdateProfileDetailsState();
@@ -18,235 +19,363 @@ class UpdateProfileDetails extends StatefulWidget {
 class _UpdateProfileDetailsState extends State<UpdateProfileDetails> {
   final ProfileController profileController = Get.put(ProfileController());
 
-  // TextEditingControllers for user input
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneNumberController = TextEditingController();
-  final TextEditingController dobController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController cityController = TextEditingController();
-  final TextEditingController stateController = TextEditingController();
-  final TextEditingController professionController = TextEditingController();
-  final TextEditingController zipCodeController = TextEditingController();
+  late TextEditingController firstNameController;
+  late TextEditingController lastNameController;
+  late TextEditingController emailController;
+  late TextEditingController phoneNumberController;
+  late TextEditingController dobController;
+  late TextEditingController addressController;
+  late TextEditingController cityController;
+  late TextEditingController zipCodeController;
+  late TextEditingController professionController;
 
-  // File to store the picked image
-  File? _profileImage;
+  // Dropdown fields
+  String? _selectedCommunity;
+  String? _selectedGender;
+  String? _selectedState;
 
-  // Method to pick image from gallery or camera
-  Future<void> _pickImage(ImageSource source) async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: source);
+  final List<String> communities = [
+    "Walnut Creek",
+    "Sunset Crossing",
+    "Summer Lakes",
+    "Bonbrook Plantation",
+    "Stone Creek",
+    "Oaks of Rosenberg",
+    "Rose Ranch",
+    "Lakes of William Ranch",
+    "Bryan Crossing",
+    "River Mists",
+    "Other"
+  ];
 
-    if (image != null) {
-      setState(() {
-        _profileImage = File(image.path);
-      });
-    }
+  final List<String> genders = ["Male", "Female"];
+  final List<String> states = ["Texas"];
+
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize controllers with the passed userData
+    firstNameController =
+        TextEditingController(text: widget.userData['first_name']);
+    lastNameController =
+        TextEditingController(text: widget.userData['last_name']);
+    emailController = TextEditingController(text: widget.userData['email']);
+    phoneNumberController =
+        TextEditingController(text: widget.userData['number']);
+    dobController = TextEditingController(text: widget.userData['dob']);
+    addressController =
+        TextEditingController(text: widget.userData['residential_address']);
+    cityController = TextEditingController(text: widget.userData['city']);
+    zipCodeController =
+        TextEditingController(text: widget.userData['zip_code']);
+    professionController =
+        TextEditingController(text: widget.userData['profession']);
+
+    // Initialize dropdown selections
+    _selectedCommunity = widget.userData['community'];
+    _selectedGender = widget.userData['gender'] ?? 'Male';
+    _selectedState = widget.userData['state'] ?? 'Texas';
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers to avoid memory leaks
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    phoneNumberController.dispose();
+    dobController.dispose();
+    addressController.dispose();
+    cityController.dispose();
+    zipCodeController.dispose();
+    professionController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      endDrawer: const CustomDrawer(),
-      appBar: AppBar(
-        backgroundColor: primaryColor,
-        leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
-          icon: const Icon(Icons.arrow_back_ios),
-        ),
-      ),
-      body: FutureBuilder<Map<String, dynamic>>(
-        future: profileController.fetchUserData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text("No data available."));
-          } else {
-            final userData = snapshot.data!['user'];
+    return OverlayLoaderWithAppIcon(
+      isLoading: _isLoading,
+      overlayBackgroundColor: Colors.black,
+      circularProgressColor: primaryColor,
+      appIcon: Image.asset(masjidIcon), // Update with your app icon
+      child: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                BuildTextFormField(
+                  label: "First Name",
+                  controller: firstNameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'First name is required';
+                    }
+                    return null;
+                  },
+                ),
+                BuildTextFormField(
+                  label: "Last Name",
+                  controller: lastNameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Last name is required';
+                    }
+                    return null;
+                  },
+                ),
+                BuildTextFormField(
+                  label: "Email Address",
+                  controller: emailController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Email is required';
+                    }
+                    return null;
+                  },
+                ),
+                BuildTextFormField(
+                  label: "Phone No",
+                  controller: phoneNumberController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Phone number is required';
+                    }
+                    return null;
+                  },
+                ),
+                BuildTextFormField(
+                  label: "DOB",
+                  controller: dobController,
+                  onTap: () async {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now(),
+                    );
+                    if (pickedDate != null) {
+                      dobController.text =
+                          "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                    }
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Date of birth is required';
+                    }
+                    return null;
+                  },
+                ),
+                BuildTextFormField(
+                  label: "Residential Address",
+                  controller: addressController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Residential address is required';
+                    }
+                    return null;
+                  },
+                ),
+                BuildTextFormField(
+                  label: "City",
+                  controller: cityController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'City is required';
+                    }
+                    return null;
+                  },
+                ),
+                _buildDropdownField(
+                  "Community",
+                  _selectedCommunity,
+                  communities,
+                  (String? newValue) {
+                    setState(() {
+                      _selectedCommunity = newValue!;
+                    });
+                  },
+                ),
+                _buildDropdownField(
+                  "Gender",
+                  _selectedGender,
+                  genders,
+                  (String? newValue) {
+                    setState(() {
+                      _selectedGender = newValue!;
+                    });
+                  },
+                ),
+                _buildDropdownField(
+                  "State",
+                  _selectedState,
+                  states,
+                  (String? newValue) {
+                    setState(() {
+                      _selectedState = newValue!;
+                    });
+                  },
+                ),
+                BuildTextFormField(
+                  label: "Zip Code",
+                  controller: zipCodeController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Zip code is required';
+                    }
+                    return null;
+                  },
+                ),
+                BuildTextFormField(
+                  label: "Profession",
+                  controller: professionController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Profession is required';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        _isLoading = true;
+                      });
 
-            // Set initial values to the TextEditingControllers
-            firstNameController.text = userData['first_name'] ?? '';
-            lastNameController.text = userData['last_name'] ?? '';
-            emailController.text = userData['email'] ?? '';
-            phoneNumberController.text = userData['number'] ?? '';
-            dobController.text = userData['dob'] ?? '';
-            addressController.text = userData['residential_address'] ?? '';
-            cityController.text = userData['city'] ?? '';
-            stateController.text = userData['state'] ?? '';
-            professionController.text = userData['profession'] ?? '';
-            zipCodeController.text = userData['zip_code'] ?? '';
+                      // Perform the API call
+                      await profileController.postUserProfileData(
+                        firstName: firstNameController.text,
+                        lastName: lastNameController.text,
+                        gender: _selectedGender ?? 'Male',
+                        contactNumber: phoneNumberController.text,
+                        dob: dobController.text,
+                        emailAddress: emailController.text,
+                        profession: professionController.text,
+                        community: _selectedCommunity ?? '',
+                        residentialAddress: addressController.text,
+                        state: _selectedState ?? 'Texas',
+                        city: cityController.text,
+                        zipCode: zipCodeController.text,
+                      );
 
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  Center(
-                    child: Stack(
-                      children: [
-                        CircleAvatar(
-                          radius: 60,
-                          backgroundImage: _profileImage != null
-                              ? FileImage(_profileImage!)
-                              : AssetImage('') as ImageProvider,
-                        ),
-                        Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                color: primaryColor,
-                                shape: BoxShape.circle,
-                              ),
-                              child: IconButton(
-                                icon: Icon(Icons.edit),
-                                iconSize: 20,
-                                color: Colors.white,
-                                onPressed: () {
-                                  _showImageSourceDialog();
-                                },
-                              ),
-                            )),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    userData['name'] ?? 'N/A',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    userData['profession'] ?? 'N/A',
-                    style: TextStyle(color: Colors.grey[700]),
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    color: containerConlor,
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(10),
-                    child: const Text(
-                      'PERSONAL INFORMATION',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  _buildEditableField("First Name", firstNameController),
-                  _buildEditableField("Last Name", lastNameController),
-                  _buildEditableField("Email Address", emailController),
-                  _buildEditableField("Phone No", phoneNumberController),
-                  _buildEditableField("DOB", dobController),
-                  _buildEditableField("Residential Address", addressController),
-                  _buildEditableField("City", cityController),
-                  _buildEditableField("State", stateController),
-                  _buildEditableField("Profession", professionController),
-                  _buildEditableField("Zip Code", zipCodeController),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Collect updated data and call the update method
-                        profileController.postUserProfileData(
-                          firstName: firstNameController.text,
-                          lastName: lastNameController.text,
-                          gender: userData['gender'] ??
-                              'N/A', // Assuming gender is fixed
-                          contactNumber: phoneNumberController.text,
-                          dob: dobController.text,
-                          emailAddress: emailController.text,
-                          profession: professionController.text,
-                          community: userData['community'] ??
-                              '', // Assuming community is fixed
-                          residentialAddress: addressController.text,
-                          state: stateController.text,
-                          city: cityController.text,
-                          zipCode: zipCodeController.text,
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 80, vertical: 10),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.elliptical(30, 30),
-                            bottomLeft: Radius.circular(5),
-                            bottomRight: Radius.elliptical(30, 30),
-                            topRight: Radius.circular(5),
+                      setState(() {
+                        _isLoading = false;
+                      });
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "Profile updated successfully!",
+                            style: TextStyle(fontFamily: popinsMedium),
                           ),
+                          backgroundColor: primaryColor,
                         ),
-                        shadowColor: Colors.white,
-                        elevation: 10,
-                      ),
-                      child: const Text(
-                        'UPDATE',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 80, vertical: 10),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.elliptical(30, 30),
+                        bottomLeft: Radius.circular(5),
+                        bottomRight: Radius.elliptical(30, 30),
+                        topRight: Radius.circular(5),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                ],
-              ),
-            );
-          }
-        },
+                  child: const Text(
+                    'UPDATE',
+                    style: TextStyle(
+                        color: Colors.white, fontFamily: popinsSemiBold),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  // Helper method to build editable text fields
-  Widget _buildEditableField(String label, TextEditingController controller) {
+  Widget _buildDropdownField(String label, String? selectedValue,
+      List<String> options, ValueChanged<String?> onChanged) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: const TextStyle(fontFamily: popinsBold)),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: DropdownButton<String>(
+              value: selectedValue,
+              isExpanded: true,
+              onChanged: onChanged,
+              items: options.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Custom TextFormField widget for cleaner UI
+class BuildTextFormField extends StatelessWidget {
+  final String label;
+  final TextEditingController controller;
+  final String? Function(String?)? validator;
+  final void Function()? onTap;
+
+  const BuildTextFormField({
+    Key? key,
+    required this.label,
+    required this.controller,
+    this.validator,
+    this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: TextFormField(
+        style: TextStyle(fontFamily: popinsRegulr),
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+          labelStyle: const TextStyle(
+            fontFamily: popinsSemiBold,
+          ),
         ),
+        validator: validator,
+        onTap: onTap,
       ),
-    );
-  }
-
-  // Show a dialog to pick the image source
-  void _showImageSourceDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Choose Image Source'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _pickImage(ImageSource.camera);
-              },
-              child: const Text('Camera'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _pickImage(ImageSource.gallery);
-              },
-              child: const Text('Gallery'),
-            ),
-          ],
-        );
-      },
     );
   }
 }

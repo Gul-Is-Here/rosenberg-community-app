@@ -20,8 +20,8 @@ class HomeScreen extends StatelessWidget {
             color: Colors.white, // Set the drawer icon color to white
           ),
           title: const AutoScrollText(
-            intervalSpaces: 15,
-            'Rosenberg Community Center - First Islamic "Dawah" center in Rosenberg Texas',
+            intervalSpaces: 60,
+            'Rosenberg Community Center - First Islamic Dawah center in Rosenberg Texas',
             style: TextStyle(
                 color: Colors.white, fontFamily: popinsMedium, fontSize: 18),
           )),
