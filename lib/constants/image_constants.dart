@@ -31,6 +31,7 @@ const icyoutube = "assets/home_icon/youtube.png";
 const icInstagram = "assets/home_icon/instagram.png";
 const icWhatsapp = "assets/home_icon/icwhatsapp.png";
 const updatedCompase = "assets/home_icon/compassIcon.jpg";
+const updatedCompass2 = "assets/home_icon/compassnewimages.png";
 
 ///      Project sccreen dummy image
 const projectBg = 'assets/home_icon/project_bg1.png';
@@ -56,7 +57,7 @@ const banner6 = "assets/images/bg6.png";
 const banner7 = "assets/images/bg7.png";
 const banner8 = "assets/images/bg8.png";
 final List<String> imageOptions = [
-  updatedCompase,
+  updatedCompass2,
   qiblaIcon2,
   qiblaIcon4,
   qiblaIcon5,

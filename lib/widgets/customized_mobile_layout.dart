@@ -212,7 +212,7 @@ class CustomizedMobileLayout extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(
                   top: screenHeight1 * .22, right: screenHeight1 * .37),
-              child: SizedBox(
+              child: const SizedBox(
                   height: 450,
                   width: double.infinity,
                   child: Align(

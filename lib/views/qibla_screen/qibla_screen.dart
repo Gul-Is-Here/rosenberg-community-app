@@ -16,7 +16,7 @@ class QiblahScreen extends StatelessWidget {
 
   final QiblahController controller = Get.put(QiblahController());
   final homeController = Get.find<HomeController>();
-  var loginConrtroller = Get.put(LoginController());
+  var loginController = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +35,7 @@ class QiblahScreen extends StatelessWidget {
       ),
       body: Stack(
         children: [
+          // Background and header design
           Positioned(
             top: 0,
             left: 0,
@@ -69,10 +70,11 @@ class QiblahScreen extends StatelessWidget {
             child: Text(
               'Qiblah Locator',
               style: TextStyle(
-                  color: Colors.white,
-                  fontSize: screenHeight * 0.035,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: popinsBold),
+                color: Colors.white,
+                fontSize: screenHeight * 0.035,
+                fontWeight: FontWeight.bold,
+                fontFamily: popinsBold,
+              ),
             ),
           ),
           StreamBuilder(
@@ -94,12 +96,17 @@ class QiblahScreen extends StatelessWidget {
 
               if (snapshot.hasData) {
                 final qiblahDirection = snapshot.data!;
-                controller.animation = Tween(
-                  begin: controller.begin,
-                  end: (qiblahDirection.qiblah * (pi / 180) * -1),
-                ).animate(controller.animationController);
-                controller.begin = (qiblahDirection.qiblah * (pi / 180) * -1);
-                controller.animationController.forward(from: 0);
+
+                // Set animation values and smooth transition
+                if (controller.animationController.status ==
+                    AnimationStatus.completed) {
+                  controller.animation = Tween(
+                    begin: controller.begin,
+                    end: (qiblahDirection.qiblah * (pi / 180) * -1),
+                  ).animate(controller.animationController);
+                  controller.begin = controller.animation.value;
+                  controller.animationController.forward(from: 0);
+                }
 
                 return Center(
                   child: Column(
@@ -121,11 +128,10 @@ class QiblahScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Obx(
-                                      () => controller.locationCountry == null
-                                          ? Center(
-                                              child: CircularProgressIndicator(
-                                                color: primaryColor,
-                                              ),
+                                      () => controller
+                                              .locationCountry.value.isEmpty
+                                          ? CircularProgressIndicator(
+                                              color: primaryColor,
                                             )
                                           : Text(
                                               '${controller.locationCountry}, ${controller.locationCity}',
@@ -167,6 +173,19 @@ class QiblahScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      SizedBox(height: 20),
+                      // Display Qiblah direction in degrees
+                      Text(
+                        "Qiblah Direction: ${qiblahDirection.qiblah.toStringAsFixed(2)}°",
+                        style: TextStyle(
+                          fontSize: screenHeight * 0.03,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: popinsBold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      // Theme and image options
                       Container(
                         width: double.infinity,
                         height: 40,
@@ -176,10 +195,11 @@ class QiblahScreen extends StatelessWidget {
                           child: Text(
                             'Theme',
                             style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: popinsBold),
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: popinsBold,
+                            ),
                           ),
                         ),
                       ),

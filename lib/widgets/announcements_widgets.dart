@@ -1,5 +1,6 @@
 // Announcment Widget
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -37,9 +38,10 @@ class AnnouncementWidget extends StatelessWidget {
                 height: 100,
                 width: 320,
                 child: Center(
-                  child: CircularProgressIndicator(
+                  child: SpinKitFadingCircle(
                     color: primaryColor,
-                  ),
+                    size: 50.0,
+                  ), // Loading indicator
                 ),
               )
             else if (eventsController.feedsList.isEmpty)

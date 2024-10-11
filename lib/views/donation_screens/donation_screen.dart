@@ -81,7 +81,7 @@ class DonationScreen extends StatelessWidget {
                                 donate.donationcategoryName,
                                 style: const TextStyle(
                                     fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                    // fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                     fontFamily: popinsBold),
                               ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-
 import '../constants/image_constants.dart';
 
 class QiblahController extends GetxController
@@ -21,13 +20,13 @@ class QiblahController extends GetxController
     super.onInit();
     animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500), // Smooth 0.5 sec transition
     );
     animation = Tween(begin: 0.0, end: 0.0).animate(animationController);
-    _getLocation();
+    getLocation(); // Get location on init
   }
 
-  Future<void> _getLocation() async {
+  Future<void> getLocation() async {
     LocationPermission permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
@@ -36,18 +35,32 @@ class QiblahController extends GetxController
       return;
     }
 
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.best,
-    );
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+      );
 
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
 
-    if (placemarks.isNotEmpty) {
-      locationCountry.value = placemarks[0].country ?? "";
-      locationCity.value = placemarks[0].locality ?? "";
+      if (placemarks.isNotEmpty) {
+        locationCountry.value = placemarks[0].country ?? "";
+        locationCity.value = placemarks[0].locality ?? "";
+      }
+    } catch (e) {
+      Get.snackbar('Location Error', 'Failed to get location');
     }
+  }
+
+  // Call this function to update the Qiblah direction
+  void updateQiblahDirection(double newQiblahDirection) {
+    double newEnd = (newQiblahDirection * (3.141592653589793 / 180) * -1);
+
+    animation = Tween(begin: begin, end: newEnd).animate(animationController);
+    begin = newEnd;
+
+    animationController.forward(from: 0);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -89,12 +90,12 @@ class LoginScreen extends StatelessWidget {
                                       loginController.email.value = value,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Please enter your email';
+                                      return 'Please enter your username';
                                     }
                                     return null;
                                   },
                                   decoration: InputDecoration(
-                                    labelText: 'Email',
+                                    labelText: 'username',
                                     labelStyle: TextStyle(
                                         fontFamily: popinsRegulr,
                                         color: primaryColor),
@@ -207,7 +208,10 @@ class LoginScreen extends StatelessWidget {
                                 Center(
                                   child: Obx(
                                     () => loginController.isLoading.value
-                                        ? CircularProgressIndicator()
+                                        ? SpinKitFadingCircle(
+                                            color: primaryColor,
+                                            size: 50.0,
+                                          ) // Loading indicator
                                         : Container(
                                             height: 50,
                                             width: double.infinity,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:community_islamic_app/constants/color.dart';
@@ -210,9 +211,10 @@ class RegistrationScreen extends StatelessWidget {
                               Center(
                                 child: Obx(
                                   () => registrationController.isLoading.value
-                                      ? const CircularProgressIndicator(
-                                          color: Colors.white,
-                                        )
+                                      ? SpinKitFadingCircle(
+                                          color: primaryColor,
+                                          size: 50.0,
+                                        ) // Loading indicator
                                       : SizedBox(
                                           height: 50,
                                           width: double.infinity,

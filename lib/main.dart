@@ -1,4 +1,6 @@
 // import 'package:alarm/alarm.dart';
+import 'package:community_islamic_app/controllers/home_controller.dart';
+import 'package:community_islamic_app/controllers/qibla_controller.dart';
 import 'package:community_islamic_app/firebase_options.dart';
 import 'package:community_islamic_app/views/auth_screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,7 +18,10 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   tz.initializeTimeZones();
   await NotificationServices().initializeNotification();
+
+  await QiblahController().getLocation();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  HomeController();
   DateTime today = DateTime.now();
 
   if (sharedPreferences.containsKey("prayerTimesMonth")) {

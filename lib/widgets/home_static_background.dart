@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:community_islamic_app/views/azan_settings/azan_settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_qiblah/flutter_qiblah.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:community_islamic_app/controllers/home_controller.dart';
 import 'package:community_islamic_app/controllers/qibla_controller.dart';
@@ -52,20 +53,26 @@ class HomeStaticBackground extends StatelessWidget {
         children: [
           Expanded(
             flex: 2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Gregorian and Hijri Date Display
-                10.heightBox,
-                Obx(() {
-                  if (homeController.prayerTime.value.data != null) {
-                    final gregorian =
-                        homeController.prayerTime.value.data!.date.gregorian;
-                    final hijri =
-                        homeController.prayerTime.value.data!.date.hijri;
+            child: Obx(() {
+              if (homeController.isLoading.value) {
+                // Display loading indicator while data is loading
+                return Center(
+                  child: SpinKitFadingCircle(
+                    color: primaryColor,
+                    size: 50.0,
+                  ),
+                );
+              } else if (homeController.prayerTime.value.data != null) {
+                final gregorian =
+                    homeController.prayerTime.value.data!.date.gregorian;
+                final hijri = homeController.prayerTime.value.data!.date.hijri;
 
-                    return Row(
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    10.heightBox,
+                    Row(
                       children: [
                         const Icon(
                           Icons.calendar_month,
@@ -81,89 +88,93 @@ class HomeStaticBackground extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 11,
                               color: Colors.white,
-                              // fontFamily: popinsRegulr,
                             ),
                           ),
                         ),
                       ],
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                }),
-
-                // Next Prayer and Current Prayer Time
-                Text(
-                  'Next Athan Time',
-                  style: TextStyle(color: asColor, fontFamily: popinsSemiBold),
-                ),
-                Obx(
-                  () => Text(
-                    '(${homeController.getCurrentPrayer()})',
-                    style:
-                        TextStyle(color: asColor, fontFamily: popinsSemiBold),
-                  ),
-                ),
-                10.heightBox,
-
-                // Current Prayer Time
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.timelapse,
-                      color: Colors.white,
                     ),
-                    5.widthBox,
-                    Obx(
-                      () => Text(
-                        homeController.formatPrayerTime(
-                          homeController.getPrayerTimes().toString(),
+                    Text(
+                      'Next Athan Time',
+                      style:
+                          TextStyle(color: asColor, fontFamily: popinsSemiBold),
+                    ),
+                    Obx(() {
+                      return homeController.getCurrentPrayer().isEmpty
+                          ? SpinKitFadingCircle(
+                              color: primaryColor,
+                            )
+                          : Text(
+                              '(${homeController.getCurrentPrayer()})',
+                              style: TextStyle(
+                                  color: asColor, fontFamily: popinsSemiBold),
+                            );
+                    }),
+                    10.heightBox,
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.timelapse,
+                          color: Colors.white,
                         ),
-                        style: const TextStyle(
-                            color: Colors.white, fontFamily: popinsBold),
+                        5.widthBox,
+                        Obx(() {
+                          return Text(
+                            homeController.formatPrayerTime(
+                              homeController.getPrayerTimes().toString(),
+                            ),
+                            style: const TextStyle(
+                                color: Colors.white, fontFamily: popinsBold),
+                          );
+                        }),
+                      ],
+                    ),
+                    5.heightBox,
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.timer,
+                          color: Colors.white,
+                        ),
+                        5.widthBox,
+                        Obx(() => Text(
+                              homeController.formatPrayerTime(
+                                  homeController.timeUntilNextPrayer.value),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: popinsBold,
+                                  fontSize: 11),
+                            )),
+                      ],
+                    ),
+                    5.heightBox,
+                    RichText(
+                      text: TextSpan(
+                        text: 'View Times',
+                        style: TextStyle(
+                          color: asColor,
+                          fontFamily: popinsSemiBold,
+                          decoration: TextDecoration.underline,
+                          decorationColor: asColor,
+                        ),
                       ),
-                    ),
+                    ).onTap(() {
+                      Get.to(() => NamazTimingsScreen());
+                    }),
                   ],
-                ),
-                5.heightBox,
-
-                // Countdown Timer for Next Prayer
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.timer,
-                      color: Colors.white,
-                    ),
-                    5.widthBox,
-                    Obx(() => Text(
-                          homeController.formatPrayerTime(homeController
-                              .timeUntilNextPrayer
-                              .value), // Displaying the countdown
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontFamily: popinsBold,
-                              fontSize: 11),
-                        )),
-                  ],
-                ),
-                5.heightBox,
-
-                RichText(
-                  text: TextSpan(
-                    text: 'View Times',
+                );
+              } else {
+                // Fallback if data is not available
+                return Center(
+                  child: Text(
+                    "Unable to load prayer times",
                     style: TextStyle(
-                      color: asColor,
-                      fontFamily: popinsSemiBold,
-                      decoration: TextDecoration.underline,
-                      decorationColor: asColor,
-                      // Optionally set decorationThickness
+                      color: Colors.white,
+                      fontFamily: popinsRegulr,
                     ),
                   ),
-                ).onTap(() {
-                  Get.to(() => NamazTimingsScreen());
-                }),
-              ],
-            ),
+                );
+              }
+            }),
           ),
         ],
       ),
@@ -177,8 +188,11 @@ class HomeStaticBackground extends StatelessWidget {
         stream: FlutterQiblah.qiblahStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(color: Color(0xFF006367)),
+            return Center(
+              child: SpinKitFadingCircle(
+                color: primaryColor,
+                size: 50.0,
+              ), // Loading indicator
             );
           }
 
