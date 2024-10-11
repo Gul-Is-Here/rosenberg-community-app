@@ -98,7 +98,7 @@ class AnnouncementCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(15.0),
                 topRight: Radius.circular(15.0),
               ),
@@ -112,7 +112,7 @@ class AnnouncementCard extends StatelessWidget {
                     height: 180,
                     color: Colors.grey[300],
                     child:
-                        Icon(Icons.broken_image, size: 100, color: Colors.grey),
+                        const Icon(Icons.broken_image, size: 100, color: Colors.grey),
                   );
                 },
               ),

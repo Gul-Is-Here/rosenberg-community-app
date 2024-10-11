@@ -41,8 +41,8 @@ class ProfileScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-          child: FutureBuilder(
-            future: profileController.fetchUserData(),
+          child: StreamBuilder(
+            stream: profileController.userDataStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 // Display a loading indicator while data is being fetched

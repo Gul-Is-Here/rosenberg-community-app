@@ -1,10 +1,10 @@
 import 'package:community_islamic_app/constants/image_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:overlay_loader_with_app_icon/overlay_loader_with_app_icon.dart';
 import '../../constants/color.dart';
 import '../../controllers/profileController.dart';
-import '../../widgets/custome_drawer.dart';
 
 class UpdateProfileDetails extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -29,7 +29,6 @@ class _UpdateProfileDetailsState extends State<UpdateProfileDetails> {
   late TextEditingController zipCodeController;
   late TextEditingController professionController;
 
-  // Dropdown fields
   String? _selectedCommunity;
   String? _selectedGender;
   String? _selectedState;
@@ -58,7 +57,6 @@ class _UpdateProfileDetailsState extends State<UpdateProfileDetails> {
   void initState() {
     super.initState();
 
-    // Initialize controllers with the passed userData
     firstNameController =
         TextEditingController(text: widget.userData['first_name']);
     lastNameController =
@@ -75,7 +73,6 @@ class _UpdateProfileDetailsState extends State<UpdateProfileDetails> {
     professionController =
         TextEditingController(text: widget.userData['profession']);
 
-    // Initialize dropdown selections
     _selectedCommunity = widget.userData['community'];
     _selectedGender = widget.userData['gender'] ?? 'Male';
     _selectedState = widget.userData['state'] ?? 'Texas';
@@ -83,7 +80,6 @@ class _UpdateProfileDetailsState extends State<UpdateProfileDetails> {
 
   @override
   void dispose() {
-    // Dispose controllers to avoid memory leaks
     firstNameController.dispose();
     lastNameController.dispose();
     emailController.dispose();
@@ -101,62 +97,42 @@ class _UpdateProfileDetailsState extends State<UpdateProfileDetails> {
     return OverlayLoaderWithAppIcon(
       isLoading: _isLoading,
       overlayBackgroundColor: Colors.black,
-      circularProgressColor: primaryColor,
-      appIcon: Image.asset(masjidIcon), // Update with your app icon
-      child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      appIcon: SpinKitFadingCircle(
+        color: primaryColor,
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(
+            'Edit Profile Info',
+            style: TextStyle(
+                fontFamily: popinsMedium, color: whiteColor, fontSize: 18),
+          ),
+          centerTitle: true,
+          backgroundColor: primaryColor,
+          elevation: 0,
+        ),
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Form(
+            key: _formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
-                BuildTextFormField(
-                  label: "First Name",
-                  controller: firstNameController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'First name is required';
-                    }
-                    return null;
-                  },
-                ),
-                BuildTextFormField(
-                  label: "Last Name",
-                  controller: lastNameController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Last name is required';
-                    }
-                    return null;
-                  },
-                ),
-                BuildTextFormField(
-                  label: "Email Address",
-                  controller: emailController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email is required';
-                    }
-                    return null;
-                  },
-                ),
-                BuildTextFormField(
-                  label: "Phone No",
-                  controller: phoneNumberController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Phone number is required';
-                    }
-                    return null;
-                  },
-                ),
-                BuildTextFormField(
-                  label: "DOB",
+                const SizedBox(height: 16),
+                _buildTextField(
+                    label: "First Name", controller: firstNameController),
+                _buildTextField(
+                    label: "Last Name", controller: lastNameController),
+                _buildTextField(
+                    label: "Email Address", controller: emailController),
+                _buildTextField(
+                    label: "Phone No", controller: phoneNumberController),
+                _buildTextField(
+                  label: "Date of Birth",
                   controller: dobController,
                   onTap: () async {
-                    FocusScope.of(context).requestFocus(FocusNode());
                     DateTime? pickedDate = await showDatePicker(
                       context: context,
                       initialDate: DateTime.now(),
@@ -168,142 +144,44 @@ class _UpdateProfileDetailsState extends State<UpdateProfileDetails> {
                           "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
                     }
                   },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Date of birth is required';
-                    }
-                    return null;
-                  },
                 ),
-                BuildTextFormField(
-                  label: "Residential Address",
-                  controller: addressController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Residential address is required';
-                    }
-                    return null;
-                  },
-                ),
-                BuildTextFormField(
-                  label: "City",
-                  controller: cityController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'City is required';
-                    }
-                    return null;
-                  },
-                ),
+                _buildTextField(
+                    label: "Residential Address",
+                    controller: addressController),
+                _buildTextField(label: "City", controller: cityController),
                 _buildDropdownField(
-                  "Community",
-                  _selectedCommunity,
-                  communities,
-                  (String? newValue) {
-                    setState(() {
-                      _selectedCommunity = newValue!;
-                    });
-                  },
-                ),
-                _buildDropdownField(
-                  "Gender",
-                  _selectedGender,
-                  genders,
-                  (String? newValue) {
-                    setState(() {
-                      _selectedGender = newValue!;
-                    });
-                  },
-                ),
-                _buildDropdownField(
-                  "State",
-                  _selectedState,
-                  states,
-                  (String? newValue) {
-                    setState(() {
-                      _selectedState = newValue!;
-                    });
-                  },
-                ),
-                BuildTextFormField(
-                  label: "Zip Code",
-                  controller: zipCodeController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Zip code is required';
-                    }
-                    return null;
-                  },
-                ),
-                BuildTextFormField(
-                  label: "Profession",
-                  controller: professionController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Profession is required';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
+                    label: "Community",
+                    value: _selectedCommunity,
+                    items: communities,
+                    onChanged: (newValue) {
                       setState(() {
-                        _isLoading = true;
+                        _selectedCommunity = newValue;
                       });
-
-                      // Perform the API call
-                      await profileController.postUserProfileData(
-                        firstName: firstNameController.text,
-                        lastName: lastNameController.text,
-                        gender: _selectedGender ?? 'Male',
-                        contactNumber: phoneNumberController.text,
-                        dob: dobController.text,
-                        emailAddress: emailController.text,
-                        profession: professionController.text,
-                        community: _selectedCommunity ?? '',
-                        residentialAddress: addressController.text,
-                        state: _selectedState ?? 'Texas',
-                        city: cityController.text,
-                        zipCode: zipCodeController.text,
-                      );
-
+                    }),
+                _buildDropdownField(
+                    label: "Gender",
+                    value: _selectedGender,
+                    items: genders,
+                    onChanged: (newValue) {
                       setState(() {
-                        _isLoading = false;
+                        _selectedGender = newValue;
                       });
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            "Profile updated successfully!",
-                            style: TextStyle(fontFamily: popinsMedium),
-                          ),
-                          backgroundColor: primaryColor,
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 80, vertical: 10),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.elliptical(30, 30),
-                        bottomLeft: Radius.circular(5),
-                        bottomRight: Radius.elliptical(30, 30),
-                        topRight: Radius.circular(5),
-                      ),
-                    ),
-                  ),
-                  child: const Text(
-                    'UPDATE',
-                    style: TextStyle(
-                        color: Colors.white, fontFamily: popinsSemiBold),
-                  ),
-                ),
-                const SizedBox(height: 20),
+                    }),
+                _buildDropdownField(
+                    label: "State",
+                    value: _selectedState,
+                    items: states,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedState = newValue;
+                      });
+                    }),
+                _buildTextField(
+                    label: "Zip Code", controller: zipCodeController),
+                _buildTextField(
+                    label: "Profession", controller: professionController),
+                const SizedBox(height: 24),
+                _buildUpdateButton(),
               ],
             ),
           ),
@@ -312,69 +190,153 @@ class _UpdateProfileDetailsState extends State<UpdateProfileDetails> {
     );
   }
 
-  Widget _buildDropdownField(String label, String? selectedValue,
-      List<String> options, ValueChanged<String?> onChanged) {
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    void Function()? onTap,
+  }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: const TextStyle(fontFamily: popinsBold)),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: DropdownButton<String>(
-              value: selectedValue,
-              isExpanded: true,
-              onChanged: onChanged,
-              items: options.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Material(
+        elevation: 6,
+        shadowColor: primaryColor.withOpacity(0.6),
+        borderRadius: BorderRadius.circular(4),
+        child: TextFormField(
+          cursorColor: primaryColor,
+          controller: controller,
+          onTap: onTap,
+          style: const TextStyle(
+              color: Colors.black, fontSize: 13, fontFamily: popinsRegulr),
+          decoration: InputDecoration(
+            labelText: label,
+            filled: true,
+            fillColor: Colors.white,
+            labelStyle: TextStyle(
+                color: Colors.grey.shade600, fontFamily: popinsSemiBold),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+              borderSide: BorderSide.none,
             ),
           ),
-        ],
+        ),
       ),
     );
   }
-}
 
-// Custom TextFormField widget for cleaner UI
-class BuildTextFormField extends StatelessWidget {
-  final String label;
-  final TextEditingController controller;
-  final String? Function(String?)? validator;
-  final void Function()? onTap;
-
-  const BuildTextFormField({
-    Key? key,
-    required this.label,
-    required this.controller,
-    this.validator,
-    this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildDropdownField({
+    required String label,
+    required String? value,
+    required List<String> items,
+    required ValueChanged<String?> onChanged,
+  }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      child: TextFormField(
-        style: TextStyle(fontFamily: popinsRegulr),
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(
-            fontFamily: popinsSemiBold,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Material(
+        elevation: 8,
+        child: InputDecorator(
+          decoration: InputDecoration(
+            labelText: label,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+              borderSide: BorderSide.none,
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            labelStyle: TextStyle(
+                color: Colors.grey.shade600, fontFamily: popinsSemiBold),
+          ),
+          child: SizedBox(
+            height: 20,
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: value,
+                isExpanded: true,
+                onChanged: onChanged,
+                items: items.map((String item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(
+                      item,
+                      style:
+                          TextStyle(fontFamily: popinsSemiBold, fontSize: 13),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
           ),
         ),
-        validator: validator,
-        onTap: onTap,
+      ),
+    );
+  }
+
+  Widget _buildUpdateButton() {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () async {
+          if (_formKey.currentState!.validate()) {
+            setState(() {
+              _isLoading = true;
+            });
+
+            await profileController.postUserProfileData(
+              firstName: firstNameController.text,
+              lastName: lastNameController.text,
+              gender: _selectedGender ?? 'Male',
+              contactNumber: phoneNumberController.text,
+              dob: dobController.text,
+              emailAddress: emailController.text,
+              profession: professionController.text,
+              community: _selectedCommunity ?? '',
+              residentialAddress: addressController.text,
+              state: _selectedState ?? 'Texas',
+              city: cityController.text,
+              zipCode: zipCodeController.text,
+            );
+
+            setState(() {
+              _isLoading = false;
+            });
+
+            // Show a success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  "Profile updated successfully!",
+                  style: TextStyle(fontFamily: popinsSemiBold),
+                ),
+                backgroundColor: primaryColor,
+              ),
+            );
+
+            // Navigate back after a delay to allow the user to see the message
+            Future.delayed(Duration(seconds: 2), () {
+              Navigator.pop(context);
+            });
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryColor,
+          padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 10),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.elliptical(30, 30),
+              bottomLeft: Radius.circular(5),
+              bottomRight: Radius.elliptical(30, 30),
+              topRight: Radius.circular(5),
+            ),
+          ),
+          shadowColor: const Color.fromARGB(255, 252, 254, 255),
+          elevation: 8,
+        ),
+        child: Text(
+          'UPDATE',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }

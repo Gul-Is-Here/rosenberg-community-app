@@ -25,16 +25,13 @@ class UpdatePasswordController extends GetxController {
 
       if (response.statusCode == 200) {
         Get.snackbar('Success', 'Password updated successfully');
+      } else if (response.statusCode == 400) {
+        Get.snackbar('Error', 'Old password is incorrect');
       } else {
-        // Print the response details for debugging
-        print(globals.userId.value);
-        print('Response body'); // Add this to see what's returned
-        print(globals.userId.value);
         Get.snackbar('Error', 'Failed to update password');
       }
     } catch (e) {
-      print('Error: $e'); // Print the error for debugging
-      print(globals.userId.value);
+      print('Error: $e'); // Debugging purpose
       Get.snackbar('Error', 'An error occurred');
     } finally {
       isLoading(false);

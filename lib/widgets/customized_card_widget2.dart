@@ -53,8 +53,8 @@ class CusTomizedCardWidget2 extends StatelessWidget {
                       fontFamily: popinsRegulr,
                       overflow: TextOverflow.ellipsis,
                       color: Colors.black,
-                      fontSize: 9, // Fixed font size
-                      fontWeight: FontWeight.w500,
+                      fontSize: 10, // Fixed font size
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],

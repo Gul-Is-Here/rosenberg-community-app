@@ -1,6 +1,7 @@
 import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/events_details_screen.dart';
 import 'package:community_islamic_app/views/home_screens/EventsAndannouncements/events_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -35,9 +36,10 @@ class EventsWidget extends StatelessWidget {
                 height: 100,
                 width: 320,
                 child: Center(
-                  child: CircularProgressIndicator(
-                    color: primaryColor,
-                  ),
+                  child: SpinKitFadingCircle(
+                        color: primaryColor,
+                        size: 50.0,
+                      ), // Loading indicator
                 ),
               )
             else if (eventsController.events.value == null ||

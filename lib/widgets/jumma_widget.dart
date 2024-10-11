@@ -20,7 +20,7 @@ class JummaPrayerTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Jumma',
+            'Jumuah',
             style: TextStyle(
               fontSize: 22,
               fontFamily: popinsSemiBold,
@@ -29,13 +29,13 @@ class JummaPrayerTile extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           buildJummaTile(
-            'Jumma Khutba',
+            'Jumuah Khutba',
             formatPrayerTime(jummaTimes.prayerTiming),
             Icons.mic,
           ),
           const SizedBox(height: 10),
           buildJummaTile(
-           'Jumma Prayer',
+            'Jumuah Prayer',
             formatPrayerTime(jummaTimes.iqamahTiming),
             Icons.access_time,
           ),
