@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:community_islamic_app/constants/globals.dart';
 import 'package:community_islamic_app/controllers/profileController.dart';
 import 'package:community_islamic_app/views/auth_screens/login_screen.dart';
+import 'package:community_islamic_app/views/family_members/family_members_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
@@ -131,6 +132,7 @@ class ProfileScreen extends StatelessWidget {
                             child: ElevatedButton(
                               onPressed: () {
                                 // Handle Family Member button press
+                                Get.to(() => FamilyMemberScreen());
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: buttonColorP,
