@@ -13,3 +13,5 @@ const popinsRegulr = 'Poppins-Regular';
 const popinsBold = 'Poppins-Bold';
 const popinsSemiBold = 'Poppins-SemiBold';
 const popinsMedium = 'Poppins-Medium';
+const gradianColor1=Color(0xFF3DC0C0);
+const gradianColor2=Color.fromRGBO(4,40,56,1);

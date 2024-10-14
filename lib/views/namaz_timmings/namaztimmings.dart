@@ -44,6 +44,8 @@ class NamazTimingsScreen extends StatelessWidget {
         }
 
         final timings = homeController.prayerTime.value.data!.timings;
+        final sunrise = homeController.prayerTime.value.data!.timings.sunrise;
+        final sunset = homeController.prayerTime.value.data!.timings.sunset;
         var iqamatimes = getAllIqamaTimes();
         final currentPrayer = getCurrentPrayer(homeController);
 
@@ -58,6 +60,8 @@ class NamazTimingsScreen extends StatelessWidget {
             _buildPrayerTile(
                 'Fajr', timings.fajr, iqamatimes['Fajr']!, currentPrayer),
             5.heightBox,
+            _buildPrayerTile('Sunrise', sunrise, '', currentPrayer),
+            5.heightBox,
             _buildPrayerTile(
                 'Dhuhr', timings.dhuhr, iqamatimes['Dhuhr']!, currentPrayer),
             5.heightBox,
@@ -66,6 +70,10 @@ class NamazTimingsScreen extends StatelessWidget {
             5.heightBox,
             _buildPrayerTile('Maghrib', timings.maghrib,
                 _calculateIqamaTime(timings.maghrib), currentPrayer),
+
+            5.heightBox,
+            _buildPrayerTile('Sunset', sunset, '', currentPrayer),
+
             5.heightBox,
             _buildPrayerTile(
                 'Isha', timings.isha, iqamatimes['Isha']!, currentPrayer),
